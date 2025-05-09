@@ -1,0 +1,111 @@
+{
+  "pomodoro": {
+    "resetTimer": "Reiniciar tiempo",
+    "resetAll": "Reiniciar todo",
+    "estFinishAt": "Est. Termina a",
+    "startTimer": "Iniciar",
+    "pauseTimer": "Pausar",
+    "sessionLabel": "Sesión",
+    "shortBreakLabel": "Descanso corto",
+    "longBreakLabel": "Descanso largo",
+    "tasks": {
+      "title": "Planifica tu estrategia",
+      "addTask": "Agregar tarea",
+      "deleteTask": "Eliminar tarea",
+      "editTask": "Editar tarea",
+      "taskTitlePlaceholder": "Estoy trabajando en...",
+      "taskDescriptionPlaceholder": "Ingresa una descripción (Opcional)",
+      "markAsUncompleted": "Marcar como no completada",
+      "markAsCompleted": "Marcar como completada",
+      "noPomodoros": "No. Pomodoros"
+    }
+  },
+  "settings": {
+    "title": "Ajustes",
+    "theme": "Tema",
+    "darkMode": "Modo oscuro",
+    "lightMode": "Modo claro",
+    "general": "General",
+    "scuderia": "Escudería",
+    "help": "Ayuda y soporte",
+    "sections": {
+      "timers": {
+        "title": "Temporizadores",
+        "description": "Configura la duración de tus sesiones de Pomodoro y descansos.",
+        "soft": "Blandos",
+        "medium": "Medios",
+        "hard": "Duros",
+        "intermediate": "Intermedios",
+        "wet": "Lluvia",
+        "shortBreakDuration": {
+          "title": "Duración del descanso corto",
+          "label": "Duración (minutos)"
+        },
+        "longBreakDuration": {
+          "title": "Duración del descanso largo",
+          "label": "Duración (minutos)"
+        }
+      },
+      "session": {
+        "title": "Sesión",
+        "description": "Configura los ajustes de la sesión.",
+        "autoSwitchSession": {
+          "title": "Auto cambiar sesión",
+          "description": "Automáticamente cambiar entre sesiones de trabajo y descanso."
+        },
+        "autoSwitchBreak": {
+          "title": "Auto cambiar descanso",
+          "description": "Automáticamente cambiar entre descansos cortos y largos."
+        },
+        "longBreakInterval": {
+          "title": "Intervalo de descanso largo",
+          "description": "Cuántas sesiones de trabajo antes de un descanso largo."
+        }
+      },
+      "tasks": {
+        "title": "Tareas",
+        "description": "Configura los ajustes de las tareas.",
+        "autoCompleteTask": {
+          "title": "Auto completar tarea",
+          "description": "Esta opción marcará automáticamente la tarea como completada."
+        },
+        "autoSwitchTask": {
+          "title": "Auto cambiar tarea",
+          "description": "Una vez completada una tarea, cambiará automáticamente a la siguiente."
+        },
+        "autoOrderTask": {
+          "title": "Auto ordenar tareas",
+          "description": "Esto ordenará automáticamente las tareas."
+        }
+      },
+      "sounds": {
+        "title": "Sonidos",
+        "description": "Configura los ajustes de sonido.",
+        "enableSound": {
+          "title": "Habilitar sonido",
+          "description": "Habilitar o deshabilitar el sonido."
+        },
+        "selectSound": {
+          "label": "Sonido",
+          "placeholder": "Selecciona un sonido"
+        }
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "description": "Configura los ajustes de notificaciones.",
+        "enableNotifications": {
+          "title": "Habilitar notificaciones",
+          "description": "Habilitar o deshabilitar las notificaciones."
+        }
+      },
+      "language": {
+        "title": "Idioma",
+        "description": "Configura el idioma de la aplicación.",
+        "changeLanguage": {
+          "title": "Cambiar idioma",
+          "description": "Selecciona el idioma de la aplicación."
+        }
+      }
+    }
+  }
+}

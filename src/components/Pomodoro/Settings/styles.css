@@ -1,0 +1,10 @@
+.scrollStyles {
+    overflow-y: auto;
+    max-height: 600px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

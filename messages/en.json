@@ -1,0 +1,111 @@
+{
+  "pomodoro": {
+    "resetTimer": "Reset Timer",
+    "resetAll": "Reset all",
+    "estFinishAt": "Est. Finish at",
+    "startTimer": "Start",
+    "pauseTimer": "Pause",
+    "sessionLabel": "Session",
+    "shortBreakLabel": "Short Break",
+    "longBreakLabel": "Long Break",
+    "tasks": {
+      "title": "Plan your strategy",
+      "addTask": "Add Task",
+      "deleteTask": "Delete Task",
+      "editTask": "Edit Task",
+      "taskTitlePlaceholder": "I'm working on...",
+      "taskDescriptionPlaceholder": "Enter a description (Optional)",
+      "markAsUncompleted": "Mark as uncompleted",
+      "markAsCompleted": "Mark as completed",
+      "noPomodoros": "No. Pomodoros"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "general": "General",
+    "scuderia": "Scuderia",
+    "help": "Help & Support",
+    "sections": {
+      "timers": {
+        "title": "Timers",
+        "description": "Configure the duration of your Pomodoro sessions and breaks.",
+        "soft": "Soft",
+        "medium": "Medium",
+        "hard": "Hard",
+        "intermediate": "Intermediate",
+        "wet": "Wet",
+        "shortBreakDuration": {
+          "title": "Short Break Duration",
+          "label": "Duration (minutes)"
+        },
+        "longBreakDuration": {
+          "title": "Long Break Duration",
+          "label": "Duration (minutes)"
+        }
+      },
+      "session": {
+        "title": "Session",
+        "description": "Configure the session settings.",
+        "autoSwitchSession": {
+          "title": "Auto Switch Session",
+          "description": "Automatically switch between work and break sessions."
+        },
+        "autoSwitchBreak": {
+          "title": "Auto Switch Break",
+          "description": "Automatically switch between short and long breaks."
+        },
+        "longBreakInterval": {
+          "title": "Long Break Interval",
+          "description": "How many completed pomodoros to go long break."
+        }
+      },
+      "tasks": {
+        "title": "Tasks",
+        "description": "Configure the task settings.",
+        "autoCompleteTask": {
+          "title": "Auto Complete Task",
+          "description": "This will check the completed tasks."
+        },
+        "autoSwitchTask": {
+          "title": "Auto Switch Task",
+          "description": "Once you complete a task, move to the next."
+        },
+        "autoOrderTask": {
+          "title": "Auto Order Task",
+          "description": "This will order the tasks automatically."
+        }
+      },
+      "sounds": {
+        "title": "Sounds",
+        "description": "Configure the sound settings.",
+        "enableSound": {
+          "title": "Enable Sound",
+          "description": "Enable or disable sound notifications."
+        },
+        "selectSound": {
+          "label": "Sound",
+          "placeholder": "Select a sound"
+        }
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Configure the notification settings.",
+        "enableNotifications": {
+          "title": "Enable Notifications",
+          "description": "Enable or disable notifications."
+        }
+      },
+      "language": {
+        "title": "Language",
+        "description": "Configure the language settings.",
+        "changeLanguage": {
+          "title": "Change Language",
+          "description": "Select your preferred language."
+        }
+      }
+    }
+  }
+}
