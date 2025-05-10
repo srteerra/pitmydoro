@@ -5,8 +5,8 @@ import useSettingsStore from "@/stores/Settings.store";
 import { TireTypeEnum } from "@/utils/enums/TireType.enum";
 import { SessionStatusEnum } from "@/utils/enums/SessionStatus.enum";
 
-export const useSettings = (loadData = false) => {
-  const { teams } = useTeams(loadData);
+export const useSettings = () => {
+  const { teams } = useTeams();
   const currentScuderia = usePomodoroStore(state => state.currentScuderia);
   const tiresSettings = useSettingsStore(state => state.tiresSettings);
   const setTiresSettings = useSettingsStore(state => state.setTiresSettings);

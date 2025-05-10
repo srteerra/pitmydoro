@@ -11,7 +11,7 @@ import { useTranslations } from "use-intl";
 
 export const General = () => {
   const t = useTranslations('settings');
-  useSettings(true);
+  useSettings();
 
   const sections = [
     {

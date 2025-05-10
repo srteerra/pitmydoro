@@ -9,11 +9,11 @@ import {
   where,
   orderBy,
   onSnapshot,
+  getDocs,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useEffect, useState } from "react";
-import { useFirestoreCollectionData } from "reactfire";
 import { limit } from "@firebase/firestore";
 import _ from "lodash";
 
@@ -38,15 +38,11 @@ export interface IQuery {
 
 interface IProps {
   collectionPath: string;
-  queries?: IQuery[];
-  loadData?: boolean;
 }
 
 export const useFirebase = ({
-                              collectionPath,
-                              queries = [],
-                              loadData = true,
-                            }: IProps) => {
+  collectionPath,
+}: IProps) => {
   const [docs, setDocs] = useState([]);
   let unsubscribe: any;
 
@@ -71,6 +67,16 @@ export const useFirebase = ({
     const documentRef = doc(db, newCollectionPath || collectionPath, id);
     return setDoc(documentRef, data);
   };
+
+  const collectionWithIds = async <Type>(queries: IQuery[] = [], distinctCollectionPath?: string): Promise<Type[]> => {
+    const snapshot = await getDocs(getQueryRef(queries, collection(db, distinctCollectionPath || collectionPath)));
+    return snapshot.docs.map((doc: any) => ({
+      ...doc.data(),
+      id: doc.id,
+      path: doc.ref.path
+    } as any as Type));
+  };
+
 
   const add = async (data: any, newCollectionPath?: string) => {
     const colRef = newCollectionPath
@@ -325,14 +331,8 @@ export const useFirebase = ({
     populateArray,
     populateArrayOfArray,
     trash,
+    collectionWithIds,
     update,
     add,
-    ...(loadData
-      ? // eslint-disable-next-line react-hooks/rules-of-hooks
-      useFirestoreCollectionData(getQueryRef(queries), {
-        idField: "id",
-        initialData: [],
-      })
-      : {}),
   };
 };

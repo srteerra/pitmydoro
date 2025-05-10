@@ -1,17 +1,23 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
-import { getAuth } from "firebase/auth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import "firebase/compat/storage";
+import "firebase/compat/messaging";
+import "firebase/compat/functions";
+import { getAuth } from '@firebase/auth';
+import '@firebase/firestore';
+import { getMessaging } from "firebase/messaging";
 import { environment } from "@/environments/environment.dev";
 
-const app = initializeApp(environment.firebase);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+let firebaseApp: any;
+if (!firebase.apps.length) {
+  firebaseApp = firebase.initializeApp(environment.firebase);
+  firebase.firestore().settings({ experimentalForceLongPolling: true });
+}
 
-export {
-  app,
-  db,
-  auth,
-  storage,
-};
+const db = firebase.firestore();
+const auth = getAuth(firebaseApp);
+const storage = firebase.storage();
+const messaging = getMessaging(firebaseApp);
+
+export { firebase, db, auth, firebaseApp, storage, messaging };

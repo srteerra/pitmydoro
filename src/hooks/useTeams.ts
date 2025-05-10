@@ -3,13 +3,19 @@ import { useEffect } from "react";
 import { Collections } from "@/utils/constants/FirebasePaths";
 import useTeamsStore from "@/stores/Teams.store";
 import usePomodoroStore from "@/stores/Pomodoro.store";
+import { ITeam } from "@/interfaces/Teams.interface";
 
-export const useTeams = (loadData = false) => {
-  const db = useFirebase({ collectionPath: Collections.teams._path, loadData });
+export const useTeams = () => {
+  const db = useFirebase({ collectionPath: Collections.teams._path });
   const teams = useTeamsStore(state => state.teams)
   const setTeams = useTeamsStore(state => state.setTeams)
   const currentScuderia = usePomodoroStore(state => state.currentScuderia)
   const setCurrentScuderia = usePomodoroStore(state => state.setCurrentScuderia)
+
+  const getData = async () => {
+    const teams = await db.collectionWithIds([]) as ITeam[];
+    setTeams(teams);
+  }
 
   useEffect(() => {
     if (!currentScuderia && teams.length) {
@@ -18,14 +24,8 @@ export const useTeams = (loadData = false) => {
   }, [teams, currentScuderia, setCurrentScuderia]);
 
   useEffect(() => {
-    if (loadData) {
-      db.listenCollection([], Collections.teams._path)
-    }
-  }, [loadData, db]);
-
-  useEffect(() => {
-    if (db?.docs?.length) setTeams(db.docs)
-  }, [db.docs, setTeams]);
+    getData();
+  }, []);
 
   return {
     teams,
