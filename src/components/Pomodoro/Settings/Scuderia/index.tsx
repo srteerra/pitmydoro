@@ -22,7 +22,7 @@ export const Scuderia = () => {
     currentScuderia?.id || null
   );
 
-  const handleChange = (value: string) => {
+  const handleChange = (value: any) => {
     if (value === selectedScuderia) return;
     setSelectedScuderia(value);
     changeScuderia(value);
