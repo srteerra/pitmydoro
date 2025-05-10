@@ -107,8 +107,8 @@ export const Settings = () => {
                     onValueChange={(e) => setActiveTab(e.value)}
                   >
                     <Tabs.List>
-                      {LinkItems.map((link) => (
-                        <Tabs.Trigger value={link.id}>{link.name}</Tabs.Trigger>
+                      {LinkItems.map((link, idx) => (
+                        <Tabs.Trigger key={idx} value={link.id}>{link.name}</Tabs.Trigger>
                       ))}
                     </Tabs.List>
                   </Tabs.Root>

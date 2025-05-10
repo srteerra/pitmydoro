@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Countdown, { CountdownApi, zeroPad } from 'react-countdown';
 import { Box, Center, Flex, HStack, IconButton, Text, useDisclosure } from '@chakra-ui/react';
 import { GrPowerReset } from 'react-icons/gr';
@@ -82,7 +82,7 @@ export const Counter = () => {
     }
   };
 
-  const handleIntervalComplete = () => {
+  const handleIntervalComplete = useCallback(() => {
     countdownRef.current?.pause();
     setStopped(true);
     setIsActive(false);
@@ -100,7 +100,7 @@ export const Counter = () => {
         setDate(Date.now() + moment.duration(Number(currentBreak), 'minutes').asMilliseconds());
       }
     }
-  };
+  }, [status, selectedTire, tiresSettings, breaksDuration, setStopped]);
 
   const handleStartClick = () => {
     countdownRef.current?.start();
@@ -161,7 +161,7 @@ export const Counter = () => {
 
   useEffect(() => {
     handleIntervalComplete();
-  }, [tiresSettings, selectedTire, status]);
+  }, [tiresSettings, selectedTire, status, handleIntervalComplete]);
 
   return (
     <React.Fragment>

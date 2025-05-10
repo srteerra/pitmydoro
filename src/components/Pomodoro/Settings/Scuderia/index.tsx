@@ -1,8 +1,6 @@
 import {
   Box,
-  ColorSwatchMix,
   Flex,
-  HStack,
   Image,
   RadioCard, Skeleton,
   Text,
@@ -35,7 +33,7 @@ export const Scuderia = () => {
       setSelectedScuderia(teams[0]?.id);
       changeScuderia(teams[0]?.id);
     }
-  }, [teams, selectedScuderia]);
+  }, [teams, selectedScuderia, changeScuderia]);
 
   return (
     <Box>
@@ -54,10 +52,10 @@ export const Scuderia = () => {
           defaultValue={teams[0]?.id}
         >
           <VStack align='stretch'>
-            {teams.map((team: ITeam) => (
-              <Skeleton height="150px" loading={!fetched}>
+            {teams.map((team: ITeam, idx: number) => (
+              <Skeleton key={idx} height="150px" loading={!fetched}>
                 <RadioCard.Item
-                  key={team.id}
+                  key={idx}
                   value={team.id}
                   borderRadius={'xl'}
                   borderWidth={'3px'}
@@ -83,7 +81,7 @@ export const Scuderia = () => {
                       <Box display='flex' flexDirection='column' alignItems='start' gap={4} w={'full'} flex={1}>
                         <Flex alignItems='center' gap={2}>
                           <Skeleton borderRadius={"full"} loading={!fetched}>
-                            <Image src={team.logoURL} w={'50px'} h={'50px'} />
+                            <Image src={team.logoURL} w={'50px'} h={'50px'} alt={'...'} />
                           </Skeleton>
 
                           <Text fontWeight={'bold'} fontSize={'lg'}>
@@ -94,7 +92,7 @@ export const Scuderia = () => {
                         <ColorPreview colors={team.colors} />
                       </Box>
 
-                      <Image asChild>
+                      <Image asChild alt={'...'}>
                         <NextImage width={200} height={100} src={team?.carURL ?? F1Car} alt='...' />
                       </Image>
                     </Flex>

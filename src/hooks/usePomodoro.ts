@@ -7,11 +7,9 @@ import { ITask } from '@/interfaces/Task.interface';
 import { SessionStatusEnum } from "@/utils/enums/SessionStatus.enum";
 import moment from "moment";
 import { IPomodoro } from "@/interfaces/Pomodoro.interface";
-import { useAlert } from "@/hooks/useAlert";
 
 export const usePomodoro = () => {
   const [editingTask, setEditingTask] = useState<string | null>(null);
-  const { toastSuccess } = useAlert();
   const tasks = usePomodoroStore((state) => state.tasks);
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
   const breaksInterval = useSettingsStore((state) => state.breaksInterval);
@@ -28,7 +26,6 @@ export const usePomodoro = () => {
   const status = useSessionStore(state => state.status);
 
   const setCurrentTask = usePomodoroStore((state) => state.setCurrentTask);
-  const addExtPomodoro = usePomodoroStore((state) => state.addExtPomodoro);
   const addTask = usePomodoroStore((state) => state.addTask);
   const setTasks = usePomodoroStore((state) => state.setTasks);
   const setStatus = useSessionStore(state => state.setStatus);
@@ -51,7 +48,7 @@ export const usePomodoro = () => {
     const incompletePomodoros = tasksPomodoros.filter((pomodoro: IPomodoro) => !pomodoro.completedAt);
     const timeNow = moment().valueOf();
 
-    const totalDuration = incompletePomodoros.reduce((acc: number, pomodoro: IPomodoro) => {
+    const totalDuration = incompletePomodoros.reduce((acc: number) => {
       const duration = tiresSettings[selectedTire]?.duration;
       return acc + (duration * 60 * 1000);
     }, 0);
@@ -275,11 +272,11 @@ export const usePomodoro = () => {
     if (!currentTask || incompleteTasks.length === 1) {
       setCurrentTask(incompleteTasks[0]);
     }
-  }, [tasks, currentTask, autoStartNextTask]);
+  }, [tasks, currentTask, autoStartNextTask, setCurrentTask]);
 
   useEffect(() => {
     if (!tasks?.length) setCurrentTask(null);
-  }, [tasks]);
+  }, [tasks, setCurrentTask]);
 
   return {
     allPomodoros,

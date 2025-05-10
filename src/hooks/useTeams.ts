@@ -15,17 +15,17 @@ export const useTeams = (loadData = false) => {
     if (!currentScuderia && teams.length) {
       setCurrentScuderia(teams[0])
     }
-  }, [teams, currentScuderia]);
+  }, [teams, currentScuderia, setCurrentScuderia]);
 
   useEffect(() => {
     if (loadData) {
       db.listenCollection([], Collections.teams._path)
     }
-  }, [loadData]);
+  }, [loadData, db]);
 
   useEffect(() => {
     if (db?.docs?.length) setTeams(db.docs)
-  }, [db.docs]);
+  }, [db.docs, setTeams]);
 
   return {
     teams,

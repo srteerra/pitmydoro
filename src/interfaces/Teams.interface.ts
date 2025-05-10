@@ -3,6 +3,11 @@ interface IPrimary {
   dark: string;
 }
 
+interface ISecondary {
+  default: string;
+  dark: string;
+}
+
 interface IBackground {
   session: string;
   shortBreak: string;
@@ -11,7 +16,7 @@ interface IBackground {
 
 interface ITeamColors {
   primary: IPrimary;
-  secondary: string;
+  secondary: ISecondary;
   background: IBackground;
   light: string;
   dark: string;

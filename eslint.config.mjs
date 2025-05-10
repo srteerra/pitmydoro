@@ -1,6 +1,8 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
+import eslintPluginTypescript from "@typescript-eslint/eslint-plugin";
+import parserTypescript from "@typescript-eslint/parser";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,26 +14,20 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
   {
-    plugins: ["next", '@typescript-eslint'],
-    parser: '@typescript-eslint/parser',
+    files: ["**/*.ts", "**/*.tsx"],
+    plugins: {
+      "@typescript-eslint": eslintPluginTypescript,
+    },
     rules: {
       "@typescript-eslint/no-explicit-any": "off"
     },
-    overrides: [
-      {
-        files: ['*.ts', '*.tsx'],
-        parserOptions: {
-          project: ['./tsconfig.json'],
-          projectService: true,
-          tsconfigRootDir: __dirname,
-        },
-        extends: [
-          'next/core-web-vitals',
-          'plugin:@typescript-eslint/recommended',
-          "prettier"
-        ]
+    languageOptions: {
+      parser: parserTypescript,
+      parserOptions: {
+        project: ["./tsconfig.json"],
+        tsconfigRootDir: __dirname,
       },
-    ],
+    },
   }
 ];
 

@@ -7,16 +7,10 @@ import { Locale } from "moment";
 import { useTransition } from "react";
 
 interface Props {
-  defaultValue?: string;
-  items?: Array<{ value: string; label: string }>;
-  label?: string;
   portalDisabled?: boolean;
 }
 
 export function LocaleSwitch({
-  defaultValue = 'en',
-  items = [],
-  label = 'Language',
   portalDisabled = false,
 }: Props) {
   const [isPending, startTransition] = useTransition();
@@ -31,7 +25,7 @@ export function LocaleSwitch({
   return (
     <Menu.Root>
       <Menu.Trigger asChild>
-        <IconButton variant={'ghost'} rounded='full'>
+        <IconButton variant={'ghost'} rounded='full' disabled={isPending}>
           <IoEarth />
         </IconButton>
       </Menu.Trigger>

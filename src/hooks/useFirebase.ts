@@ -15,7 +15,6 @@ import { db } from "@/firebase/config";
 import { useEffect, useState } from "react";
 import { useFirestoreCollectionData } from "reactfire";
 import { limit } from "@firebase/firestore";
-// @ts-ignore
 import _ from "lodash";
 
 export interface IQuery {
@@ -127,7 +126,7 @@ export const useFirebase = ({
     subFields: string[] = [],
     subSubFields: string[] = [],
   ) => {
-    for (let field of fields) {
+    for (const field of fields) {
       if (item?.[field]) {
         try {
           const itemPath = item[field]?.path;
@@ -136,14 +135,14 @@ export const useFirebase = ({
             item[field] = await docWithId(itemPath);
           }
 
-          for (let subField of subFields) {
+          for (const subField of subFields) {
             if (item[field][subField]) {
               if (item[field][subField].path)
                 item[field][subField] = await docWithId(
                   item[field][subField].path
                 );
 
-              for (let subSUbField of subSubFields) {
+              for (const subSUbField of subSubFields) {
                 if (item[field][subField][subSUbField]) {
                   if (item[field][subField][subSUbField].path)
                     item[field][subField][subSUbField] = await docWithId(
@@ -165,7 +164,7 @@ export const useFirebase = ({
   };
 
   const populateArrayFieldByItem = async (item: any, fields: string[]) => {
-    for (let field of fields) {
+    for (const field of fields) {
       const array = _.get(item, field);
       if (array) {
         try {
@@ -195,7 +194,7 @@ export const useFirebase = ({
     subFields: string[]
   ) => {
     for (let i = 0; i < arrayFields.length; i++) {
-      let arrayField = arrayFields[i];
+      const arrayField = arrayFields[i];
       const array = _.get(item, arrayField);
       if (array) {
         try {
@@ -250,8 +249,8 @@ export const useFirebase = ({
   };
 
   const populateArrayOfArray = async (items: any[], fields: string[]) => {
-    for (let item of items) {
-      for (let field of fields) {
+    for (const item of items) {
+      for (const field of fields) {
         if (!!item[field]) item[field] = await populateArray(item[field]);
       }
     }

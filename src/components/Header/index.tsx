@@ -14,6 +14,7 @@ export const Header = () => {
         <Image
           asChild
           filter="none"
+          alt={"..."}
           _dark={{ filter: 'invert(1)' }}
         >
           <NextImage width={250} src={Logo} alt="..." />
