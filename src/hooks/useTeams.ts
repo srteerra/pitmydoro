@@ -12,11 +12,6 @@ export const useTeams = () => {
   const currentScuderia = usePomodoroStore(state => state.currentScuderia)
   const setCurrentScuderia = usePomodoroStore(state => state.setCurrentScuderia)
 
-  const getData = async () => {
-    const teams = await db.collectionWithIds([]) as ITeam[];
-    setTeams(teams);
-  }
-
   useEffect(() => {
     if (!currentScuderia && teams.length) {
       setCurrentScuderia(teams[0])
@@ -24,8 +19,13 @@ export const useTeams = () => {
   }, [teams, currentScuderia, setCurrentScuderia]);
 
   useEffect(() => {
+    const getData = async () => {
+      const teams = await db.collectionWithIds([]) as ITeam[];
+      setTeams(teams);
+    };
+
     getData();
-  }, []);
+  }, [db, setTeams]);
 
   return {
     teams,
