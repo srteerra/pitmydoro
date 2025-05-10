@@ -7,7 +7,7 @@ import { LocaleSwitch } from "@/components/Toggles/LocaleSwitch";
 
 export const Header = () => {
   return (
-    <HStack as={"header"} justifyContent={"center"} alignItems={"center"} gap={4} paddingY={12}>
+    <HStack justifyContent={"center"} alignItems={"center"} gap={4} paddingY={12}>
       <LocaleSwitch />
 
       <Center>
