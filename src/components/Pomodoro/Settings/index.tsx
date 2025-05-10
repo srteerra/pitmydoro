@@ -21,18 +21,17 @@ import { Support } from '@/components/Pomodoro/Settings/Support';
 import { useTranslations } from 'use-intl';
 import "./styles.css"
 
+enum Tab {
+  GENERAL = 'general',
+  SCUDERIA = 'scuderia',
+  SUPPORT = 'support',
+}
+
 interface LinkItemProps {
   name: string;
   icon: IconType;
-  id: number;
+  id: Tab;
 }
-
-enum Tab {
-  GENERAL,
-  SCUDERIA,
-  SUPPORT,
-}
-
 const NavItem = ({ icon, isActive, children, ...rest }: any) => {
   return (
     <Box as='a' style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
@@ -68,7 +67,7 @@ const NavItem = ({ icon, isActive, children, ...rest }: any) => {
 };
 
 export const Settings = () => {
-  const [activeTab, setActiveTab] = useState(Tab.GENERAL);
+  const [activeTab, setActiveTab] = useState<string | Tab>(Tab.GENERAL);
   const t = useTranslations('settings');
 
   const LinkItems: Array<LinkItemProps> = [
