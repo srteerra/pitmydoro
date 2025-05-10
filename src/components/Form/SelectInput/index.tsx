@@ -14,7 +14,7 @@ interface Props {
   onChange: (value: boolean) => void;
   label: string;
   collection: IOption[];
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   placeholder?: string;
   portalDisabled?: boolean;
   value?: string[];
