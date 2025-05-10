@@ -34,7 +34,7 @@ interface LinkItemProps {
 }
 const NavItem = ({ icon, isActive, children, ...rest }: any) => {
   return (
-    <Box as='a' style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Box style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align='center'
         marginBottom={{ base: '2', md: '6px' }}

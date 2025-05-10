@@ -1,13 +1,15 @@
 'use client';
+
 import { ChakraProvider, createSystem, defaultConfig, defineConfig } from '@chakra-ui/react';
 import { ThemeProvider } from 'next-themes';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import useSessionStore from '@/stores/Session.store';
 import usePomodoroStore from '@/stores/Pomodoro.store';
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
   const sessionStatus = useSessionStore((state) => state.status);
+  const [isClient, setIsClient] = useState(false)
 
   const theme = useMemo(() => {
     return defineConfig({
@@ -96,6 +98,12 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   }, [currentScuderia, sessionStatus]);
 
   const system = createSystem(defaultConfig, theme);
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) return null
 
   return (
     <ChakraProvider value={system}>

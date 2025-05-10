@@ -187,7 +187,7 @@ export const TaskCard = ({
                     textDecoration={task.completed ? 'line-through' : ''}
                     textTransform={'capitalize'}
                   >
-                    <Text as={'span'} color={'gray.400'}>
+                    <Text color={'gray.400'}>
                       #{task.order}
                     </Text>{' '}
                     {task.title}
