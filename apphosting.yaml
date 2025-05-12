@@ -20,4 +20,5 @@ env:
   - variable: NEXT_PUBLIC_APP_ID
     value: 1:444231010364:web:f498a035031f9b7a931b39
   - variable: NEXT_PUBLIC_API_KEY
-    secret: FIREBASE_API_KEY
+    secret: NEXT_PUBLIC_FIREBASE_API_KEY
+  firebase functions:secrets:set
