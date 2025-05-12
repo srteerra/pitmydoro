@@ -1,5 +1,8 @@
 runConfig:
   minInstances: 0
+  maxInstances: 10
+  cpu: 1
+  memory: 512Mi
 env:
   - variable: NEXT_PUBLIC_AUTH_DOMAIN
     value: pitmydoro.firebaseapp.com
