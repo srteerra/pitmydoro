@@ -4,6 +4,11 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
+    "site": "pitmydoro",
+    "app": {
+      "source": ".",
+      "appYaml": "apphosting.yaml"
+    },
     "public": "public",
     "ignore": [
       "firebase.json",
