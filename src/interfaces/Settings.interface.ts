@@ -1,5 +1,6 @@
 import { TireTypeEnum } from "@/utils/enums/TireType.enum";
 import { SessionStatusEnum } from "@/utils/enums/SessionStatus.enum";
+import { Locale } from '@/i18n/config';
 
 export interface TireSettings {
   compound: string;
@@ -7,6 +8,7 @@ export interface TireSettings {
 }
 
 export interface ISettings {
+  locale: Locale;
   tiresSettings: Record<TireTypeEnum, TireSettings>,
   breaksInterval: number,
   breaksDuration: Record<SessionStatusEnum.SHORT_BREAK | SessionStatusEnum.LONG_BREAK, number>,
@@ -16,4 +18,6 @@ export interface ISettings {
   autoCompleteTask: boolean,
   autoOrderTasks: boolean,
   autoStartNextTask: boolean,
+  enableSounds: boolean,
+  enableNotifications: boolean,
 }

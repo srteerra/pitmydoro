@@ -1,19 +1,25 @@
-"use client"
+"use client";
 import { Pomodoro } from "@/components/Pomodoro";
-import { Head } from "@/components/Head";
 import React, { useEffect, useState } from 'react';
 import { Loader } from "@/components/Loader";
 import { Router } from "next/router";
+import { useTeams } from "@/hooks/useTeams";
+import usePomodoroStore from "@/stores/Pomodoro.store";
+import { useCookieConsent } from "@/hooks/useCookieConsent";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const { teams } = useTeams();
+  const currentScuderia = usePomodoroStore(state => state.currentScuderia);
+  const setCurrentScuderia = usePomodoroStore(state => state.setCurrentScuderia);
+
+  useCookieConsent();
 
   useEffect(() => {
     const handleStart = () => setLoading(true);
     const handleStop = () => setLoading(false);
 
     handleStop();
-
     Router.events.on("routeChangeStart", handleStart);
     Router.events.on("routeChangeComplete", handleStop);
     Router.events.on("routeChangeError", handleStop);
@@ -26,23 +32,16 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const isDesktop = () => {
-      return !/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      );
-    };
-
-    if (isDesktop() && Notification.permission !== 'granted') {
-      Notification.requestPermission();
+    if (!currentScuderia && teams.length > 0) {
+      setCurrentScuderia(teams.find(team => team.name === 'Ferrari') || teams[0]);
     }
-  }, []);
-  
+  }, [teams, currentScuderia]);
+
   if (loading) return <Loader />;
-  
+
   return (
-    <React.Fragment>
-      <Head title={"PitMyDoro"} />
+    <>
       <Pomodoro />
-    </React.Fragment>
+    </>
   );
 }

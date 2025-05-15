@@ -14,7 +14,6 @@ import { TiCogOutline } from 'react-icons/ti';
 import React, { useState } from 'react';
 import { IconType } from 'react-icons';
 import { GiFullMotorcycleHelmet } from 'react-icons/gi';
-import { FaQuestion } from 'react-icons/fa';
 import { General } from '@/components/Pomodoro/Settings/General';
 import { Scuderia } from '@/components/Pomodoro/Settings/Scuderia';
 import { Support } from '@/components/Pomodoro/Settings/Support';
@@ -73,7 +72,7 @@ export const Settings = () => {
   const LinkItems: Array<LinkItemProps> = [
     { name: t('general'), icon: TiCogOutline, id: Tab.GENERAL },
     { name: t('scuderia'), icon: GiFullMotorcycleHelmet, id: Tab.SCUDERIA },
-    { name: t('help'), icon: FaQuestion, id: Tab.SUPPORT },
+    // { name: t('help'), icon: FaQuestion, id: Tab.SUPPORT },
   ];
 
   return (

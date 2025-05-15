@@ -7,6 +7,14 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from "react-hot-toast";
+import { BottomBanner } from "@/components/BottomBanner";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Pit My Doro",
+  description: "Pomodoro",
+  icons: "./favicon.ico"
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -18,7 +26,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <MainContainer>
                 <Header />
                 <Toaster position="top-right" />
+
                 {children}
+
+                <BottomBanner/>
                 <Footer />
               </MainContainer>
             </ColorModeProvider>

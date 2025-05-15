@@ -1,6 +1,10 @@
 {
   "pomodoro": {
     "resetTimer": "Reset Timer",
+    "acceptResetAll": "Are you sure you want to reset all?",
+    "acceptReset": "Are you sure you want to reset?",
+    "cancelReset": "Cancel",
+    "cancelResetAll": "Cancel",
     "resetAll": "Reset all",
     "estFinishAt": "Est. Finish at",
     "startTimer": "Start",
@@ -17,7 +21,11 @@
       "taskDescriptionPlaceholder": "Enter a description (Optional)",
       "markAsUncompleted": "Mark as uncompleted",
       "markAsCompleted": "Mark as completed",
-      "noPomodoros": "No. Pomodoros"
+      "noPomodoros": "No. Pomodoros",
+      "successCheckTask": "Task mark as completed",
+      "successUncheckTask": "Task mark as uncompleted",
+      "successUpdateTask": "Task updated successfully",
+      "successDeleteTask": "Task deleted successfully"
     }
   },
   "settings": {
@@ -107,5 +115,9 @@
         }
       }
     }
+  },
+  "alerts": {
+    "acceptText": "Accept",
+    "cancelText": "Cancel"
   }
 }

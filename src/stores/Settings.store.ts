@@ -3,8 +3,10 @@ import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import { TireTypeEnum } from "@/utils/enums/TireType.enum";
 import { DefaultSettings } from "@/utils/constants/DefaultSettings";
 import { ISettings, TireSettings } from "@/interfaces/Settings.interface";
+import { Locale } from '@/i18n/config';
 
 interface SettingsActions {
+  setLocale: (locale: Locale) => void;
   setTiresSettings: (tiresSettings: Record<TireTypeEnum, TireSettings>) => void;
   updateTireDuration: (type: TireTypeEnum, duration: number) => void;
   setBreaksInterval: (interval: number) => void;
@@ -16,12 +18,15 @@ interface SettingsActions {
   setAutoOrderTasks: (autoOrderTasks: boolean) => void;
   setAutoStartNextTask: (autoStartNextTask: boolean) => void;
   setIsLongBreakPerTask: (longBreakPerTask: boolean) => void;
+  setEnableSounds: (enableSounds: boolean) => void;
+  setEnableNotifications: (enableNotifications: boolean) => void;
 }
 
 const useSettingsStore = create<ISettings & SettingsActions>()(
   devtools(
     persist(
       (set) => ({
+        locale: DefaultSettings.locale,
         tiresSettings: DefaultSettings.tiresSettings,
         breaksInterval: DefaultSettings.breaksInterval,
         breaksDuration: DefaultSettings.breaksDuration,
@@ -31,6 +36,11 @@ const useSettingsStore = create<ISettings & SettingsActions>()(
         autoOrderTasks: DefaultSettings.autoOrderTasks,
         autoStartNextTask: DefaultSettings.autoStartNextTask,
         isLongBreakPerTask: DefaultSettings.isLongBreakPerTask,
+        enableSounds: DefaultSettings.enableSounds,
+        enableNotifications: DefaultSettings.enableNotifications,
+        setEnableSounds: (enableSounds) => set(() => ({ enableSounds })),
+        setEnableNotifications: (enableNotifications) => set(() => ({ enableNotifications })),
+        setLocale: (locale) => set(() => ({ locale })),
         setIsLongBreakPerTask: (longBreakPerTask) => set(() => ({ isLongBreakPerTask: longBreakPerTask })),
         setAutoStartNextTask: (autoStartNextTask) => set(() => ({ autoStartNextTask })),
         setAutoStartSession: (autoStartSession) => set(() => ({ autoStartSession })),
