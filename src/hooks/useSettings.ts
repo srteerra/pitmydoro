@@ -1,12 +1,12 @@
 import { ITeam } from "@/interfaces/Teams.interface";
-import { useTeams } from "@/hooks/useTeams";
 import usePomodoroStore from "@/stores/Pomodoro.store";
 import useSettingsStore from "@/stores/Settings.store";
 import { TireTypeEnum } from "@/utils/enums/TireType.enum";
 import { SessionStatusEnum } from "@/utils/enums/SessionStatus.enum";
+import useTeamsStore from "@/stores/Teams.store";
 
 export const useSettings = () => {
-  const { teams } = useTeams();
+  const teams = useTeamsStore(state => state.teams)
   const currentScuderia = usePomodoroStore(state => state.currentScuderia);
   const tiresSettings = useSettingsStore(state => state.tiresSettings);
   const setTiresSettings = useSettingsStore(state => state.setTiresSettings);
@@ -26,6 +26,11 @@ export const useSettings = () => {
   const setAutoCompleteTask = useSettingsStore(state => state.setAutoCompleteTask);
   const setAutoOrderTasks = useSettingsStore(state => state.setAutoOrderTasks);
   const setBreaksInterval = useSettingsStore(state => state.setBreaksInterval);
+
+  const enableSounds = useSettingsStore(state => state.enableSounds);
+  const enableNotifications = useSettingsStore(state => state.enableNotifications);
+  const setEnableSounds = useSettingsStore(state => state.setEnableSounds);
+  const setEnableNotifications = useSettingsStore(state => state.setEnableNotifications);
 
   const handleSwitchSession = (value: boolean) => {
     setAutoStartSession(value)
@@ -49,6 +54,14 @@ export const useSettings = () => {
 
   const handleBreaksInterval = (value: number) => {
     setBreaksInterval(value)
+  }
+
+  const handleSwitchSounds = (value: boolean) => {
+    setEnableSounds(value)
+  }
+
+  const handleSwitchNotifications = (value: boolean) => {
+    setEnableNotifications(value)
   }
 
   const handleChangeBreakDuration = (type: SessionStatusEnum, duration: number) => {
@@ -87,6 +100,10 @@ export const useSettings = () => {
     breaksInterval,
     tiresSettings,
     breaksDuration,
+    enableNotifications,
+    enableSounds,
+    handleSwitchSounds,
+    handleSwitchNotifications,
     handleChangeBreakDuration,
     handleBreaksInterval,
     handleSwitchOrderTasks,

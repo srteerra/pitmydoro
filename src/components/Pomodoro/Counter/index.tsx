@@ -8,7 +8,6 @@ import { Settings } from '@/components/Pomodoro/Settings';
 import useSessionStore from '@/stores/Session.store';
 import { SessionStatusEnum } from '@/utils/enums/SessionStatus.enum';
 import useSettingsStore from '@/stores/Settings.store';
-import { DefaultSettings } from '@/utils/constants/DefaultSettings';
 import usePomodoroStore from '@/stores/Pomodoro.store';
 import { usePomodoro } from '@/hooks/usePomodoro';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
@@ -130,7 +129,7 @@ export const Counter = () => {
 
   const handleResetTimer = () => {
     const duration = moment
-      .duration(Number(DefaultSettings.tiresSettings[selectedTire].duration), 'minutes')
+      .duration(Number(tiresSettings[selectedTire].duration), 'minutes')
       .asMilliseconds();
 
     setDate(Date.now() + duration);
@@ -140,14 +139,14 @@ export const Counter = () => {
   }
 
   const handleResetClick = async () => {
-    if (await confirmAlert('Sure?', 'sdsd')) {
+    if (await confirmAlert(t('acceptReset'))) {
       handleResetTimer();
       onClose();
     }
   };
 
   const handleResetAllClick = async () => {
-    if (await confirmAlert('Sure?', 'sdsd')) {
+    if (await confirmAlert(t('acceptResetAll'))) {
       handleResetTimer();
       resetSession();
       onClose();

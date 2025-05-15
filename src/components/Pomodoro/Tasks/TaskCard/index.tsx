@@ -78,7 +78,7 @@ export const TaskCard = ({
     });
 
     onTaskEdit(null);
-    toastSuccess('Task updated successfully');
+    toastSuccess(t('successUpdateTask'));
   };
 
   const handleMenuToggle = (e: React.MouseEvent) => {
@@ -101,14 +101,16 @@ export const TaskCard = ({
     setMenuOpen(false);
     setTimeout(() => {
       onTaskCheck?.(task.id, !task.completed);
-      toastSuccess('Task completed successfully');
+
+      if (!task.completed) toastSuccess(t('successUncheckTask'));
+      else toastSuccess(t('successCheckTask'));
     }, 10)
   }
 
   const handleOnTaskDelete = async () => {
     if (await confirmAlert('Delete?', 'Are you sure you want to delete this task?')) {
       onTaskDelete?.(task.id);
-      toastSuccess('Task deleted successfully');
+      toastSuccess(t('successDeleteTask'));
     }
   };
 

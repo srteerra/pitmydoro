@@ -2,8 +2,13 @@ import { VStack } from "@chakra-ui/react";
 import { SwitchInput } from "@/components/Form/SwitchInput";
 import React from "react";
 import { useTranslations } from "use-intl";
+import { useSettings } from "@/hooks/useSettings";
 
 export const Notifications = () => {
+  const {
+    enableNotifications,
+    handleSwitchNotifications
+  } = useSettings();
   const t = useTranslations('settings.sections.notifications');
 
   return (
@@ -11,9 +16,9 @@ export const Notifications = () => {
       <SwitchInput
         title={t('enableNotifications.title')}
         description={t('enableNotifications.description')}
-        value={false}
+        value={enableNotifications}
         defaultValue={false}
-        onChange={() => {}}
+        onChange={(value: boolean) => handleSwitchNotifications(value)}
       />
     </VStack>
   )

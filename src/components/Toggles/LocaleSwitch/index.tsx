@@ -5,6 +5,7 @@ import { Portal } from '@zag-js/react';
 import { IoEarth } from 'react-icons/io5';
 import { Locale } from "moment";
 import { useTransition } from "react";
+import useSettingsStore from "@/stores/Settings.store";
 
 interface Props {
   portalDisabled?: boolean;
@@ -14,11 +15,13 @@ export function LocaleSwitch({
   portalDisabled = false,
 }: Props) {
   const [isPending, startTransition] = useTransition();
+  const setLocale = useSettingsStore((state) => state.setLocale);
 
   const onChange = (value: string | Locale) => {
     const locale = value as Locale;
     startTransition(() => {
       setUserLocale(locale as any);
+      setLocale(locale as any);
     });
   }
 

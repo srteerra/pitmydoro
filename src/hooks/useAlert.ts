@@ -4,6 +4,7 @@ import './styles.css';
 import tinycolor from "tinycolor2";
 import { useTheme } from "next-themes";
 import toast from 'react-hot-toast';
+import { useTranslations } from "use-intl";
 
 export const useAlert = () => {
   const { theme } = useTheme()
@@ -12,7 +13,8 @@ export const useAlert = () => {
   const [warningColor] = useToken('colors', ['warning']);
   const [light] = useToken('colors', ['light.0']);
   const [dark] = useToken('colors', ['dark.200']);
-  const [darkContrast] = useToken('colors', ['dark.300']);
+  const [darkContrast] = useToken('colors', ['dark.200']);
+  const t = useTranslations('alerts');
 
   const darkenColor = tinycolor(primaryColor)
     .darken(10)
@@ -25,7 +27,6 @@ export const useAlert = () => {
         color: theme === 'dark' ? '#39ba4b' : '#007111',
         background: theme === 'dark' ? darkContrast : light,
       },
-      icon: '✅',
       iconTheme: {
         primary: theme === 'dark' ? '#39ba4b' : '#007111',
         secondary: '#FFFAEE',
@@ -36,8 +37,8 @@ export const useAlert = () => {
   const confirmAlert = (
     title: string,
     text: string = '',
-    confirmButtonText: string = 'Aceptar',
-    denyButtonText: string = 'Cancelar'
+    confirmButtonText: string = t('acceptText'),
+    denyButtonText: string = t('cancelText'),
   ) => {
     return new Promise((resolve) =>
       Swal.fire({

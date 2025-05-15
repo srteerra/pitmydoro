@@ -2,6 +2,10 @@
   "pomodoro": {
     "resetTimer": "Reiniciar tiempo",
     "resetAll": "Reiniciar todo",
+    "acceptResetAll": "¿Estás seguro de que deseas reiniciar todo?",
+    "acceptReset": "¿Estás seguro de que deseas reiniciar?",
+    "cancelReset": "Cancelar",
+    "cancelResetAll": "Cancelar",
     "estFinishAt": "Est. Termina a",
     "startTimer": "Iniciar",
     "pauseTimer": "Pausar",
@@ -17,7 +21,11 @@
       "taskDescriptionPlaceholder": "Ingresa una descripción (Opcional)",
       "markAsUncompleted": "Marcar como no completada",
       "markAsCompleted": "Marcar como completada",
-      "noPomodoros": "No. Pomodoros"
+      "noPomodoros": "No. Pomodoros",
+      "successCheckTask": "Tarea marcada como completada",
+      "successUncheckTask": "Tarea marcada como incompleta",
+      "successUpdateTask": "Tarea actualizada con éxito",
+      "successDeleteTask": "Tarea eliminada con éxito"
     }
   },
   "settings": {
@@ -107,5 +115,9 @@
         }
       }
     }
+  },
+  "alerts": {
+    "acceptText": "Aceptar",
+    "cancelText": "Cancelar"
   }
 }
