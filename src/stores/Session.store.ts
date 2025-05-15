@@ -1,14 +1,14 @@
-import { create } from "zustand";
-import { SessionStatusEnum } from "@/utils/enums/SessionStatus.enum";
-import { TireTypeEnum } from "@/utils/enums/TireType.enum";
-import { FlagEnum } from "@/utils/enums/Flag.enum";
+import { create } from 'zustand';
+import { SessionStatusEnum } from '@/utils/enums/SessionStatus.enum';
+import { TireTypeEnum } from '@/utils/enums/TireType.enum';
+import { FlagEnum } from '@/utils/enums/Flag.enum';
 
 interface SessionStore {
   status: SessionStatusEnum;
   flag: FlagEnum | null;
   isStopped: boolean;
   selectedTire: TireTypeEnum;
-  isEndingSoon: boolean,
+  isEndingSoon: boolean;
 }
 
 interface SessionActions {

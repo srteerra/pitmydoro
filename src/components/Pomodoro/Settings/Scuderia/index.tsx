@@ -1,18 +1,11 @@
-import {
-  Box,
-  Flex,
-  Image,
-  RadioCard, Skeleton,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Flex, Image, RadioCard, Skeleton, Text, VStack } from '@chakra-ui/react';
 import F1Car from '../../../../../public/images/f1car.png';
 import NextImage from 'next/image';
 import { ITeam } from '@/interfaces/Teams.interface';
 import React, { useEffect, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
 import useTeamsStore from '@/stores/Teams.store';
-import { ColorPreview } from "@/components/ColorPreview";
+import { ColorPreview } from '@/components/ColorPreview';
 
 export const Scuderia = () => {
   const { currentScuderia, changeScuderia } = useSettings();
@@ -53,7 +46,7 @@ export const Scuderia = () => {
         >
           <VStack align='stretch'>
             {teams.map((team: ITeam, idx: number) => (
-              <Skeleton key={idx} height="150px" loading={!fetched}>
+              <Skeleton key={idx} height='150px' loading={!fetched}>
                 <RadioCard.Item
                   key={idx}
                   value={team.id}
@@ -77,10 +70,23 @@ export const Scuderia = () => {
                 >
                   <RadioCard.ItemHiddenInput />
                   <RadioCard.ItemControl cursor='pointer'>
-                    <Flex w={'full'} paddingX={'20px'} paddingY={'10px'} justifyContent={'space-between'} alignItems='center'>
-                      <Box display='flex' flexDirection='column' alignItems='start' gap={4} w={'full'} flex={1}>
+                    <Flex
+                      w={'full'}
+                      paddingX={'20px'}
+                      paddingY={'10px'}
+                      justifyContent={'space-between'}
+                      alignItems='center'
+                    >
+                      <Box
+                        display='flex'
+                        flexDirection='column'
+                        alignItems='start'
+                        gap={4}
+                        w={'full'}
+                        flex={1}
+                      >
                         <Flex alignItems='center' gap={2}>
-                          <Skeleton borderRadius={"full"} loading={!fetched}>
+                          <Skeleton borderRadius={'full'} loading={!fetched}>
                             <Image src={team.logoURL} w={'50px'} h={'50px'} alt={'...'} />
                           </Skeleton>
 

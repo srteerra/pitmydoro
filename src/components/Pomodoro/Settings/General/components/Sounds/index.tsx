@@ -1,14 +1,11 @@
-import { VStack } from "@chakra-ui/react";
-import React from "react";
-import { SwitchInput } from "@/components/Form/SwitchInput";
-import { useTranslations } from "use-intl";
-import { useSettings } from "@/hooks/useSettings";
+import { VStack } from '@chakra-ui/react';
+import React from 'react';
+import { SwitchInput } from '@/components/Form/SwitchInput';
+import { useTranslations } from 'use-intl';
+import { useSettings } from '@/hooks/useSettings';
 
 export const Sounds = () => {
-  const {
-    enableSounds,
-    handleSwitchSounds
-  } = useSettings();
+  const { enableSounds, handleSwitchSounds } = useSettings();
   const t = useTranslations('settings.sections.sounds');
 
   return (
@@ -21,5 +18,5 @@ export const Sounds = () => {
         onChange={(value: boolean) => handleSwitchSounds(value)}
       />
     </VStack>
-  )
-}
+  );
+};

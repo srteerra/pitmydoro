@@ -1,9 +1,9 @@
-import { SwitchInput } from "@/components/Form/SwitchInput";
-import { Box, Flex, HStack, IconButton, NumberInput, Text, VStack } from "@chakra-ui/react";
-import { LuMinus, LuPlus } from "react-icons/lu";
-import React from "react";
-import { useSettings } from "@/hooks/useSettings";
-import { useTranslations } from "use-intl";
+import { SwitchInput } from '@/components/Form/SwitchInput';
+import { Box, Flex, HStack, IconButton, NumberInput, Text, VStack } from '@chakra-ui/react';
+import { LuMinus, LuPlus } from 'react-icons/lu';
+import React from 'react';
+import { useSettings } from '@/hooks/useSettings';
+import { useTranslations } from 'use-intl';
 
 export const Session = () => {
   const {
@@ -68,5 +68,5 @@ export const Session = () => {
         </NumberInput.Root>
       </Flex>
     </VStack>
-  )
-}
+  );
+};

@@ -1,8 +1,8 @@
-import { create } from "zustand";
-import { createJSONStorage, devtools, persist } from "zustand/middleware";
-import { TireTypeEnum } from "@/utils/enums/TireType.enum";
-import { DefaultSettings } from "@/utils/constants/DefaultSettings";
-import { ISettings, TireSettings } from "@/interfaces/Settings.interface";
+import { create } from 'zustand';
+import { createJSONStorage, devtools, persist } from 'zustand/middleware';
+import { TireTypeEnum } from '@/utils/enums/TireType.enum';
+import { DefaultSettings } from '@/utils/constants/DefaultSettings';
+import { ISettings, TireSettings } from '@/interfaces/Settings.interface';
 import { Locale } from '@/i18n/config';
 
 interface SettingsActions {
@@ -41,7 +41,8 @@ const useSettingsStore = create<ISettings & SettingsActions>()(
         setEnableSounds: (enableSounds) => set(() => ({ enableSounds })),
         setEnableNotifications: (enableNotifications) => set(() => ({ enableNotifications })),
         setLocale: (locale) => set(() => ({ locale })),
-        setIsLongBreakPerTask: (longBreakPerTask) => set(() => ({ isLongBreakPerTask: longBreakPerTask })),
+        setIsLongBreakPerTask: (longBreakPerTask) =>
+          set(() => ({ isLongBreakPerTask: longBreakPerTask })),
         setAutoStartNextTask: (autoStartNextTask) => set(() => ({ autoStartNextTask })),
         setAutoStartSession: (autoStartSession) => set(() => ({ autoStartSession })),
         setAutoStartBreak: (autoStartBreak) => set(() => ({ autoStartBreak })),
@@ -49,26 +50,28 @@ const useSettingsStore = create<ISettings & SettingsActions>()(
         setAutoOrderTasks: (autoOrderTasks) => set(() => ({ autoOrderTasks })),
         setBreaksInterval: (interval) => set(() => ({ breaksInterval: interval })),
         setTiresSettings: (tiresSettings) => set(() => ({ tiresSettings })),
-        updateTireDuration: (type, duration) => set((state) => ({
-          tiresSettings: {
-            ...state.tiresSettings,
-            [type]: {
-              ...state.tiresSettings[type],
-              duration
-            }
-          }
-        })),
+        updateTireDuration: (type, duration) =>
+          set((state) => ({
+            tiresSettings: {
+              ...state.tiresSettings,
+              [type]: {
+                ...state.tiresSettings[type],
+                duration,
+              },
+            },
+          })),
         setBreaksDuration: (breaksDuration) => set(() => ({ breaksDuration })),
-        updateBreakDuration: (type, duration) => set((state) => ({
-          breaksDuration: {
-            ...state.breaksDuration,
-            [type]: duration
-          }
-        })),
+        updateBreakDuration: (type, duration) =>
+          set((state) => ({
+            breaksDuration: {
+              ...state.breaksDuration,
+              [type]: duration,
+            },
+          })),
       }),
       {
-        name: "settings-pitmydoro",
-        storage: typeof window !== "undefined" ? createJSONStorage(() => localStorage) : undefined,
+        name: 'settings-pitmydoro',
+        storage: typeof window !== 'undefined' ? createJSONStorage(() => localStorage) : undefined,
       }
     )
   )

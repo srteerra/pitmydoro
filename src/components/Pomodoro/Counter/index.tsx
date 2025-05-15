@@ -16,9 +16,9 @@ import { LuTimerReset } from 'react-icons/lu';
 import { FlagEnum } from '@/utils/enums/Flag.enum';
 import { useTranslations } from 'use-intl';
 import { useAlert } from '@/hooks/useAlert';
-import tinycolor from "tinycolor2";
-import { useTheme } from "next-themes";
-import { useSounds } from "@/hooks/useSounds";
+import tinycolor from 'tinycolor2';
+import { useTheme } from 'next-themes';
+import { useSounds } from '@/hooks/useSounds';
 
 export const Counter = () => {
   const status = useSessionStore((state) => state.status);
@@ -35,7 +35,7 @@ export const Counter = () => {
   const countdownRef = useRef<CountdownApi | null>(null);
   const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
   const { handleCompleteInterval, allPomodoros, completedPomodoros, estTimeFinish } = usePomodoro();
-  const { theme } = useTheme()
+  const { theme } = useTheme();
   const [date, setDate] = useState(Date.now() + 1000000);
   const [isActive, setIsActive] = useState(false);
   const { confirmAlert } = useAlert();
@@ -44,11 +44,11 @@ export const Counter = () => {
   const t = useTranslations('pomodoro');
 
   const darkenColor = tinycolor(currentScuderia?.colors?.primary?.dark)
-    .darken(theme === 'dark' ? 15 :0)
+    .darken(theme === 'dark' ? 15 : 0)
     .toString();
 
   const darkenColorDefault = tinycolor(currentScuderia?.colors?.primary?.default)
-    .darken(theme === 'dark' ? 10 :0)
+    .darken(theme === 'dark' ? 10 : 0)
     .toString();
 
   const isDesktop = () => {
@@ -66,7 +66,7 @@ export const Counter = () => {
         if (Notification.permission === 'granted') {
           new Notification('Box, Box!', {
             body: 'Time to break',
-            icon: '/f1-icon.png'
+            icon: '/f1-icon.png',
           });
         }
       }
@@ -136,7 +136,7 @@ export const Counter = () => {
     setStopped(true);
     setIsActive(false);
     setFlag(FlagEnum.RED);
-  }
+  };
 
   const handleResetClick = async () => {
     if (await confirmAlert(t('acceptReset'))) {

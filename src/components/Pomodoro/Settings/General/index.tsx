@@ -4,10 +4,10 @@ import { Timers } from '@/components/Pomodoro/Settings/General/components/Timers
 import { Session } from '@/components/Pomodoro/Settings/General/components/Session';
 import { Tasks } from '@/components/Pomodoro/Settings/General/components/Tasks';
 import { Locale } from '@/components/Pomodoro/Settings/General/components/Locale';
-import { Sounds } from "@/components/Pomodoro/Settings/General/components/Sounds";
-import { Notifications } from "@/components/Pomodoro/Settings/General/components/Notifcations";
-import { useSettings } from "@/hooks/useSettings";
-import { useTranslations } from "use-intl";
+import { Sounds } from '@/components/Pomodoro/Settings/General/components/Sounds';
+import { Notifications } from '@/components/Pomodoro/Settings/General/components/Notifcations';
+import { useSettings } from '@/hooks/useSettings';
+import { useTranslations } from 'use-intl';
 
 export const General = () => {
   const t = useTranslations('settings');

@@ -9,7 +9,7 @@ import usePomodoroStore from '@/stores/Pomodoro.store';
 export default function RootLayout(props: { children: React.ReactNode }) {
   const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
   const sessionStatus = useSessionStore((state) => state.status);
-  const [isClient, setIsClient] = useState(false)
+  const [isClient, setIsClient] = useState(false);
 
   const theme = useMemo(() => {
     return defineConfig({
@@ -100,10 +100,10 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   const system = createSystem(defaultConfig, theme);
 
   useEffect(() => {
-    setIsClient(true)
-  }, [])
+    setIsClient(true);
+  }, []);
 
-  if (!isClient) return null
+  if (!isClient) return null;
 
   return (
     <ChakraProvider value={system}>

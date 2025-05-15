@@ -4,9 +4,9 @@ import useSessionStore from '@/stores/Session.store';
 import useSettingsStore from '@/stores/Settings.store';
 import { useEffect, useMemo, useState } from 'react';
 import { ITask } from '@/interfaces/Task.interface';
-import { SessionStatusEnum } from "@/utils/enums/SessionStatus.enum";
-import moment from "moment";
-import { IPomodoro } from "@/interfaces/Pomodoro.interface";
+import { SessionStatusEnum } from '@/utils/enums/SessionStatus.enum';
+import moment from 'moment';
+import { IPomodoro } from '@/interfaces/Pomodoro.interface';
 
 export const usePomodoro = () => {
   const [editingTask, setEditingTask] = useState<string | null>(null);
@@ -23,12 +23,12 @@ export const usePomodoro = () => {
   const currentTask = usePomodoroStore((state) => state.currentTask);
   const extPomodoros = usePomodoroStore((state) => state.extPomodoros);
   const selectedTire = useSessionStore((state) => state.selectedTire);
-  const status = useSessionStore(state => state.status);
+  const status = useSessionStore((state) => state.status);
 
   const setCurrentTask = usePomodoroStore((state) => state.setCurrentTask);
   const addTask = usePomodoroStore((state) => state.addTask);
   const setTasks = usePomodoroStore((state) => state.setTasks);
-  const setStatus = useSessionStore(state => state.setStatus);
+  const setStatus = useSessionStore((state) => state.setStatus);
   const updateTask = usePomodoroStore((state) => state.updateTask);
   const updateTaskStatus = usePomodoroStore((state) => state.updateTaskStatus);
   const removeTask = usePomodoroStore((state) => state.removeTask);
@@ -39,21 +39,26 @@ export const usePomodoro = () => {
     return [...tasksPomodoros, ...extPomodoros];
   }, [tasks, extPomodoros]);
 
-  const completedPomodoros = useMemo<number>(() => (allPomodoros.filter(pomodoro => pomodoro.completedAt).length), [allPomodoros]);
+  const completedPomodoros = useMemo<number>(
+    () => allPomodoros.filter((pomodoro) => pomodoro.completedAt).length,
+    [allPomodoros]
+  );
 
   const estTimeFinish = useMemo<string>(() => {
-    if (!tasks.length) return moment().format("HH:mm");
+    if (!tasks.length) return moment().format('HH:mm');
 
     const tasksPomodoros = tasks.flatMap((task: ITask) => task.pomodoros);
-    const incompletePomodoros = tasksPomodoros.filter((pomodoro: IPomodoro) => !pomodoro.completedAt);
+    const incompletePomodoros = tasksPomodoros.filter(
+      (pomodoro: IPomodoro) => !pomodoro.completedAt
+    );
     const timeNow = moment().valueOf();
 
     const totalDuration = incompletePomodoros.reduce((acc: number) => {
       const duration = tiresSettings[selectedTire]?.duration;
-      return acc + (duration * 60 * 1000);
+      return acc + duration * 60 * 1000;
     }, 0);
 
-    return moment(timeNow + totalDuration).format("HH:mm");
+    return moment(timeNow + totalDuration).format('HH:mm');
   }, [tasks, tiresSettings, selectedTire]);
 
   const handleCompleteInterval = (): void => {
@@ -86,7 +91,7 @@ export const usePomodoro = () => {
                 team: currentScuderia as ITeam,
               });
             }
-            const incompleteRemaining = updatedPomodoros.filter(p => !p.completedAt).length;
+            const incompleteRemaining = updatedPomodoros.filter((p) => !p.completedAt).length;
 
             if (autoCompleteTask && incompleteRemaining === 0) {
               setTimeout(() => {
@@ -106,7 +111,9 @@ export const usePomodoro = () => {
 
           if (currentTask) {
             if (isLongBreakPerTask) {
-              totalPomodoros = currentTask.pomodoros.filter((pomodoro) => pomodoro.completedAt).length;
+              totalPomodoros = currentTask.pomodoros.filter(
+                (pomodoro) => pomodoro.completedAt
+              ).length;
             } else {
               totalPomodoros = completedPomodoros + 1;
             }
@@ -136,7 +143,9 @@ export const usePomodoro = () => {
   };
 
   const handleSetCurrentTask = () => {
-    const incompleteTasks = tasks.filter((task) => !task.completed).sort((a, b) => a.order - b.order);
+    const incompleteTasks = tasks
+      .filter((task) => !task.completed)
+      .sort((a, b) => a.order - b.order);
     setCurrentTask(incompleteTasks[0]);
   };
 
@@ -267,7 +276,9 @@ export const usePomodoro = () => {
 
   useEffect(() => {
     if (!autoStartNextTask) return;
-    const incompleteTasks = tasks.filter((task) => !task.completed).sort((a, b) => a.order - b.order);
+    const incompleteTasks = tasks
+      .filter((task) => !task.completed)
+      .sort((a, b) => a.order - b.order);
 
     if (!currentTask || incompleteTasks.length === 1) {
       setCurrentTask(incompleteTasks[0]);

@@ -36,7 +36,28 @@ export const useBottomBannerStore = create<BottomBannerState>((set) => ({
   smallText: '',
   onAccept: () => {},
   onDecline: () => {},
-  showBanner: ({ title, description, declineText, acceptText, image, onDecline, onAccept, smallText, link }) =>
-    set({ isVisible: true, title, description, declineText, acceptText, image, onAccept, onDecline, smallText, link }),
+  showBanner: ({
+    title,
+    description,
+    declineText,
+    acceptText,
+    image,
+    onDecline,
+    onAccept,
+    smallText,
+    link,
+  }) =>
+    set({
+      isVisible: true,
+      title,
+      description,
+      declineText,
+      acceptText,
+      image,
+      onAccept,
+      onDecline,
+      smallText,
+      link,
+    }),
   hideBanner: () => set({ isVisible: false }),
 }));

@@ -18,11 +18,11 @@ export default function useFirebaseAuth() {
 
   const authStateChanged = async (authState: any) => {
     if (!authState) {
-      setLoading(false)
+      setLoading(false);
       return;
     }
 
-    setLoading(true)
+    setLoading(true);
     setAuthUser(authState);
     setLoading(false);
   };

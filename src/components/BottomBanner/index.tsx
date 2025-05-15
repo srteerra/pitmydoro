@@ -80,13 +80,7 @@ export const BottomBanner = () => {
             <Card.Description>{description}</Card.Description>
 
             {link && (
-              <Box
-                mt={3}
-                fontSize='sm'
-                display={'flex'}
-                alignItems='center'
-                gap={1}
-              >
+              <Box mt={3} fontSize='sm' display={'flex'} alignItems='center' gap={1}>
                 <Link href={link}>Mas información</Link>
                 <TbExternalLink />
               </Box>

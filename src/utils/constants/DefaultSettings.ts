@@ -1,6 +1,6 @@
-import { TireTypeEnum } from "@/utils/enums/TireType.enum";
-import { SessionStatusEnum } from "@/utils/enums/SessionStatus.enum";
-import { ISettings } from "@/interfaces/Settings.interface";
+import { TireTypeEnum } from '@/utils/enums/TireType.enum';
+import { SessionStatusEnum } from '@/utils/enums/SessionStatus.enum';
+import { ISettings } from '@/interfaces/Settings.interface';
 import { defaultLocale } from '@/i18n/config';
 
 export const DefaultSettings: ISettings = {
@@ -15,29 +15,29 @@ export const DefaultSettings: ISettings = {
   autoStartBreak: true,
   tiresSettings: {
     [TireTypeEnum.SOFT]: {
-      compound: "Soft",
+      compound: 'Soft',
       duration: 15,
     },
     [TireTypeEnum.MEDIUM]: {
-      compound: "Medium",
+      compound: 'Medium',
       duration: 20,
     },
     [TireTypeEnum.HARD]: {
-      compound: "Hard",
+      compound: 'Hard',
       duration: 25,
     },
     [TireTypeEnum.INTERMEDIATE]: {
-      compound: "Intermediate",
+      compound: 'Intermediate',
       duration: 30,
     },
     [TireTypeEnum.WET]: {
-      compound: "Wet",
+      compound: 'Wet',
       duration: 35,
-    }
+    },
   },
   autoCompleteTask: true,
   autoOrderTasks: true,
   autoStartNextTask: true,
   enableSounds: true,
   enableNotifications: true,
-}
+};

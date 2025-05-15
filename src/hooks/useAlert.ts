@@ -1,13 +1,13 @@
 import Swal from 'sweetalert2';
 import { useToken } from '@chakra-ui/react';
 import './styles.css';
-import tinycolor from "tinycolor2";
-import { useTheme } from "next-themes";
+import tinycolor from 'tinycolor2';
+import { useTheme } from 'next-themes';
 import toast from 'react-hot-toast';
-import { useTranslations } from "use-intl";
+import { useTranslations } from 'use-intl';
 
 export const useAlert = () => {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
   const [primaryColor] = useToken('colors', ['primary.default']);
   const [dangerColor] = useToken('colors', ['danger']);
   const [warningColor] = useToken('colors', ['warning']);
@@ -16,9 +16,7 @@ export const useAlert = () => {
   const [darkContrast] = useToken('colors', ['dark.200']);
   const t = useTranslations('alerts');
 
-  const darkenColor = tinycolor(primaryColor)
-    .darken(10)
-    .toString();
+  const darkenColor = tinycolor(primaryColor).darken(10).toString();
 
   const toastSuccess = (message: string) => {
     toast.success(message, {
@@ -38,7 +36,7 @@ export const useAlert = () => {
     title: string,
     text: string = '',
     confirmButtonText: string = t('acceptText'),
-    denyButtonText: string = t('cancelText'),
+    denyButtonText: string = t('cancelText')
   ) => {
     return new Promise((resolve) =>
       Swal.fire({
@@ -66,6 +64,6 @@ export const useAlert = () => {
 
   return {
     confirmAlert,
-    toastSuccess
+    toastSuccess,
   };
 };

@@ -1,9 +1,9 @@
-import { create } from "zustand";
-import { createJSONStorage, devtools, persist } from "zustand/middleware";
-import { ITeam } from "@/interfaces/Teams.interface";
-import { ITask } from "@/interfaces/Task.interface";
-import { IPomodoro } from "@/interfaces/Pomodoro.interface";
-import useSettingsStore from "@/stores/Settings.store";
+import { create } from 'zustand';
+import { createJSONStorage, devtools, persist } from 'zustand/middleware';
+import { ITeam } from '@/interfaces/Teams.interface';
+import { ITask } from '@/interfaces/Task.interface';
+import { IPomodoro } from '@/interfaces/Pomodoro.interface';
+import useSettingsStore from '@/stores/Settings.store';
 
 interface PomodoroStore {
   currentScuderia: ITeam | null;
@@ -32,17 +32,19 @@ const usePomodoroStore = create<PomodoroStore & PomodoroActions>()(
         currentTask: null,
         tasks: [],
         extPomodoros: [],
-        addExtPomodoro: (pomodoro) => set((state) => ({ extPomodoros: [...state.extPomodoros, pomodoro] })),
+        addExtPomodoro: (pomodoro) =>
+          set((state) => ({ extPomodoros: [...state.extPomodoros, pomodoro] })),
         setCurrentScuderia: (scuderia) => set(() => ({ currentScuderia: scuderia })),
         setCurrentTask: (task) => set(() => ({ currentTask: task })),
         setTasks: (tasks) => set(() => ({ tasks })),
         addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
-        removeTask: (taskId) => set((state) => ({ tasks: state.tasks.filter((task) => task.id !== taskId) })),
+        removeTask: (taskId) =>
+          set((state) => ({ tasks: state.tasks.filter((task) => task.id !== taskId) })),
         updateTask: (taskId, updater) =>
           set((state) => ({
             tasks: state.tasks.map((task) => {
               if (task.id === taskId) {
-                return typeof updater === "function" ? updater(task) : { ...task, ...updater };
+                return typeof updater === 'function' ? updater(task) : { ...task, ...updater };
               }
               return task;
             }),
@@ -57,7 +59,9 @@ const usePomodoroStore = create<PomodoroStore & PomodoroActions>()(
             const autoStartNextTask = useSettingsStore.getState().autoStartNextTask;
 
             if (autoOrderTasks) {
-              updatedTasks = [...updatedTasks].sort((a, b) => Number(a.completed) - Number(b.completed));
+              updatedTasks = [...updatedTasks].sort(
+                (a, b) => Number(a.completed) - Number(b.completed)
+              );
               updatedTasks = updatedTasks.map((task, index) => ({
                 ...task,
                 order: index + 1,
@@ -95,8 +99,8 @@ const usePomodoroStore = create<PomodoroStore & PomodoroActions>()(
         },
       }),
       {
-        name: "session-pitmydoro",
-        storage: typeof window !== "undefined" ? createJSONStorage(() => localStorage) : undefined,
+        name: 'session-pitmydoro',
+        storage: typeof window !== 'undefined' ? createJSONStorage(() => localStorage) : undefined,
       }
     )
   )

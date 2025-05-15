@@ -1,8 +1,8 @@
-import { SwitchInput } from "@/components/Form/SwitchInput";
-import { VStack } from "@chakra-ui/react";
-import React from "react";
-import { useSettings } from "@/hooks/useSettings";
-import { useTranslations } from "use-intl";
+import { SwitchInput } from '@/components/Form/SwitchInput';
+import { VStack } from '@chakra-ui/react';
+import React from 'react';
+import { useSettings } from '@/hooks/useSettings';
+import { useTranslations } from 'use-intl';
 
 export const Tasks = () => {
   const {
@@ -41,5 +41,5 @@ export const Tasks = () => {
         onChange={handleSwitchOrderTasks}
       />
     </VStack>
-  )
-}
+  );
+};

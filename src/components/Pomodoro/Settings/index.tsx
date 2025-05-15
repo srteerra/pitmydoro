@@ -18,7 +18,7 @@ import { General } from '@/components/Pomodoro/Settings/General';
 import { Scuderia } from '@/components/Pomodoro/Settings/Scuderia';
 import { Support } from '@/components/Pomodoro/Settings/Support';
 import { useTranslations } from 'use-intl';
-import "./styles.css"
+import './styles.css';
 
 enum Tab {
   GENERAL = 'general',
@@ -106,7 +106,9 @@ export const Settings = () => {
                   >
                     <Tabs.List>
                       {LinkItems.map((link, idx) => (
-                        <Tabs.Trigger key={idx} value={link.id}>{link.name}</Tabs.Trigger>
+                        <Tabs.Trigger key={idx} value={link.id}>
+                          {link.name}
+                        </Tabs.Trigger>
                       ))}
                     </Tabs.List>
                   </Tabs.Root>
@@ -127,7 +129,7 @@ export const Settings = () => {
 
                 <GridItem
                   paddingX={{ base: '0px', md: '20px' }}
-                  overflow="auto"
+                  overflow='auto'
                   maxH={{ base: '500px', md: '600px' }}
                   className={'scrollStyles'}
                 >

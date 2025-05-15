@@ -7,7 +7,7 @@ import { ZoneButton } from '../components/ZoneButton';
 import { LuCirclePlus } from 'react-icons/lu';
 import { SortableList } from '@/components/SortableList';
 import { TaskCard } from '@/components/Pomodoro/Tasks/TaskCard';
-import { useTranslations } from "use-intl";
+import { useTranslations } from 'use-intl';
 
 export const Tasks = () => {
   const {
@@ -17,7 +17,7 @@ export const Tasks = () => {
     handleEditTask,
     handleDeleteTask,
     handleCheckTask,
-    handleReorderTasks
+    handleReorderTasks,
   } = usePomodoro();
   const tasks = usePomodoroStore((state) => state.tasks);
   const currentTask = usePomodoroStore((state) => state.currentTask);
