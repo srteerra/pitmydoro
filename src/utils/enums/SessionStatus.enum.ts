@@ -5,7 +5,7 @@ export enum SessionStatusEnum {
 }
 
 export const SessionStatusEnumLabel = {
-  [SessionStatusEnum.IN_SESSION]: "Session",
-  [SessionStatusEnum.SHORT_BREAK]: "Short Break",
-  [SessionStatusEnum.LONG_BREAK]: "Long Break",
-}
+  [SessionStatusEnum.IN_SESSION]: 'Session',
+  [SessionStatusEnum.SHORT_BREAK]: 'Short Break',
+  [SessionStatusEnum.LONG_BREAK]: 'Long Break',
+};

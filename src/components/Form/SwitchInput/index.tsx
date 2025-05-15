@@ -9,13 +9,19 @@ interface Props {
   defaultValue?: boolean;
 }
 
-export const SwitchInput = ({ onChange, title, description, value, defaultValue = false }: Props) => {
-  const [checked, setChecked] = useState(defaultValue)
+export const SwitchInput = ({
+  onChange,
+  title,
+  description,
+  value,
+  defaultValue = false,
+}: Props) => {
+  const [checked, setChecked] = useState(defaultValue);
 
   const handleChange = (e: any) => {
     setChecked(e.checked);
     onChange(e.checked);
-  }
+  };
 
   return (
     <Flex w='full' justifyContent='space-between'>
@@ -28,15 +34,12 @@ export const SwitchInput = ({ onChange, title, description, value, defaultValue 
         </Text>
       </Box>
 
-      <Switch.Root
-        checked={value ?? checked}
-        onCheckedChange={handleChange}
-      >
+      <Switch.Root checked={value ?? checked} onCheckedChange={handleChange}>
         <Switch.HiddenInput />
         <Switch.Control>
           <Switch.Thumb />
         </Switch.Control>
       </Switch.Root>
     </Flex>
-  )
-}
+  );
+};

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   collection,
   addDoc,
@@ -11,28 +11,28 @@ import {
   onSnapshot,
   getDocs,
   updateDoc,
-} from "firebase/firestore";
-import { db } from "@/firebase/config";
-import { useEffect, useState } from "react";
-import { limit } from "@firebase/firestore";
-import _ from "lodash";
+} from 'firebase/firestore';
+import { db } from '@/firebase/config';
+import { useEffect, useState } from 'react';
+import { limit } from '@firebase/firestore';
+import _ from 'lodash';
 
 export interface IQuery {
-  type: "where" | "orderBy" | "limit";
+  type: 'where' | 'orderBy' | 'limit';
   field?: string;
   operator?:
-    | "!="
-    | "=="
-    | "<"
-    | "<="
-    | ">"
-    | ">="
-    | "array-contains"
-    | "in"
-    | "array-contains-any"
-    | "not-in";
+    | '!='
+    | '=='
+    | '<'
+    | '<='
+    | '>'
+    | '>='
+    | 'array-contains'
+    | 'in'
+    | 'array-contains-any'
+    | 'not-in';
   value?: any;
-  direction?: "asc" | "desc";
+  direction?: 'asc' | 'desc';
   limit?: number;
 }
 
@@ -40,9 +40,7 @@ interface IProps {
   collectionPath: string;
 }
 
-export const useFirebase = ({
-  collectionPath,
-}: IProps) => {
+export const useFirebase = ({ collectionPath }: IProps) => {
   const [docs, setDocs] = useState([]);
   let unsubscribe: any;
 
@@ -68,20 +66,25 @@ export const useFirebase = ({
     return setDoc(documentRef, data);
   };
 
-  const collectionWithIds = async <Type>(queries: IQuery[] = [], distinctCollectionPath?: string): Promise<Type[]> => {
-    const snapshot = await getDocs(getQueryRef(queries, collection(db, distinctCollectionPath || collectionPath)));
-    return snapshot.docs.map((doc: any) => ({
-      ...doc.data(),
-      id: doc.id,
-      path: doc.ref.path
-    } as any as Type));
+  const collectionWithIds = async <Type>(
+    queries: IQuery[] = [],
+    distinctCollectionPath?: string
+  ): Promise<Type[]> => {
+    const snapshot = await getDocs(
+      getQueryRef(queries, collection(db, distinctCollectionPath || collectionPath))
+    );
+    return snapshot.docs.map(
+      (doc: any) =>
+        ({
+          ...doc.data(),
+          id: doc.id,
+          path: doc.ref.path,
+        }) as any as Type
+    );
   };
 
-
   const add = async (data: any, newCollectionPath?: string) => {
-    const colRef = newCollectionPath
-      ? collection(db, newCollectionPath)
-      : getCollectionRef();
+    const colRef = newCollectionPath ? collection(db, newCollectionPath) : getCollectionRef();
 
     return addDoc(colRef, {
       createdAt: Date.now(),
@@ -91,7 +94,7 @@ export const useFirebase = ({
   };
 
   const update = async (id: string, data: any, path?: string) => {
-    delete data["id"];
+    delete data['id'];
 
     const documentRef = doc(db, path || collectionPath, id);
 
@@ -119,10 +122,7 @@ export const useFirebase = ({
     subSubFields: string[] = []
   ) => {
     return await Promise.all(
-      items.map(
-        async (item) =>
-          await populateByItem(item, fields, subFields, subSubFields)
-      )
+      items.map(async (item) => await populateByItem(item, fields, subFields, subSubFields))
     );
   };
 
@@ -130,7 +130,7 @@ export const useFirebase = ({
     item: any,
     fields: string[],
     subFields: string[] = [],
-    subSubFields: string[] = [],
+    subSubFields: string[] = []
   ) => {
     for (const field of fields) {
       if (item?.[field]) {
@@ -144,9 +144,7 @@ export const useFirebase = ({
           for (const subField of subFields) {
             if (item[field][subField]) {
               if (item[field][subField].path)
-                item[field][subField] = await docWithId(
-                  item[field][subField].path
-                );
+                item[field][subField] = await docWithId(item[field][subField].path);
 
               for (const subSUbField of subSubFields) {
                 if (item[field][subField][subSUbField]) {
@@ -213,9 +211,7 @@ export const useFirebase = ({
             })
           );
 
-          populatedArray = populatedArray.filter(
-            (item: any) => !!item[subFields[i]]
-          );
+          populatedArray = populatedArray.filter((item: any) => !!item[subFields[i]]);
 
           _.set(item, arrayField, populatedArray);
         } catch (e) {
@@ -235,10 +231,7 @@ export const useFirebase = ({
     subFields: string[]
   ) => {
     return await Promise.all(
-      items.map(
-        async (item) =>
-          await populateArraySubFieldByItem(item, arrayField, subFields)
-      )
+      items.map(async (item) => await populateArraySubFieldByItem(item, arrayField, subFields))
     );
   };
 
@@ -249,9 +242,7 @@ export const useFirebase = ({
   };
 
   const populateArray = async (items: any[]) => {
-    return await Promise.all(
-      items.map(async (item) => await docWithId(item.path))
-    );
+    return await Promise.all(items.map(async (item) => await docWithId(item.path)));
   };
 
   const populateArrayOfArray = async (items: any[], fields: string[]) => {
@@ -263,10 +254,7 @@ export const useFirebase = ({
     return items;
   };
 
-  const listenCollection = (
-    queries: IQuery[] = [],
-    collectionPath?: string
-  ) => {
+  const listenCollection = (queries: IQuery[] = [], collectionPath?: string) => {
     const queryRef = collectionPath
       ? getQueryRef(queries, collection(db, collectionPath))
       : getQueryRef(queries);
@@ -285,23 +273,12 @@ export const useFirebase = ({
   const getQueryRef = (queries: IQuery[] = [], distinctCollectionRef?: any) => {
     let queryRef: any = query(distinctCollectionRef || getCollectionRef());
     queries.forEach((queryItem) => {
-      if (
-        queryItem.field &&
-        queryItem.operator &&
-        queryItem.value &&
-        queryItem.limit
-      ) {
-        if (queryItem.type === "where") {
-          queryRef = query(
-            queryRef,
-            where(queryItem.field, queryItem.operator, queryItem.value)
-          );
-        } else if (queryItem.type === "orderBy") {
-          queryRef = query(
-            queryRef,
-            orderBy(queryItem.field, queryItem.direction)
-          );
-        } else if (queryItem.type === "limit") {
+      if (queryItem.field && queryItem.operator && queryItem.value && queryItem.limit) {
+        if (queryItem.type === 'where') {
+          queryRef = query(queryRef, where(queryItem.field, queryItem.operator, queryItem.value));
+        } else if (queryItem.type === 'orderBy') {
+          queryRef = query(queryRef, orderBy(queryItem.field, queryItem.direction));
+        } else if (queryItem.type === 'limit') {
           queryRef = query(queryRef, limit(queryItem.limit));
         }
       }

@@ -1,4 +1,4 @@
-import { Box, Center, VStack, Image, Button } from '@chakra-ui/react';
+import { Box, Center, VStack, Image } from '@chakra-ui/react';
 import { TimerSelector } from '@/components/Pomodoro/TimerSelector';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { Counter } from '@/components/Pomodoro/Counter';
@@ -88,7 +88,7 @@ export const Pomodoro = () => {
           />
         </Box>
 
-        {currentScuderia &&
+        {currentScuderia && (
           <SpriteAnimation
             src={currentScuderia?.spriteURL as string}
             frameHeight={80}
@@ -96,7 +96,7 @@ export const Pomodoro = () => {
             totalFrames={6}
             paused={isStopped}
           />
-        }
+        )}
       </Center>
 
       <VStack display={'flex'} flexDirection={'column'}>

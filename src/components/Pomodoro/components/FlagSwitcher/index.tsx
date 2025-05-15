@@ -1,8 +1,8 @@
-import { Box, Image } from "@chakra-ui/react";
-import { keyframes } from "@emotion/react";
-import useSessionStore from "@/stores/Session.store";
-import { useEffect } from "react";
-import { FlagEnum } from "@/utils/enums/Flag.enum";
+import { Box, Image } from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
+import useSessionStore from '@/stores/Session.store';
+import { useEffect } from 'react';
+import { FlagEnum } from '@/utils/enums/Flag.enum';
 
 const flash = keyframes`
   0% { opacity: 1; }
@@ -29,12 +29,12 @@ export const FlagSwitcher = () => {
     <Box>
       <Image
         src={`/images/${flag}-flag.png`}
-        alt={"absolute"}
-        w="auto"
-        maxW="50px"
-        h="auto"
+        alt={'absolute'}
+        w='auto'
+        maxW='50px'
+        h='auto'
         animation={`${flash} 0.5s infinite`}
       />
     </Box>
   );
-}
+};

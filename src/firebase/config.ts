@@ -1,12 +1,12 @@
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import "firebase/compat/storage";
-import "firebase/compat/messaging";
-import "firebase/compat/functions";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
+import 'firebase/compat/messaging';
+import 'firebase/compat/functions';
 import { getAuth } from '@firebase/auth';
 import '@firebase/firestore';
-import { environment } from "@/environments/environment.dev";
+import { environment } from '@/environments/environment.dev';
 
 let firebaseApp: any;
 if (!firebase.apps.length) {

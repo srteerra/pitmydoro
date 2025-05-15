@@ -7,4 +7,4 @@ export const environment = {
     messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
     appId: process.env.NEXT_PUBLIC_APP_ID,
   },
-}
+};

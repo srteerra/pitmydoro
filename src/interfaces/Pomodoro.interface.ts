@@ -1,4 +1,4 @@
-import { ITeam } from "@/interfaces/Teams.interface";
+import { ITeam } from '@/interfaces/Teams.interface';
 
 export interface IPomodoro {
   id: any;

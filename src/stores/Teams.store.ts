@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { ITeam } from "@/interfaces/Teams.interface";
+import { create } from 'zustand';
+import { ITeam } from '@/interfaces/Teams.interface';
 
 interface TeamsStore {
   teams: ITeam[];
@@ -13,7 +13,7 @@ interface TeamsActions {
 const useTeamsStore = create<TeamsStore & TeamsActions>((set) => ({
   teams: [],
   fetched: false,
-  setTeams: (teams) => set(() => ({ teams, fetched: true})),
+  setTeams: (teams) => set(() => ({ teams, fetched: true })),
 }));
 
 export default useTeamsStore;

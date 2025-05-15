@@ -5,18 +5,9 @@ import { MdModeEdit, MdOutlineRestoreFromTrash, MdOutlineCheck } from 'react-ico
 import { TiTimes } from 'react-icons/ti';
 import { FaCheck } from 'react-icons/fa';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
-import {
-  Box,
-  Card,
-  Input,
-  Flex,
-  IconButton,
-  Text,
-  NumberInput,
-  Textarea,
-} from '@chakra-ui/react';
-import { useTranslations } from "use-intl";
-import { useAlert } from "@/hooks/useAlert";
+import { Box, Card, Input, Flex, IconButton, Text, NumberInput, Textarea } from '@chakra-ui/react';
+import { useTranslations } from 'use-intl';
+import { useAlert } from '@/hooks/useAlert';
 
 interface Props {
   task: ITask;
@@ -28,7 +19,12 @@ interface Props {
   onTaskCheck?: (taskId: string, check: boolean) => void;
   onTaskSubmit?: (
     taskId: string,
-    data: { title: string; description: string; numberOfPomodoros: number, taskCompletedPomodoros: number }
+    data: {
+      title: string;
+      description: string;
+      numberOfPomodoros: number;
+      taskCompletedPomodoros: number;
+    }
   ) => void;
   onTaskClick?: (task: ITask) => void;
   onTaskDelete?: (taskId: string) => void;
@@ -49,7 +45,9 @@ export const TaskCard = ({
   const ref = useRef<HTMLInputElement | null>(null);
   const [taskTitle, setTaskTitle] = React.useState<string>(task.title);
   const [taskDescription, setTaskDescription] = React.useState<string>(task.description);
-  const [taskCompletedPomodoros, setTaskCompletedPomodoros] = React.useState<number>(task.pomodoros.filter(p => p.completedAt).length);
+  const [taskCompletedPomodoros, setTaskCompletedPomodoros] = React.useState<number>(
+    task.pomodoros.filter((p) => p.completedAt).length
+  );
   const [taskPomodoros, setTaskPomodoros] = React.useState<number>(task.pomodoros.length);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const { confirmAlert, toastSuccess } = useAlert();
@@ -61,7 +59,7 @@ export const TaskCard = ({
       setTaskTitle(task.title);
       setTaskDescription(task.description);
       setTaskPomodoros(task.pomodoros.length);
-      setTaskCompletedPomodoros(task.pomodoros.filter(p => p.completedAt).length);
+      setTaskCompletedPomodoros(task.pomodoros.filter((p) => p.completedAt).length);
 
       if (!taskTitle) {
         onTaskDelete?.(task.id);
@@ -74,7 +72,7 @@ export const TaskCard = ({
       title: taskTitle,
       description: taskDescription,
       numberOfPomodoros: taskPomodoros,
-      taskCompletedPomodoros
+      taskCompletedPomodoros,
     });
 
     onTaskEdit(null);
@@ -104,8 +102,8 @@ export const TaskCard = ({
 
       if (!task.completed) toastSuccess(t('successUncheckTask'));
       else toastSuccess(t('successCheckTask'));
-    }, 10)
-  }
+    }, 10);
+  };
 
   const handleOnTaskDelete = async () => {
     if (await confirmAlert('Delete?', 'Are you sure you want to delete this task?')) {
@@ -128,7 +126,7 @@ export const TaskCard = ({
 
   useEffect(() => {
     setTaskPomodoros(task.pomodoros.length);
-    setTaskCompletedPomodoros(task.pomodoros.filter(p => p.completedAt).length);
+    setTaskCompletedPomodoros(task.pomodoros.filter((p) => p.completedAt).length);
   }, [task.pomodoros]);
 
   return (
@@ -147,7 +145,7 @@ export const TaskCard = ({
           setTaskTitle(task.title);
           setTaskDescription(task.description);
           setTaskPomodoros(task.pomodoros.length);
-          setTaskCompletedPomodoros(task.pomodoros.filter(p => p.completedAt).length);
+          setTaskCompletedPomodoros(task.pomodoros.filter((p) => p.completedAt).length);
         }
       }}
     >
@@ -227,11 +225,7 @@ export const TaskCard = ({
                 positioning={{ placement: 'right-start', hideWhenDetached: true }}
               >
                 <MenuTrigger asChild>
-                  <IconButton
-                    rounded={'full'}
-                    variant={'ghost'}
-                    onClick={handleMenuToggle}
-                  >
+                  <IconButton rounded={'full'} variant={'ghost'} onClick={handleMenuToggle}>
                     <HiDotsVertical />
                   </IconButton>
                 </MenuTrigger>
@@ -250,11 +244,7 @@ export const TaskCard = ({
                       <MdModeEdit />
                       {t('editTask')}
                     </MenuItem>
-                    <MenuItem
-                      onClick={(e) => handleCheckTask(e)}
-                      value='complete'
-                      cursor='pointer'
-                    >
+                    <MenuItem onClick={(e) => handleCheckTask(e)} value='complete' cursor='pointer'>
                       {task.completed ? <TiTimes /> : <MdOutlineCheck />}
                       {task.completed ? t('markAsUncompleted') : t('markAsCompleted')}
                     </MenuItem>
@@ -315,13 +305,13 @@ export const TaskCard = ({
               </NumberInput.Root>
             </Flex>
 
-            <Flex gap={2} flex={{ base: "1", sm: "0" }}>
+            <Flex gap={2} flex={{ base: '1', sm: '0' }}>
               <IconButton
                 onClick={() => handleOnTaskSubmit(false)}
                 transition={'all 0.3s'}
                 _hover={{ opacity: 0.7 }}
                 rounded={'lg'}
-                flex={{ base: "1", sm: "0" }}
+                flex={{ base: '1', sm: '0' }}
                 bgColor={'red.400'}
                 color='white'
               >
@@ -333,7 +323,7 @@ export const TaskCard = ({
                 transition={'all 0.3s'}
                 _hover={{ opacity: 0.7 }}
                 rounded={'lg'}
-                flex={{ base: "1", sm: "0" }}
+                flex={{ base: '1', sm: '0' }}
                 bgColor={'green.400'}
                 color='white'
               >

@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,md,mdx,css,yaml,yml}\"",
+    "check": "prettier --check \"**/*.{ts,tsx,js,jsx,md,mdx,css,yaml,yml}\"",
+    "prepare": "husky"
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.4.2",
@@ -50,6 +53,7 @@
     "eslint-config-next": "15.2.1",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-next": "^0.0.0",
+    "husky": "^9.1.7",
     "prettier": "^3.5.2",
     "typescript": "^5.7.3"
   }

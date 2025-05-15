@@ -1,4 +1,4 @@
-import { IPomodoro } from "@/interfaces/Pomodoro.interface";
+import { IPomodoro } from '@/interfaces/Pomodoro.interface';
 
 export interface ITask {
   id: string;

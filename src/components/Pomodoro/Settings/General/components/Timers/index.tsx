@@ -1,32 +1,40 @@
-import { Box, Flex, NumberInput, Text, VStack } from "@chakra-ui/react";
-import { TireTypeEnum } from "@/utils/enums/TireType.enum";
-import { SessionStatusEnum } from "@/utils/enums/SessionStatus.enum";
-import React from "react";
-import { useSettings } from "@/hooks/useSettings";
-import { useTranslations } from "use-intl";
+import { Box, Flex, NumberInput, Text, VStack } from '@chakra-ui/react';
+import { TireTypeEnum } from '@/utils/enums/TireType.enum';
+import { SessionStatusEnum } from '@/utils/enums/SessionStatus.enum';
+import React from 'react';
+import { useSettings } from '@/hooks/useSettings';
+import { useTranslations } from 'use-intl';
 
 export const Timers = () => {
-  const {
-    tiresSettings,
-    breaksDuration,
-    handleChangeBreakDuration,
-    handleChangeTireDuration
-  } = useSettings();
+  const { tiresSettings, breaksDuration, handleChangeBreakDuration, handleChangeTireDuration } =
+    useSettings();
   const t = useTranslations('settings.sections.timers');
 
-  const tires = [TireTypeEnum.SOFT, TireTypeEnum.MEDIUM, TireTypeEnum.HARD, TireTypeEnum.INTERMEDIATE, TireTypeEnum.WET];
+  const tires = [
+    TireTypeEnum.SOFT,
+    TireTypeEnum.MEDIUM,
+    TireTypeEnum.HARD,
+    TireTypeEnum.INTERMEDIATE,
+    TireTypeEnum.WET,
+  ];
   const tiresLabel = {
     [TireTypeEnum.SOFT]: t('soft'),
     [TireTypeEnum.MEDIUM]: t('medium'),
     [TireTypeEnum.HARD]: t('hard'),
     [TireTypeEnum.INTERMEDIATE]: t('intermediate'),
     [TireTypeEnum.WET]: t('wet'),
-  }
+  };
   const ICON_SIZE = 50;
 
   return (
     <VStack gap={8} marginY={'20px'}>
-      <Flex w='full' px={10} gap={3} justifyContent={{ base: 'center', md: 'space-between' }} flexWrap={'wrap'}>
+      <Flex
+        w='full'
+        px={10}
+        gap={3}
+        justifyContent={{ base: 'center', md: 'space-between' }}
+        flexWrap={'wrap'}
+      >
         {tires.map((tire: TireTypeEnum, idx: number) => (
           <VStack key={idx}>
             <Box
@@ -41,8 +49,8 @@ export const Timers = () => {
             />
             <Text>{tiresLabel[tire]}</Text>
             <NumberInput.Root
-              maxW="70px"
-              minW="70px"
+              maxW='70px'
+              minW='70px'
               size={'xs'}
               min={1}
               value={String(tiresSettings[tire].duration)}
@@ -72,12 +80,14 @@ export const Timers = () => {
           />
           <Text>{t('shortBreakDuration.title')}</Text>
           <NumberInput.Root
-            maxW="70px"
-            minW="70px"
+            maxW='70px'
+            minW='70px'
             size={'xs'}
             min={1}
             value={String(breaksDuration[SessionStatusEnum.SHORT_BREAK])}
-            onValueChange={(e) => handleChangeBreakDuration(SessionStatusEnum.SHORT_BREAK, Number(e.value))}
+            onValueChange={(e) =>
+              handleChangeBreakDuration(SessionStatusEnum.SHORT_BREAK, Number(e.value))
+            }
           >
             <NumberInput.Control>
               <NumberInput.IncrementTrigger />
@@ -100,12 +110,14 @@ export const Timers = () => {
           />
           <Text>{t('longBreakDuration.title')}</Text>
           <NumberInput.Root
-            maxW="70px"
-            minW="70px"
+            maxW='70px'
+            minW='70px'
             size={'xs'}
             min={1}
             value={String(breaksDuration[SessionStatusEnum.LONG_BREAK])}
-            onValueChange={(e) => handleChangeBreakDuration(SessionStatusEnum.LONG_BREAK, Number(e.value))}
+            onValueChange={(e) =>
+              handleChangeBreakDuration(SessionStatusEnum.LONG_BREAK, Number(e.value))
+            }
           >
             <NumberInput.Control>
               <NumberInput.IncrementTrigger />
@@ -116,5 +128,5 @@ export const Timers = () => {
         </VStack>
       </Flex>
     </VStack>
-  )
-}
+  );
+};

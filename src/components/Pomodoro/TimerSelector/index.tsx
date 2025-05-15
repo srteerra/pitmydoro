@@ -1,8 +1,14 @@
-import { Box } from "@chakra-ui/react";
-import { useState } from "react";
-import { TireTypeEnum } from "@/utils/enums/TireType.enum";
+import { Box } from '@chakra-ui/react';
+import { useState } from 'react';
+import { TireTypeEnum } from '@/utils/enums/TireType.enum';
 
-const tires = [TireTypeEnum.SOFT, TireTypeEnum.MEDIUM, TireTypeEnum.HARD, TireTypeEnum.INTERMEDIATE, TireTypeEnum.WET];
+const tires = [
+  TireTypeEnum.SOFT,
+  TireTypeEnum.MEDIUM,
+  TireTypeEnum.HARD,
+  TireTypeEnum.INTERMEDIATE,
+  TireTypeEnum.WET,
+];
 const ICON_SIZE = 50;
 const VISIBLE_TIRES = 5;
 
@@ -12,7 +18,9 @@ interface Props {
 }
 
 export const TimerSelector = ({ onSelect, value }: Props) => {
-  const [selectedIndex, setSelectedIndex] = useState(tires?.findIndex((tire) => tire === value) ?? 2);
+  const [selectedIndex, setSelectedIndex] = useState(
+    tires?.findIndex((tire) => tire === value) ?? 2
+  );
 
   const handleClick = (index: number) => {
     setSelectedIndex(index);
@@ -24,28 +32,28 @@ export const TimerSelector = ({ onSelect, value }: Props) => {
 
   return (
     <Box
-      display={"flex"}
-      marginY={"20px"}
+      display={'flex'}
+      marginY={'20px'}
       width={`${ICON_SIZE * VISIBLE_TIRES}px`}
-      justifyContent={"center"}
-      position="relative"
-      overflow="hidden"
+      justifyContent={'center'}
+      position='relative'
+      overflow='hidden'
       style={{
         maskImage:
-          "linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 20%, rgba(255,255,255,1) 80%, rgba(255,255,255,0) 100%)",
+          'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 20%, rgba(255,255,255,1) 80%, rgba(255,255,255,0) 100%)',
       }}
     >
       <Box
-        display={"flex"}
+        display={'flex'}
         style={{
           transform: `translateX(${translateX}px)`,
-          transition: "transform 0.5s ease-in-out",
+          transition: 'transform 0.5s ease-in-out',
         }}
       >
         {tires.map((tire, index) => (
           <Box
             key={index}
-            cursor={"pointer"}
+            cursor={'pointer'}
             onClick={() => handleClick(index)}
             style={{
               backgroundImage: "url('./images/tires.png')",
@@ -54,11 +62,11 @@ export const TimerSelector = ({ onSelect, value }: Props) => {
               width: `${ICON_SIZE}px`,
               height: `${ICON_SIZE}px`,
               opacity: index === selectedIndex ? 1 : 0.5,
-              transition: "opacity 0.3s",
+              transition: 'opacity 0.3s',
             }}
           />
         ))}
       </Box>
     </Box>
   );
-}
+};

@@ -42,12 +42,7 @@ export const SelectInput = ({
   };
 
   return (
-    <SelectRoot
-      size={size}
-      value={selected}
-      onValueChange={handleChange}
-      collection={options}
-    >
+    <SelectRoot size={size} value={selected} onValueChange={handleChange} collection={options}>
       <Flex alignItems={'center'} gap={2}>
         <SelectLabel>
           <strong>{label}</strong>

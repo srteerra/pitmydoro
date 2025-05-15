@@ -3,17 +3,15 @@ import { setUserLocale } from '@/services/locale';
 import { IconButton, Image, Menu, Text } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
 import { IoEarth } from 'react-icons/io5';
-import { Locale } from "moment";
-import { useTransition } from "react";
-import useSettingsStore from "@/stores/Settings.store";
+import { Locale } from 'moment';
+import { useTransition } from 'react';
+import useSettingsStore from '@/stores/Settings.store';
 
 interface Props {
   portalDisabled?: boolean;
 }
 
-export function LocaleSwitch({
-  portalDisabled = false,
-}: Props) {
+export function LocaleSwitch({ portalDisabled = false }: Props) {
   const [isPending, startTransition] = useTransition();
   const setLocale = useSettingsStore((state) => state.setLocale);
 
@@ -23,7 +21,7 @@ export function LocaleSwitch({
       setUserLocale(locale as any);
       setLocale(locale as any);
     });
-  }
+  };
 
   return (
     <Menu.Root>
