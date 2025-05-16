@@ -1,30 +1,21 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import 'firebase/compat/storage';
-import 'firebase/compat/messaging';
-import 'firebase/compat/functions';
-import { getAuth } from '@firebase/auth';
-import '@firebase/firestore';
-import { environment } from '@/environments/environment.dev';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import { environment } from '@/environments/environment.dev';
 
-let firebaseApp: any;
-if (!firebase.apps.length) {
-  firebaseApp = firebase.initializeApp(environment.firebase);
-  firebase.firestore().settings({ experimentalForceLongPolling: true });
-}
+const app = initializeApp(environment.firebase);
 
 if (typeof window !== 'undefined') {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const appCheck = initializeAppCheck(firebaseApp, {
-    provider: new ReCaptchaV3Provider(environment.firebase.recaptchaSiteKey || ''),
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(environment.recaptchaSiteKey || ''),
     isTokenAutoRefreshEnabled: true,
   });
 }
 
-const db = firebase.firestore();
-const auth = getAuth(firebaseApp);
-const storage = firebase.storage();
+const db = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
 
-export { firebase, db, auth, firebaseApp, storage };
+export { app, db, auth, storage };

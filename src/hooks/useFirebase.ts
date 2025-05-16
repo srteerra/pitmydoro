@@ -1,4 +1,5 @@
 'use client';
+import { db } from '@/firebase/config';
 import {
   collection,
   addDoc,
@@ -8,12 +9,9 @@ import {
   setDoc,
   where,
   orderBy,
-  onSnapshot,
   getDocs,
   updateDoc,
 } from 'firebase/firestore';
-import { db } from '@/firebase/config';
-import { useEffect, useState } from 'react';
 import { limit } from '@firebase/firestore';
 import _ from 'lodash';
 
@@ -41,9 +39,6 @@ interface IProps {
 }
 
 export const useFirebase = ({ collectionPath }: IProps) => {
-  const [docs, setDocs] = useState([]);
-  let unsubscribe: any;
-
   const getCollectionRef = () => {
     return collection(db, collectionPath);
   };
@@ -254,22 +249,6 @@ export const useFirebase = ({ collectionPath }: IProps) => {
     return items;
   };
 
-  const listenCollection = (queries: IQuery[] = [], collectionPath?: string) => {
-    const queryRef = collectionPath
-      ? getQueryRef(queries, collection(db, collectionPath))
-      : getQueryRef(queries);
-
-    unsubscribe = onSnapshot(queryRef, (snapshot: any) => {
-      setDocs(
-        snapshot.docs.map((doc: any) => ({
-          ...doc.data(),
-          id: doc.id,
-          path: doc.ref.path,
-        }))
-      );
-    });
-  };
-
   const getQueryRef = (queries: IQuery[] = [], distinctCollectionRef?: any) => {
     let queryRef: any = query(distinctCollectionRef || getCollectionRef());
     queries.forEach((queryItem) => {
@@ -287,15 +266,7 @@ export const useFirebase = ({ collectionPath }: IProps) => {
     return queryRef;
   };
 
-  useEffect(() => {
-    return () => {
-      return unsubscribe && unsubscribe();
-    };
-  }, [unsubscribe]);
-
   return {
-    listenCollection,
-    docs,
     docWithId,
     getReference,
     set,
