@@ -22,8 +22,8 @@
       "markAsUncompleted": "Mark as uncompleted",
       "markAsCompleted": "Mark as completed",
       "noPomodoros": "No. Pomodoros",
-      "successCheckTask": "Task mark as completed",
-      "successUncheckTask": "Task mark as uncompleted",
+      "successCheckTask": "Task marked as completed",
+      "successUncheckTask": "Task marked as uncompleted",
       "successUpdateTask": "Task updated successfully",
       "successDeleteTask": "Task deleted successfully"
     }

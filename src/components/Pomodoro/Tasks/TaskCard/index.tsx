@@ -100,8 +100,8 @@ export const TaskCard = ({
     setTimeout(() => {
       onTaskCheck?.(task.id, !task.completed);
 
-      if (!task.completed) toastSuccess(t('successUncheckTask'));
-      else toastSuccess(t('successCheckTask'));
+      if (!task.completed) toastSuccess(t('successCheckTask'));
+      else toastSuccess(t('successUncheckTask'));
     }, 10);
   };
 
