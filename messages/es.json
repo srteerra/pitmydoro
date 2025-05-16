@@ -19,7 +19,7 @@
       "editTask": "Editar tarea",
       "taskTitlePlaceholder": "Estoy trabajando en...",
       "taskDescriptionPlaceholder": "Ingresa una descripción (Opcional)",
-      "markAsUncompleted": "Marcar como no completada",
+      "markAsUncompleted": "Marcar como incompleta",
       "markAsCompleted": "Marcar como completada",
       "noPomodoros": "No. Pomodoros",
       "successCheckTask": "Tarea marcada como completada",

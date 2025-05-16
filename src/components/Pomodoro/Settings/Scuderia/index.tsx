@@ -6,11 +6,13 @@ import React, { useEffect, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
 import useTeamsStore from '@/stores/Teams.store';
 import { ColorPreview } from '@/components/ColorPreview';
+import { useTranslations } from 'use-intl';
 
 export const Scuderia = () => {
   const { currentScuderia, changeScuderia } = useSettings();
   const teams = useTeamsStore((state) => state.teams);
   const fetched = useTeamsStore((state) => state.fetched);
+  const t = useTranslations('settings');
   const [selectedScuderia, setSelectedScuderia] = useState<string | null>(
     currentScuderia?.id || null
   );
@@ -31,7 +33,7 @@ export const Scuderia = () => {
   return (
     <Box>
       <Text fontWeight={'bold'} fontSize={'lg'}>
-        Scuderia
+        {t('scuderia')}
       </Text>
 
       <VStack alignItems='start' marginY={'20px'}>
