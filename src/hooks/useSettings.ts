@@ -7,6 +7,7 @@ import { useAlert } from '@/hooks/useAlert';
 import { useTranslations } from 'use-intl';
 import { userService } from '@/services/user.service';
 import { useAuth } from '@/contexts/AuthContext';
+import { DefaultSettings } from '@/constants/DefaultSettings';
 
 export const useSettings = () => {
   const { toastSuccess } = useAlert();
@@ -27,6 +28,7 @@ export const useSettings = () => {
     setBreaksInterval,
     setEnableSounds,
     setVolume,
+    setSettings,
     setEnableNotifications,
   } = useSettingsStore();
 
@@ -127,8 +129,23 @@ export const useSettings = () => {
     if (user) await userService.updatePreferences(user.uid, { currentScuderia: newScuderia });
   };
 
+  const resetSettings = async (userId: string) => {
+    await userService.updatePreferences(userId, DefaultSettings);
+  };
+
+  const loadConfig = async (userId: string) => {
+    const userData = await userService.getUserData(userId);
+    if (!userData?.preferences) return;
+    setSettings(userData.preferences);
+  };
+
+  const wipeConfig = async () => {
+    setSettings(DefaultSettings);
+  };
+
   return {
     handleSwitchSounds,
+    resetSettings,
     handleVolumeChange,
     handleSwitchNotifications,
     handleChangeBreakDuration,
@@ -139,6 +156,8 @@ export const useSettings = () => {
     handleSwitchBreak,
     handleSwitchNextTask,
     changeScuderia,
+    loadConfig,
+    wipeConfig,
     handleChangeTireDuration,
   };
 };

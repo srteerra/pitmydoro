@@ -23,6 +23,7 @@ interface SettingsActions {
   setEnableSounds: (enableSounds: boolean) => void;
   setVolume: (volume: number) => void;
   setEnableNotifications: (enableNotifications: boolean) => void;
+  setSettings: (settings: Partial<Settings>) => void;
 }
 
 const useSettingsStore = create<Settings & SettingsActions>()(
@@ -43,6 +44,7 @@ const useSettingsStore = create<Settings & SettingsActions>()(
         volume: DefaultSettings.volume,
         enableNotifications: DefaultSettings.enableNotifications,
         currentScuderia: DefaultSettings.currentScuderia,
+        setSettings: (settings) => set((state) => ({ ...state, ...settings })),
         setCurrentScuderia: (team) => set(() => ({ currentScuderia: team })),
         setEnableSounds: (enableSounds) => set(() => ({ enableSounds })),
         setVolume: (volume) => set(() => ({ volume })),

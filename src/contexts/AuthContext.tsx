@@ -13,6 +13,8 @@ import {
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import { userService } from '@/services/user.service';
+import { useTasks } from '@/hooks/useTasks';
+import { useSettings } from '@/hooks/useSettings';
 
 interface AuthContextType {
   user: User | null;
@@ -32,6 +34,8 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const { loadTasks, wipeTasks } = useTasks();
+  const { loadConfig, wipeConfig } = useSettings();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -60,16 +64,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    await signInWithEmailAndPassword(auth, email, password).then(async (userCredential) => {
+      if (!userCredential?.user?.uid) return;
+      await loadTasks(userCredential?.user?.uid);
+      await loadConfig(userCredential?.user?.uid);
+    });
   };
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    await signInWithPopup(auth, provider).then(async (userCredential) => {
+      if (!userCredential?.user?.uid) return;
+      await loadTasks(userCredential?.user?.uid);
+      await loadConfig(userCredential?.user?.uid);
+    });
   };
 
   const logout = async () => {
-    await signOut(auth);
+    await signOut(auth).then(async () => {
+      setUser(null);
+      await wipeTasks();
+      await wipeConfig();
+    });
   };
 
   const value = {

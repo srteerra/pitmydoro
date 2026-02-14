@@ -70,11 +70,11 @@ export default function Provider(props: { children: React.ReactNode }) {
               value: '#10b981',
             },
             primary: {
-              default: { value: currentScuderia?.colors?.primary.default ?? '#486192' },
+              default: { value: currentScuderia?.colors?.primary?.default ?? '#486192' },
               defaultDark: { value: currentScuderia?.colors?.primary?.dark ?? '#2E3A4D' },
             },
             secondary: {
-              default: { value: currentScuderia?.colors?.secondary.default ?? '#FFD700' },
+              default: { value: currentScuderia?.colors?.secondary?.default ?? '#FFD700' },
               defaultDark: { value: currentScuderia?.colors?.secondary?.dark ?? '#2E3A4D' },
             },
           },

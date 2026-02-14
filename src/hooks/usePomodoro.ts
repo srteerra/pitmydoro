@@ -126,7 +126,7 @@ export const usePomodoro = () => {
     if (!currentTask || incompleteTasks.length === 1) {
       setCurrentTask(incompleteTasks[0]);
     }
-  }, [tasks, currentTask, autoStartNextTask, setCurrentTask]);
+  }, [tasks, currentTask, autoStartNextTask, setCurrentTask, incompleteTasks]);
 
   return {
     currentPomodoro,

@@ -9,7 +9,6 @@ import {
   where,
   getDocs,
   limit,
-  onSnapshot,
   Timestamp,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
@@ -17,7 +16,6 @@ import type { User } from 'firebase/auth';
 import { DefaultSettings } from '@/constants/DefaultSettings';
 import { Settings } from '@/interfaces/Settings.interface';
 
-const STORAGE_KEY = 'pitmydoro_offline_user';
 const STORAGE_SETTINGS_KEY = 'pitmydoro_settings';
 
 interface UserProfile {
@@ -127,42 +125,5 @@ export const userService = {
     const q = query(collection(db, 'profiles'), where('username', '==', username), limit(1));
     const snapshot = await getDocs(q);
     return snapshot.empty;
-  },
-
-  subscribeToProfile(userId: string, callback: (profile: UserProfile | null) => void) {
-    return onSnapshot(doc(db, 'profiles', userId), (snapshot) => {
-      callback(snapshot.exists() ? (snapshot.data() as UserProfile) : null);
-    });
-  },
-
-  subscribeToUserData(userId: string, callback: (userData: UserData | null) => void) {
-    return onSnapshot(doc(db, 'users', userId), (snapshot) => {
-      callback(snapshot.exists() ? (snapshot.data() as UserData) : null);
-    });
-  },
-
-  local: {
-    saveProfile(profile: UserProfile) {
-      localStorage.setItem(`${STORAGE_KEY}_profile`, JSON.stringify(profile));
-    },
-
-    loadProfile(): UserProfile | null {
-      const stored = localStorage.getItem(`${STORAGE_KEY}_profile`);
-      return stored ? JSON.parse(stored) : null;
-    },
-
-    saveUserData(userData: UserData) {
-      localStorage.setItem(`${STORAGE_KEY}_data`, JSON.stringify(userData));
-    },
-
-    loadUserData(): UserData | null {
-      const stored = localStorage.getItem(`${STORAGE_KEY}_data`);
-      return stored ? JSON.parse(stored) : null;
-    },
-
-    clear() {
-      localStorage.removeItem(`${STORAGE_KEY}_profile`);
-      localStorage.removeItem(`${STORAGE_KEY}_data`);
-    },
   },
 };

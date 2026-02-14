@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { EditTask, Task } from '@/interfaces/Task.interface';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useAuth } from '@/contexts/AuthContext';
@@ -17,7 +17,6 @@ export function useTasks() {
     addTask,
     updateTask,
     removeTask,
-    setLoading,
     setCurrentTask,
     clearCurrentTask,
   } = useTaskStore();
@@ -26,62 +25,28 @@ export function useTasks() {
     return _.chain(tasks).reject('completedAt').sortBy('order').value();
   }, [tasks]);
 
-  useEffect(() => {
-    if (user) {
-      setLoading(true);
-
-      const localTasks = taskService.local.load();
-      if (localTasks.length > 0) {
-        syncLocalTasks();
-      }
-
-      const unsubscribe = taskService.subscribe(user.uid, (tasks) => {
-        setTasks(tasks);
-        setLoading(false);
-      });
-
-      return () => unsubscribe();
-    } else {
-      const localTasks = taskService.local.load();
-      setTasks(localTasks);
-    }
-  }, [user]);
-
-  const syncLocalTasks = async () => {
-    if (!user) return;
-
-    const localTasks = taskService.local.load();
-    for (const task of localTasks) {
-      await taskService.create(task, user.uid);
-    }
-    taskService.local.clear();
-  };
-
   const create = async (taskData: Task) => {
     if (user) {
       await taskService.create(taskData, user.uid);
-    } else {
-      const newTask = taskService.local.add(taskData);
-      addTask(newTask);
     }
+
+    addTask({ ...taskData, isSync: !!user });
   };
 
   const update = async (id: string, updates: Partial<Task>) => {
     if (user) {
       await taskService.update(user.uid, id, updates);
-    } else {
-      taskService.local.update(id, updates);
-      updateTask(id, updates);
     }
+
+    updateTask(id, updates);
   };
 
   const remove = async (id: string) => {
     if (user) {
       await taskService.delete(user.uid, id);
-    } else {
-      taskService.local.delete(id);
-      removeTask(id);
     }
+
+    removeTask(id);
 
     const remainingTasks = _.sortBy(tasks, 'order').filter((t) => t.id !== id);
     await reorderTasks(remainingTasks);
@@ -100,11 +65,10 @@ export function useTasks() {
   const check = async (id: string, isComplete?: boolean) => {
     if (user) {
       await taskService.complete(user.uid, id, isComplete);
-    } else {
-      const updates = { completedAt: isComplete ? Timestamp.now() : null };
-      taskService.local.update(id, updates);
-      updateTask(id, updates);
     }
+
+    const updates = { completedAt: isComplete ? Timestamp.now() : null };
+    updateTask(id, updates);
   };
 
   const selectTask = (task: Task) => {
@@ -155,6 +119,7 @@ export function useTasks() {
       ...task,
       order: index + 1,
     }));
+
     setTasks(tasksWithNewOrder);
 
     const updatePromises = orderedTasks.map((task, index) => {
@@ -162,7 +127,7 @@ export function useTasks() {
       if (task.order !== newOrder) {
         return user
           ? taskService.update(user.uid, task.id, { order: newOrder })
-          : taskService.local.update(task.id, { order: newOrder });
+          : updateTask(task.id, { order: newOrder });
       }
       return Promise.resolve();
     });
@@ -178,6 +143,16 @@ export function useTasks() {
     }
   };
 
+  const loadTasks = async (userId: string) => {
+    await taskService.syncTasks(userId);
+    const remoteTasks = await taskService.getTasks(userId);
+    setTasks(remoteTasks);
+  };
+
+  const wipeTasks = async () => {
+    setTasks(tasks.filter((task) => !task.isSync));
+  };
+
   return {
     tasks,
     currentTask,
@@ -187,6 +162,8 @@ export function useTasks() {
     updateTask: update,
     deleteTask: remove,
     checkTask: check,
+    loadTasks,
+    wipeTasks,
     handleAddTask,
     handleReorderTasks,
     handleEditTask,

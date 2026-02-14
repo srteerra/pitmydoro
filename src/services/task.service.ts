@@ -1,23 +1,22 @@
 import {
   collection,
-  addDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
   doc,
+  getDocs,
   query,
   orderBy,
-  onSnapshot,
   getDoc,
   Timestamp,
+  writeBatch,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Task } from '@/interfaces/Task.interface';
 
-const STORAGE_KEY = 'pitmydoro_offline_tasks';
-
 export const taskService = {
   async create(taskData: Task, userId: string) {
-    const docRef = await addDoc(collection(db, 'users', userId, 'tasks'), {
+    return await setDoc(doc(db, `users/${userId}/tasks`, taskData.id), {
       ...taskData,
       userId,
       createdAt: Timestamp.now(),
@@ -33,8 +32,6 @@ export const taskService = {
         lastSessionAt: Timestamp.now(),
       },
     });
-
-    return docRef.id;
   },
 
   async update(userId: string, taskId: string, updates: Partial<Task>) {
@@ -80,69 +77,32 @@ export const taskService = {
     });
   },
 
-  subscribe(userId: string, callback: (tasks: Task[]) => void) {
+  async getTasks(userId: string): Promise<Task[]> {
     const q = query(collection(db, 'users', userId, 'tasks'), orderBy('order', 'asc'));
-
-    return onSnapshot(q, (snapshot) => {
-      const tasks = snapshot.docs.map(
-        (doc) =>
-          ({
-            ...doc.data(),
-            id: doc.id,
-          }) as Task
-      );
-      callback(tasks);
-    });
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(
+      (doc) =>
+        ({
+          ...doc.data(),
+          id: doc.id,
+        }) as Task
+    );
   },
 
-  local: {
-    save(tasks: Task[]) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-    },
+  async syncTasks(userId: string) {
+    const stored = localStorage.getItem('pitmydoro_tasks');
+    if (!stored) return;
 
-    load(): Task[] {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    },
+    const data = JSON.parse(stored);
+    const unsyncTasks = data?.state?.tasks.filter((task: Task) => !task.isSync);
+    if (!unsyncTasks?.length) return;
 
-    clear() {
-      localStorage.removeItem(STORAGE_KEY);
-    },
+    const batch = writeBatch(db);
 
-    add(task: Task): Task {
-      const newTask: Task = {
-        ...task,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-        isSync: false,
-        stats: {
-          totalWorkTime: 0,
-          totalBreakTime: 0,
-          totalPausedTime: 0,
-          totalPauses: 0,
-          totalInterruptions: 0,
-          lastSessionAt: Timestamp.now(),
-        },
-      };
+    for (const task of unsyncTasks) {
+      await this.create(task, userId);
+    }
 
-      const tasks = this.load();
-      const updated = [...tasks, newTask];
-      this.save(updated);
-      return newTask;
-    },
-
-    update(id: string, updates: Partial<Task>) {
-      const tasks = this.load();
-      const updated = tasks.map((t) =>
-        t.id === id ? { ...t, ...updates, updatedAt: Timestamp.now() } : t
-      );
-      this.save(updated);
-    },
-
-    delete(id: string) {
-      const tasks = this.load();
-      const updated = tasks.filter((t) => t.id !== id);
-      this.save(updated);
-    },
+    await batch.commit();
   },
 };
