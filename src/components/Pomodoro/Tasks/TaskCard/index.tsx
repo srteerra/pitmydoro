@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { Task } from '@/interfaces/Task.interface';
 import { HiDotsVertical } from 'react-icons/hi';
 import { MdModeEdit, MdOutlineRestoreFromTrash, MdOutlineCheck } from 'react-icons/md';
@@ -8,74 +8,58 @@ import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/me
 import { Box, Card, Input, Flex, IconButton, Text, NumberInput, Textarea } from '@chakra-ui/react';
 import { useTranslations } from 'use-intl';
 import { useAlert } from '@/hooks/useAlert';
+import { useTaskStore } from '@/stores/Tasks.store';
+import { useTasks } from '@/hooks/useTasks';
 
 interface Props {
   task: Task;
-  onTaskEdit: (taskId: string | null) => void;
   draggableIcon?: React.ReactNode;
-  isEditing?: boolean;
-  disabledEditing?: boolean;
-  isActive?: boolean;
-  onTaskCheck?: (taskId: string, check: boolean) => void;
-  onTaskSubmit?: (
-    taskId: string,
-    data: {
-      title: string;
-      description: string;
-      numberOfPomodoros: number;
-      taskCompletedPomodoros: number;
-    }
-  ) => void;
   onTaskClick?: (task: Task) => void;
-  onTaskDelete?: (taskId: string) => void;
 }
 
-export const TaskCard = ({
-  task,
-  draggableIcon,
-  onTaskClick,
-  onTaskDelete,
-  onTaskEdit,
-  onTaskCheck,
-  onTaskSubmit,
-  disabledEditing = false,
-  isEditing = false,
-  isActive = false,
-}: Props) => {
+export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
+  const { deleteTask, checkTask, handleEditTask } = useTasks();
   const ref = useRef<HTMLInputElement | null>(null);
   const [taskTitle, setTaskTitle] = React.useState<string>(task.title);
   const [taskDescription, setTaskDescription] = React.useState<string>(task.description);
   const [taskCompletedPomodoros, setTaskCompletedPomodoros] = React.useState<number>(
-    task.pomodoros.filter((p) => p.completedAt).length
+    task.totalPomodoros || 0
   );
-  const [taskPomodoros, setTaskPomodoros] = React.useState<number>(task.pomodoros.length);
+  const [taskPomodoros, setTaskPomodoros] = React.useState<number>(task.estimatedPomodoros);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const { confirmAlert, toastSuccess } = useAlert();
   const t = useTranslations('pomodoro.tasks');
+  const editingTask = useTaskStore((state) => state.editingTask);
+  const setEditingTask = useTaskStore((state) => state.setEditingTask);
+  const currentTask = useTaskStore((state) => state.currentTask);
 
-  const handleOnTaskSubmit = (save?: boolean) => {
+  const isCurrentEditing = useMemo(() => {
+    return editingTask === task.id;
+  }, [editingTask, task.id]);
+
+  const handleOnTaskSubmit = async (save?: boolean) => {
     if (!save) {
-      onTaskEdit(null);
+      setEditingTask(null);
       setTaskTitle(task.title);
       setTaskDescription(task.description);
-      setTaskPomodoros(task.pomodoros.length);
-      setTaskCompletedPomodoros(task.pomodoros.filter((p) => p.completedAt).length);
+      setTaskPomodoros(task.estimatedPomodoros);
+      setTaskCompletedPomodoros(task.totalPomodoros || 0);
 
       if (!taskTitle) {
-        onTaskDelete?.(task.id);
+        await deleteTask(task.id);
       }
 
       return;
     }
 
-    onTaskSubmit?.(task.id, {
+    await handleEditTask(task.id, {
       title: taskTitle,
       description: taskDescription,
       numberOfPomodoros: taskPomodoros,
       taskCompletedPomodoros,
     });
 
-    onTaskEdit(null);
+    setEditingTask(null);
     toastSuccess(t('successUpdateTask'));
   };
 
@@ -85,9 +69,9 @@ export const TaskCard = ({
     setMenuOpen((prev) => !prev);
   };
 
-  const handleEditTask = (taskId: string) => {
+  const editTask = (taskId: string) => {
     setMenuOpen(false);
-    onTaskEdit(taskId);
+    setEditingTask(taskId);
   };
 
   const handleMenuClose = () => {
@@ -98,25 +82,25 @@ export const TaskCard = ({
     e.stopPropagation();
     setMenuOpen(false);
     setTimeout(() => {
-      onTaskCheck?.(task.id, !task.completed);
+      checkTask(task.id, !task.completedAt);
 
-      if (!task.completed) toastSuccess(t('successCheckTask'));
+      if (!task.completedAt) toastSuccess(t('successCheckTask'));
       else toastSuccess(t('successUncheckTask'));
     }, 100);
   };
 
   const handleOnTaskDelete = async () => {
     if (await confirmAlert(t('deleteTaskConfirmTitle'), t('deleteTaskConfirmMessage'))) {
-      onTaskDelete?.(task.id);
+      await deleteTask(task.id);
       toastSuccess(t('successDeleteTask'));
     }
   };
 
   useEffect(() => {
-    if (isEditing && ref.current) {
+    if (isCurrentEditing && ref.current) {
       ref.current.focus();
     }
-  }, [isEditing]);
+  }, [isCurrentEditing]);
 
   useEffect(() => {
     return () => {
@@ -125,27 +109,31 @@ export const TaskCard = ({
   }, []);
 
   useEffect(() => {
-    setTaskPomodoros(task.pomodoros.length);
-    setTaskCompletedPomodoros(task.pomodoros.filter((p) => p.completedAt).length);
-  }, [task.pomodoros]);
+    setTaskPomodoros(task.estimatedPomodoros);
+    setTaskCompletedPomodoros(task.totalPomodoros || 0);
+  }, [task.estimatedPomodoros, task.totalPomodoros]);
 
   return (
     <Card.Root
       transition={'ease-in 0.2s'}
       bgColor={{ base: 'white', _dark: { base: 'dark.200/60', md: 'dark.100/20' } }}
-      borderLeft={task.completed || isEditing || isActive ? '6px solid' : ''}
-      borderColor={task.completed ? 'gray.400' : isEditing || isActive ? 'primary.default' : ''}
+      borderLeft={
+        !!task.completedAt || isCurrentEditing || task?.id === currentTask?.id ? '6px solid' : ''
+      }
+      borderColor={
+        !!task.completedAt ? 'gray.400' : task?.id === currentTask?.id ? 'primary.default' : ''
+      }
       flexDirection='row'
-      cursor={isEditing ? 'auto' : 'pointer'}
+      cursor={isCurrentEditing ? 'auto' : 'pointer'}
       overflow='hidden'
       width='100%'
       onClick={() => {
-        if (!isEditing && !task.completed) {
+        if (!isCurrentEditing && !task.completedAt) {
           onTaskClick?.(task);
           setTaskTitle(task.title);
           setTaskDescription(task.description);
-          setTaskPomodoros(task.pomodoros.length);
-          setTaskCompletedPomodoros(task.pomodoros.filter((p) => p.completedAt).length);
+          setTaskPomodoros(task.estimatedPomodoros);
+          setTaskCompletedPomodoros(task.totalPomodoros);
         }
       }}
     >
@@ -158,7 +146,7 @@ export const TaskCard = ({
           gap={4}
           alignItems='center'
         >
-          {isEditing ? (
+          {isCurrentEditing ? (
             <Box flex={1} w={'full'}>
               <Input
                 w={'full'}
@@ -184,7 +172,7 @@ export const TaskCard = ({
                 {draggableIcon}
                 <Flex flexDir='column'>
                   <Text
-                    textDecoration={task.completed ? 'line-through' : ''}
+                    textDecoration={task.completedAt ? 'line-through' : ''}
                     textTransform={'capitalize'}
                   >
                     <Text as={'span'} color={'gray.400'}>
@@ -193,7 +181,7 @@ export const TaskCard = ({
                     {task.title}
                   </Text>
                   <Text
-                    fontStyle={task.completed ? 'italic' : 'normal'}
+                    fontStyle={task.completedAt ? 'italic' : 'normal'}
                     textTransform={'capitalize'}
                     color={'gray.400'}
                     fontSize={14}
@@ -206,7 +194,7 @@ export const TaskCard = ({
             </Box>
           )}
 
-          {!isEditing && (
+          {!isCurrentEditing && (
             <Flex alignItems='center' gap={2}>
               <Text minW={'40px'}>
                 {taskCompletedPomodoros} / {taskPomodoros}
@@ -232,11 +220,11 @@ export const TaskCard = ({
                 {menuOpen && (
                   <MenuContent>
                     <MenuItem
-                      disabled={disabledEditing}
+                      disabled={isCurrentEditing}
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (disabledEditing) return;
-                        handleEditTask(task.id);
+                        if (isCurrentEditing) return;
+                        editTask(task.id);
                       }}
                       value='edit'
                       cursor='pointer'
@@ -245,8 +233,8 @@ export const TaskCard = ({
                       {t('editTask')}
                     </MenuItem>
                     <MenuItem onClick={(e) => handleCheckTask(e)} value='complete' cursor='pointer'>
-                      {task.completed ? <TiTimes /> : <MdOutlineCheck />}
-                      {task.completed ? t('markAsUncompleted') : t('markAsCompleted')}
+                      {task.completedAt ? <TiTimes /> : <MdOutlineCheck />}
+                      {task.completedAt ? t('markAsUncompleted') : t('markAsCompleted')}
                     </MenuItem>
                     <MenuItem
                       value='delete'
@@ -268,7 +256,7 @@ export const TaskCard = ({
           )}
         </Card.Body>
 
-        {isEditing && (
+        {isCurrentEditing && (
           <Card.Footer flexWrap={'wrap'} justifyContent='space-between'>
             <Flex gap={4} alignItems='center'>
               <Text fontSize={'sm'} fontWeight={'bold'}>
@@ -276,11 +264,11 @@ export const TaskCard = ({
               </Text>
               <NumberInput.Root
                 width='80px'
-                disabled={task.completed}
+                disabled={!!task.completedAt}
                 defaultValue={String(taskCompletedPomodoros)}
                 onValueChange={(e) => setTaskCompletedPomodoros(Number(e.value))}
                 min={0}
-                max={task.pomodoros.length}
+                max={task.estimatedPomodoros}
               >
                 <NumberInput.Control>
                   <NumberInput.IncrementTrigger />
@@ -290,7 +278,7 @@ export const TaskCard = ({
               </NumberInput.Root>
               /
               <NumberInput.Root
-                disabled={task.completed}
+                disabled={!!task.completedAt}
                 defaultValue={String(taskPomodoros)}
                 onValueChange={(e) => setTaskPomodoros(Number(e.value))}
                 spinOnPress={false}

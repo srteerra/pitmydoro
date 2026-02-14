@@ -4,14 +4,14 @@ import { Center, Flex, Text, VStack } from '@chakra-ui/react';
 import tinycolor from 'tinycolor2';
 import { BiLogoGithub } from 'react-icons/bi';
 import useSessionStore from '@/stores/Session.store';
-import usePomodoroStore from '@/stores/Pomodoro.store';
 import Link from 'next/link';
 import { useTranslations } from 'use-intl';
+import useSettingsStore from '@/stores/Settings.store';
 
 export const Footer = () => {
   const t = useTranslations('footer');
   const sessionStatus = useSessionStore((state) => state.status);
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
 
   const darkenColor = tinycolor(currentScuderia?.colors?.background?.[sessionStatus])
     .darken(5)

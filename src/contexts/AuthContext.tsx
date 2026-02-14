@@ -12,7 +12,7 @@ import {
   sendEmailVerification,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
-import { createUserDocuments, userDocumentsExist } from '@/lib/helpers/Users';
+import { userService } from '@/services/user.service';
 
 interface AuthContextType {
   user: User | null;
@@ -38,12 +38,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(user);
 
       if (user) {
-        const exists = await userDocumentsExist(user.uid);
+        const exists = await userService.exists(user.uid);
 
         if (!exists) {
-          console.log('Creando documentos para nuevo usuario...');
-          await createUserDocuments(user);
-          console.log('✅ Documentos creados');
+          await userService.create(user);
         }
       }
 

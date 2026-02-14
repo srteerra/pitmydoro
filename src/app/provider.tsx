@@ -4,10 +4,10 @@ import { ChakraProvider, createSystem, defaultConfig, defineConfig } from '@chak
 import { ThemeProvider } from 'next-themes';
 import React, { useEffect, useMemo, useState } from 'react';
 import useSessionStore from '@/stores/Session.store';
-import usePomodoroStore from '@/stores/Pomodoro.store';
+import useSettingsStore from '@/stores/Settings.store';
 
 export default function Provider(props: { children: React.ReactNode }) {
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const sessionStatus = useSessionStore((state) => state.status);
   const [isClient, setIsClient] = useState(false);
 

@@ -8,7 +8,6 @@ import { Settings } from '@/components/Pomodoro/Settings';
 import useSessionStore from '@/stores/Session.store';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import useSettingsStore from '@/stores/Settings.store';
-import usePomodoroStore from '@/stores/Pomodoro.store';
 import { usePomodoro } from '@/hooks/usePomodoro';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
 import { FaFlag } from 'react-icons/fa';
@@ -20,9 +19,13 @@ import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
 import { useSounds } from '@/hooks/useSounds';
 import { jua } from '@/assets/fonts/Jua';
+import _ from 'lodash';
+import { useTaskStore } from '@/stores/Tasks.store';
 
 export const Counter = () => {
   const status = useSessionStore((state) => state.status);
+  const tasks = useTaskStore((state) => state.tasks);
+  const resetAll = useTaskStore((state) => state.resetAll);
   const setStopped = useSessionStore((state) => state.setIsStopped);
   const setFlag = useSessionStore((state) => state.setFlag);
   const selectedTire = useSessionStore((state) => state.selectedTire);
@@ -33,12 +36,9 @@ export const Counter = () => {
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
   const enableNotifications = useSettingsStore((state) => state.enableNotifications);
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
-  const extPomodoros = usePomodoroStore((state) => state.extPomodoros);
-  const tasks = usePomodoroStore((state) => state.tasks);
-  const resetSession = usePomodoroStore((state) => state.resetSession);
   const countdownRef = useRef<CountdownApi | null>(null);
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
-  const { handleCompleteInterval, allPomodoros, completedPomodoros } = usePomodoro();
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
+  const { complete } = usePomodoro();
   const { theme } = useTheme();
   const [date, setDate] = useState(Date.now() + 1000000);
   const [isActive, setIsActive] = useState(false);
@@ -46,6 +46,13 @@ export const Counter = () => {
   const { open, onOpen, onClose } = useDisclosure();
   const { playSound, resumeSound, radioSound } = useSounds();
   const t = useTranslations('pomodoro');
+
+  const incompletePomodoros = _.chain(tasks)
+    .filter((task) => !task.completedAt)
+    .sumBy('estimatedPomodoros')
+    .value();
+
+  const completedPomodoros = _.chain(tasks).filter('completedAt').sumBy('totalPomodoros').value();
 
   const backButtonColor =
     theme === 'dark'
@@ -103,11 +110,9 @@ export const Counter = () => {
       setIsEndingSoon(false);
     }
 
-    const allPomodoros = tasks.flatMap((t) => t.pomodoros);
-    const incompletePomodoros = allPomodoros.filter((p) => !p.completedAt);
     const tireDuration = tiresSettings[selectedTire]?.duration ?? 25;
     const msPerPomodoro = tireDuration * 60 * 1000;
-    const remainingFuture = (incompletePomodoros.length - 1) * msPerPomodoro;
+    const remainingFuture = (incompletePomodoros - 1) * msPerPomodoro;
     const totalRemaining = Math.max(total, 0) + Math.max(remainingFuture, 0);
     const newEst = moment(now + totalRemaining).format('HH:mm');
 
@@ -182,7 +187,7 @@ export const Counter = () => {
   const handleResetAllClick = async () => {
     if (await confirmAlert(t('acceptResetAll'))) {
       handleResetTimer();
-      resetSession();
+      resetAll();
       setEstTimeFinish('');
       onClose();
     }
@@ -190,7 +195,7 @@ export const Counter = () => {
 
   const handleComplete = () => {
     handleIntervalComplete();
-    handleCompleteInterval();
+    complete();
   };
 
   useEffect(() => {
@@ -302,21 +307,12 @@ export const Counter = () => {
       <Center>
         <Flex gap={3} color={{ base: 'gray.500', _dark: 'gray.400' }}>
           <Text fontSize='sm'>
-            Pomodoros:
-            {!allPomodoros.length && !extPomodoros.length && !tasks?.length && (
+            <Text as={'span'} marginRight={2}>
+              Pomodoros:
+            </Text>
+            {!!tasks.length && (
               <Text as='span' fontWeight='bolder' color={{ base: 'gray.800', _dark: 'gray.200' }}>
-                {' '}
-                0
-              </Text>
-            )}
-            {!tasks?.length && !!extPomodoros.length && (
-              <Text as='span' fontWeight='bolder' color={{ base: 'gray.800', _dark: 'gray.200' }}>
-                {extPomodoros.filter((pomodoro) => pomodoro.completedAt).length}
-              </Text>
-            )}
-            {!!allPomodoros.length && !!tasks.length && (
-              <Text as='span' fontWeight='bolder' color={{ base: 'gray.800', _dark: 'gray.200' }}>
-                {completedPomodoros} / {allPomodoros.length}
+                {completedPomodoros} / {incompletePomodoros}
               </Text>
             )}
           </Text>

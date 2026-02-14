@@ -1,5 +1,5 @@
 import React from 'react';
-import { getUserLocale } from '@/services/locale';
+import { getUserLocale } from '@/services/locale.service';
 import { getTranslations } from 'next-intl/server';
 import { WrapSections } from '@/components/Layout/WrapSections';
 import { MainContainer } from '@/components/Layout/MainContainer';

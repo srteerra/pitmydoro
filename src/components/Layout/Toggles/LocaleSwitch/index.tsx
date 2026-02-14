@@ -1,5 +1,5 @@
 'use client';
-import { setUserLocale } from '@/services/locale';
+import { setUserLocale } from '@/services/locale.service';
 import { IconButton, Image, Menu, Text } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
 import { IoEarth } from 'react-icons/io5';
