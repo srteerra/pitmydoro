@@ -1,14 +1,14 @@
+import { SCUDERIAS } from '@/constants/Scuderias';
+import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
+import { TireTypeEnum } from '@/enums/TireType.enum';
+import { useAlert } from '@/hooks/useAlert';
 import { Team } from '@/interfaces/Teams.interface';
 import usePomodoroStore from '@/stores/Pomodoro.store';
 import useSettingsStore from '@/stores/Settings.store';
-import { TireTypeEnum } from '@/enums/TireType.enum';
-import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
-import { SCUDERIAS } from '@/constants/Scuderias';
-import { useAlert } from '@/hooks/useAlert';
 import { useTranslations } from 'use-intl';
 
 export const useSettings = () => {
-  const { toastSuccess } = useAlert();
+  const { toastSuccess, toastError } = useAlert();
   const t = useTranslations('settings');
 
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
@@ -54,6 +54,10 @@ export const useSettings = () => {
   };
 
   const handleBreaksInterval = (value: number) => {
+    if (value < 1) {
+      toastError(t('sections.session.longBreakInterval.error'));
+      return;
+    }
     setBreaksInterval(value);
     toastSuccess(t('settingsSaved'));
   };

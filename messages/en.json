@@ -133,7 +133,8 @@
         },
         "longBreakInterval": {
           "title": "Long Break Interval",
-          "description": "How many completed pomodoros to go long break."
+          "description": "How many completed pomodoros to go long break.",
+          "error": "The interval must be at least 1."
         }
       },
       "tasks": {

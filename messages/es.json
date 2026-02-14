@@ -134,7 +134,8 @@
         },
         "longBreakInterval": {
           "title": "Intervalo de descanso largo",
-          "description": "Cuántas sesiones de trabajo antes de un descanso largo."
+          "description": "Cuántas sesiones de trabajo antes de un descanso largo.",
+          "error": "El intervalo debe ser al menos 1."
         }
       },
       "tasks": {
