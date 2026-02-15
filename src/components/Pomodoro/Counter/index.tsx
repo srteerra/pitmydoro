@@ -21,11 +21,11 @@ import { useSounds } from '@/hooks/useSounds';
 import { jua } from '@/assets/fonts/Jua';
 import _ from 'lodash';
 import { useTaskStore } from '@/stores/Tasks.store';
+import { useTasks } from '@/hooks/useTasks';
 
 export const Counter = () => {
   const status = useSessionStore((state) => state.status);
   const tasks = useTaskStore((state) => state.tasks);
-  const resetAll = useTaskStore((state) => state.resetAll);
   const setStopped = useSessionStore((state) => state.setIsStopped);
   const setFlag = useSessionStore((state) => state.setFlag);
   const selectedTire = useSessionStore((state) => state.selectedTire);
@@ -43,6 +43,7 @@ export const Counter = () => {
   const [date, setDate] = useState(Date.now() + 1000000);
   const [isActive, setIsActive] = useState(false);
   const { confirmAlert } = useAlert();
+  const { resetAllTasks } = useTasks();
   const { open, onOpen, onClose } = useDisclosure();
   const { playSound, resumeSound, radioSound } = useSounds();
   const t = useTranslations('pomodoro');
@@ -187,7 +188,7 @@ export const Counter = () => {
   const handleResetAllClick = async () => {
     if (await confirmAlert(t('acceptResetAll'))) {
       handleResetTimer();
-      resetAll();
+      resetAllTasks();
       setEstTimeFinish('');
       onClose();
     }

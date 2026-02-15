@@ -12,6 +12,7 @@ export function useTasks() {
     tasks,
     currentTask,
     setEditingTask,
+    resetAll,
     loading,
     setTasks,
     addTask,
@@ -30,11 +31,13 @@ export function useTasks() {
       await taskService.create(taskData, user.uid);
     }
 
-    addTask({ ...taskData, isSync: !!user });
+    updateTask(taskData.id, { ...taskData, isSync: !!user });
   };
 
   const update = async (id: string, updates: Partial<Task>) => {
-    if (user) {
+    const task = tasks.find((t) => t.id === id);
+
+    if (user && task?.isSync) {
       await taskService.update(user.uid, id, updates);
     }
 
@@ -42,7 +45,9 @@ export function useTasks() {
   };
 
   const remove = async (id: string) => {
-    if (user) {
+    const task = tasks.find((t) => t.id === id);
+
+    if (user && task?.isSync) {
       await taskService.delete(user.uid, id);
     }
 
@@ -90,9 +95,10 @@ export function useTasks() {
       order: tasks.length + 1,
       estimatedPomodoros: 1,
       totalPomodoros: 0,
+      isSync: false,
     };
 
-    await create(newTask);
+    addTask({ ...newTask, isSync: false });
     if (!currentTask) setCurrentTask(newTask);
   };
 
@@ -101,17 +107,30 @@ export function useTasks() {
     const currentTaskEditing = tasks.find((task) => task.id === taskId);
 
     if (!currentTaskEditing) return;
+
     if (!title) {
       await remove(taskId);
       return;
     }
 
-    await update(taskId, {
-      title: title ?? currentTaskEditing.title,
-      description: description ?? currentTaskEditing.description,
-      estimatedPomodoros: numberOfPomodoros ?? currentTaskEditing.estimatedPomodoros,
-      totalPomodoros: taskCompletedPomodoros ?? currentTaskEditing.totalPomodoros,
-    });
+    if (!currentTaskEditing.isSync) {
+      const newTask: Task = {
+        ...currentTaskEditing,
+        title,
+        description: description ?? '',
+        estimatedPomodoros: numberOfPomodoros ?? currentTaskEditing.estimatedPomodoros,
+        totalPomodoros: taskCompletedPomodoros ?? currentTaskEditing.totalPomodoros,
+      };
+
+      await create(newTask);
+    } else {
+      await update(taskId, {
+        title,
+        description: description ?? currentTaskEditing.description,
+        estimatedPomodoros: numberOfPomodoros ?? currentTaskEditing.estimatedPomodoros,
+        totalPomodoros: taskCompletedPomodoros ?? currentTaskEditing.totalPomodoros,
+      });
+    }
   };
 
   const reorderTasks = async (orderedTasks: Task[]) => {
@@ -122,17 +141,10 @@ export function useTasks() {
 
     setTasks(tasksWithNewOrder);
 
-    const updatePromises = orderedTasks.map((task, index) => {
-      const newOrder = index + 1;
-      if (task.order !== newOrder) {
-        return user
-          ? taskService.update(user.uid, task.id, { order: newOrder })
-          : updateTask(task.id, { order: newOrder });
-      }
-      return Promise.resolve();
-    });
-
-    await Promise.all(updatePromises);
+    if (user) {
+      const activeOrderIds = orderedTasks.map((t) => t.id);
+      await taskService.saveActiveTasksOrder(user.uid, activeOrderIds);
+    }
   };
 
   const handleReorderTasks = async (newOrderedTasks: Task[]) => {
@@ -146,7 +158,26 @@ export function useTasks() {
   const loadTasks = async (userId: string) => {
     await taskService.syncTasks(userId);
     const remoteTasks = await taskService.getTasks(userId);
-    setTasks(remoteTasks);
+
+    const existingTasksMap = new Map(tasks.map((t) => [t.id, t.order]));
+
+    const tasksWithOrder = remoteTasks.map((task) => ({
+      ...task,
+      order: existingTasksMap.get(task.id) ?? task.order,
+    }));
+
+    const sortedTasks = _.sortBy(tasksWithOrder, 'order').map((task, index) => ({
+      ...task,
+      order: index + 1,
+    }));
+
+    setTasks(sortedTasks);
+  };
+
+  const resetAllTasks = async () => {
+    resetAll();
+    if (!user) return;
+    await taskService.resetAllTasks(user.uid);
   };
 
   const wipeTasks = async () => {
@@ -162,6 +193,7 @@ export function useTasks() {
     updateTask: update,
     deleteTask: remove,
     checkTask: check,
+    resetAllTasks,
     loadTasks,
     wipeTasks,
     handleAddTask,

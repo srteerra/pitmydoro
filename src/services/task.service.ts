@@ -6,19 +6,27 @@ import {
   doc,
   getDocs,
   query,
-  getCountFromServer,
   orderBy,
   getDoc,
   Timestamp,
-  writeBatch,
+  arrayUnion,
+  where,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Task } from '@/interfaces/Task.interface';
 
+interface TaskOrderDoc {
+  order: string[];
+  updatedAt: Timestamp;
+}
+
 export const taskService = {
   async create(taskData: Task, userId: string) {
-    return await setDoc(doc(db, `users/${userId}/tasks`, taskData.id), {
-      ...taskData,
+    const taskDataWithoutOrder = { ...taskData };
+    delete (taskDataWithoutOrder as Partial<Task>).order;
+
+    const newTaskDoc = await setDoc(doc(db, `users/${userId}/tasks`, taskData.id), {
+      ...taskDataWithoutOrder,
       userId,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
@@ -26,18 +34,27 @@ export const taskService = {
       stats: {
         totalWorkTime: 0,
         totalBreakTime: 0,
-        totalPomodoros: 0,
         totalPausedTime: 0,
         totalPauses: 0,
         totalInterruptions: 0,
         lastSessionAt: Timestamp.now(),
       },
     });
+
+    updateDoc(doc(db, 'users', userId, 'tasksList', 'activeTasks'), {
+      order: arrayUnion(taskData.id),
+      updatedAt: Timestamp.now(),
+    });
+
+    return newTaskDoc;
   },
 
   async update(userId: string, taskId: string, updates: Partial<Task>) {
+    const updatesWithoutOrder = { ...updates };
+    delete (updatesWithoutOrder as Partial<Task>).order;
+
     await updateDoc(doc(db, 'users', userId, 'tasks', taskId), {
-      ...updates,
+      ...updatesWithoutOrder,
       updatedAt: Timestamp.now(),
     });
   },
@@ -51,12 +68,6 @@ export const taskService = {
       completedAt: isComplete ? Timestamp.now() : null,
       updatedAt: Timestamp.now(),
     });
-  },
-
-  async getTaskCount(userId: string) {
-    const q = query(collection(db, 'users', userId, 'tasks'));
-    const snapshot = await getCountFromServer(q);
-    return snapshot.data().count;
   },
 
   async incrementPomodoro(userId: string, taskId: string, workMinutes: number) {
@@ -84,16 +95,60 @@ export const taskService = {
     });
   },
 
-  async getTasks(userId: string): Promise<Task[]> {
-    const q = query(collection(db, 'users', userId, 'tasks'), orderBy('order', 'asc'));
+  async saveActiveTasksOrder(userId: string, orderIds: string[]) {
+    await setDoc(doc(db, 'users', userId, 'tasksList', 'activeTasks'), {
+      order: orderIds,
+      updatedAt: Timestamp.now(),
+    });
+  },
+
+  async getActiveTasksOrder(userId: string): Promise<string[]> {
+    const orderDoc = await getDoc(doc(db, 'users', userId, 'tasksList', 'activeTasks'));
+    return orderDoc.exists() ? (orderDoc.data() as TaskOrderDoc).order : [];
+  },
+
+  async resetAllTasks(userId: string) {
+    const q = query(collection(db, 'users', userId, 'tasks'), where('isSync', '==', true));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(
-      (doc) =>
-        ({
-          ...doc.data(),
-          id: doc.id,
-        }) as Task
-    );
+    const tasks = snapshot.docs.map((doc) => doc.id);
+
+    for (const taskId of tasks) {
+      await this.delete(userId, taskId);
+    }
+
+    await this.saveActiveTasksOrder(userId, []);
+  },
+
+  async getTasks(userId: string): Promise<Task[]> {
+    const q = query(collection(db, 'users', userId, 'tasks'), orderBy('createdAt', 'asc'));
+    const snapshot = await getDocs(q);
+    const tasks = snapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    })) as Task[];
+
+    const savedActiveOrder = await this.getActiveTasksOrder(userId);
+
+    if (savedActiveOrder.length === 0) {
+      return tasks.map((task, index) => ({ ...task, order: index + 1 }));
+    }
+
+    const taskMap = new Map(tasks.map((t) => [t.id, t]));
+    const orderedTasks: Task[] = [];
+
+    savedActiveOrder.forEach((id, index) => {
+      const task = taskMap.get(id);
+      if (task) {
+        orderedTasks.push({ ...task, order: index + 1 });
+        taskMap.delete(id);
+      }
+    });
+
+    taskMap.forEach((task) => {
+      orderedTasks.push({ ...task, order: orderedTasks.length + 1 });
+    });
+
+    return orderedTasks;
   },
 
   async syncTasks(userId: string) {
@@ -104,16 +159,8 @@ export const taskService = {
     const unsyncTasks = data?.state?.tasks.filter((task: Task) => !task.isSync);
     if (!unsyncTasks?.length) return;
 
-    const batch = writeBatch(db);
-
-    const remoteTasksCount = await this.getTaskCount(userId);
-
     for (let i = 0; i < unsyncTasks.length; i++) {
-      const task = unsyncTasks[i];
-      const order = remoteTasksCount + i + 1;
-      await this.create({ ...task, order }, userId);
+      await this.create({ ...unsyncTasks[i] } as Task, userId);
     }
-
-    await batch.commit();
   },
 };

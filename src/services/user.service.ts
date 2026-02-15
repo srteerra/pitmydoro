@@ -115,15 +115,14 @@ export const userService = {
   },
 
   async updatePreferences(userId: string, preferences: Partial<UserData['preferences']>) {
-    await updateDoc(doc(db, 'users', userId), {
-      preferences,
-      updatedAt: serverTimestamp(),
-    });
-  },
+    const updates: Record<string, any> = {};
 
-  async checkUsernameAvailable(username: string): Promise<boolean> {
-    const q = query(collection(db, 'profiles'), where('username', '==', username), limit(1));
-    const snapshot = await getDocs(q);
-    return snapshot.empty;
+    Object.keys(preferences).forEach((key) => {
+      updates[`preferences.${key}`] = preferences[key as keyof typeof preferences];
+    });
+
+    updates.updatedAt = serverTimestamp();
+
+    await updateDoc(doc(db, 'users', userId), updates);
   },
 };

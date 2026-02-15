@@ -220,10 +220,10 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 {menuOpen && (
                   <MenuContent>
                     <MenuItem
-                      disabled={isCurrentEditing}
+                      disabled={!!editingTask}
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (isCurrentEditing) return;
+                        if (editingTask) return;
                         editTask(task.id);
                       }}
                       value='edit'
