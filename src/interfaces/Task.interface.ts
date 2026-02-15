@@ -20,6 +20,7 @@ export interface Task {
     frequency: 'daily' | 'weekly' | 'monthly';
     nextDueDate: Timestamp;
   };
+  pauses?: { pausedAt: Timestamp; resumedAt: Timestamp }[];
   stats?: {
     totalWorkTime: number;
     totalBreakTime: number;
