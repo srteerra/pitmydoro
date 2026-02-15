@@ -1,13 +1,33 @@
-import { Pomodoro } from '@/interfaces/Pomodoro.interface';
+import { Timestamp } from 'firebase/firestore';
 
 export interface Task {
   id: string;
   title: string;
   description: string;
-  order: number;
-  completed: boolean;
-  pomodoros: Pomodoro[];
-  createdAt?: number;
+  estimatedPomodoros: number;
+  totalPomodoros: number;
+  isSync?: boolean;
+  order?: number;
+  completedAt?: Timestamp | null;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+  projectId?: string;
+  priority?: number;
+  deletedAt?: Timestamp;
+  archiveAt?: Timestamp;
+  recurring?: {
+    enabled: boolean;
+    frequency: 'daily' | 'weekly' | 'monthly';
+    nextDueDate: Timestamp;
+  };
+  stats?: {
+    totalWorkTime: number;
+    totalBreakTime: number;
+    totalPausedTime: number;
+    totalPauses: number;
+    totalInterruptions: number;
+    lastSessionAt: Timestamp;
+  };
 }
 
 export interface EditTask {

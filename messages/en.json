@@ -56,6 +56,11 @@
         "placeholder": "Re-enter your password",
         "required": "Confirm password is required"
       }
+    },
+    "userMenu": {
+      "profile": "Profile",
+      "myAccount": "My account",
+      "logOut": "Log out"
     }
   },
   "pomodoro": {

@@ -1,317 +1,141 @@
-import usePomodoroStore from '@/stores/Pomodoro.store';
-import { Team } from '@/interfaces/Teams.interface';
-import useSessionStore from '@/stores/Session.store';
-import useSettingsStore from '@/stores/Settings.store';
-import { useEffect, useMemo, useState } from 'react';
-import { EditTask, Task } from '@/interfaces/Task.interface';
-import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
-import moment from 'moment';
 import { Pomodoro } from '@/interfaces/Pomodoro.interface';
+import { Team } from '@/interfaces/Teams.interface';
+import { Task } from '@/interfaces/Task.interface';
+import { Timestamp } from 'firebase/firestore';
+import { usePomodoroStore } from '@/stores/Pomodoro.store';
+import { useAuth } from '@/contexts/AuthContext';
+import { useTaskStore } from '@/stores/Tasks.store';
+import { pomodoroService } from '@/services/pomodoro.service';
+import { taskService } from '@/services/task.service';
+import { useEffect, useMemo } from 'react';
+import useSettingsStore from '@/stores/Settings.store';
+import _ from 'lodash';
 
 export const usePomodoro = () => {
-  const [editingTask, setEditingTask] = useState<string | null>(null);
-  const [now, setNow] = useState(moment());
-  const tasks = usePomodoroStore((state) => state.tasks);
-  const tiresSettings = useSettingsStore((state) => state.tiresSettings);
-  const breaksInterval = useSettingsStore((state) => state.breaksInterval);
-  const autoCompleteTask = useSettingsStore((state) => state.autoCompleteTask);
+  const { user } = useAuth();
+  const { currentPomodoro, setCurrentPomodoro, updateCurrentPomodoro } = usePomodoroStore();
+  const { currentTask, tasks, setCurrentTask } = useTaskStore();
   const autoStartNextTask = useSettingsStore((state) => state.autoStartNextTask);
-  const autoStartBreak = useSettingsStore((state) => state.autoStartBreak);
-  const isLongBreakPerTask = useSettingsStore((state) => state.isLongBreakPerTask);
-  const autoStartSession = useSettingsStore((state) => state.autoStartSession);
 
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
-  const currentTask = usePomodoroStore((state) => state.currentTask);
-  const extPomodoros = usePomodoroStore((state) => state.extPomodoros);
-  const selectedTire = useSessionStore((state) => state.selectedTire);
-  const status = useSessionStore((state) => state.status);
+  const incompleteTasks = useMemo(() => {
+    return _.chain(tasks).reject('completedAt').sortBy('order').value();
+  }, [tasks]);
 
-  const setCurrentTask = usePomodoroStore((state) => state.setCurrentTask);
-  const addTask = usePomodoroStore((state) => state.addTask);
-  const setTasks = usePomodoroStore((state) => state.setTasks);
-  const setStatus = useSessionStore((state) => state.setStatus);
-  const updateTask = usePomodoroStore((state) => state.updateTask);
-  const updateTaskStatus = usePomodoroStore((state) => state.updateTaskStatus);
-  const removeTask = usePomodoroStore((state) => state.removeTask);
+  const start = async (
+    type: 'session' | 'shortBreak' | 'longBreak',
+    duration: number,
+    team: Team,
+    task?: Task
+  ) => {
+    if (!user) return;
 
-  const allPomodoros = useMemo<Pomodoro[]>(() => {
-    if (!tasks.length) return extPomodoros;
-    const tasksPomodoros = tasks
-      .filter((task) => !task.completed)
-      .flatMap((task) => task.pomodoros);
-    return [...tasksPomodoros, ...extPomodoros];
-  }, [tasks, extPomodoros]);
+    const taskToUse = task || currentTask || null;
 
-  const completedPomodoros = useMemo<number>(
-    () => allPomodoros.filter((pomodoro) => pomodoro.completedAt).length,
-    [allPomodoros]
-  );
-
-  const estTimeFinish = useMemo<string>(() => {
-    if (!tasks.length) return now.format('HH:mm');
-
-    const tasksPomodoros = tasks.flatMap((task: Task) => task.pomodoros);
-    const incompletePomodoros = tasksPomodoros.filter(
-      (pomodoro: Pomodoro) => !pomodoro.completedAt
-    );
-    const timeNow = now.valueOf();
-
-    const totalDuration = incompletePomodoros.reduce((acc: number) => {
-      const duration = tiresSettings[selectedTire]?.duration;
-      return acc + duration * 60 * 1000;
-    }, 0);
-
-    return moment(timeNow + totalDuration).format('HH:mm');
-  }, [tasks, tiresSettings, selectedTire, now]);
-
-  const handleCompleteInterval = (): void => {
-    switch (status) {
-      case SessionStatusEnum.IN_SESSION:
-        if (currentTask) {
-          updateTask(currentTask.id, (prevTask: Task) => {
-            const currentPomodoros = prevTask.pomodoros || [];
-            let foundUncompleted = false;
-
-            const updatedPomodoros = currentPomodoros.map((pomodoro: Pomodoro) => {
-              if (!pomodoro.completedAt && !foundUncompleted) {
-                foundUncompleted = true;
-                return {
-                  ...pomodoro,
-                  completedAt: moment().valueOf(),
-                  duration: tiresSettings[selectedTire].duration,
-                };
-              }
-              return pomodoro;
-            });
-
-            if (!foundUncompleted) {
-              updatedPomodoros.push({
-                id: crypto.randomUUID(),
-                createdAt: moment().valueOf(),
-                completedAt: moment().valueOf(),
-                isExternal: true,
-                duration: tiresSettings[selectedTire].duration,
-                team: currentScuderia as Team,
-              });
-            }
-            const incompleteRemaining = updatedPomodoros.filter((p) => !p.completedAt).length;
-
-            if (autoCompleteTask && incompleteRemaining === 0) {
-              setTimeout(() => {
-                handleCheckTask(prevTask.id, true);
-              }, 100);
-            }
-
-            return {
-              ...prevTask,
-              pomodoros: updatedPomodoros,
-            };
-          });
-        }
-
-        if (autoStartBreak) {
-          let totalPomodoros = 0;
-
-          if (currentTask) {
-            if (isLongBreakPerTask) {
-              totalPomodoros = currentTask.pomodoros.filter(
-                (pomodoro: Pomodoro) => pomodoro.completedAt
-              ).length;
-            } else {
-              totalPomodoros = completedPomodoros + 1;
-            }
-          } else {
-            totalPomodoros = extPomodoros.length + 1;
-          }
-
-          if (totalPomodoros > 0 && totalPomodoros % breaksInterval === 0) {
-            setStatus(SessionStatusEnum.LONG_BREAK);
-          } else {
-            setStatus(SessionStatusEnum.SHORT_BREAK);
-          }
-        }
-
-        break;
-      case SessionStatusEnum.SHORT_BREAK:
-        if (!autoStartSession) break;
-        setStatus(SessionStatusEnum.IN_SESSION);
-        break;
-      case SessionStatusEnum.LONG_BREAK:
-        if (!autoStartSession) break;
-        setStatus(SessionStatusEnum.IN_SESSION);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleSetCurrentTask = () => {
-    const incompleteTasks = tasks
-      .filter((task) => !task.completed)
-      .sort((a, b) => a.order - b.order);
-    setCurrentTask(incompleteTasks[0]);
-  };
-
-  const handleDeleteTask = (taskId: string) => {
-    removeTask(taskId);
-    if (!currentTask) handleSetCurrentTask();
-  };
-
-  const handleReorderTasks = (tasks: Task[]) => {
-    setTasks(tasks);
-
-    tasks.forEach((task: Task, index: number) => {
-      updateTask(task.id, { order: index + 1 });
-    });
-
-    if (!currentTask) handleSetCurrentTask();
-  };
-
-  const handleEditTask = (taskId: string, data: EditTask) => {
-    console.log(data);
-    const { title, description, taskCompletedPomodoros, numberOfPomodoros } = data;
-    const currentTaskEditing = tasks.find((task) => task.id === taskId);
-
-    if (!currentTaskEditing) return;
-    if (!title) {
-      removeTask(taskId);
-      return;
-    }
-
-    let updatedPomodoros: any[] = [...currentTaskEditing.pomodoros];
-    const currentCompletedCount = updatedPomodoros.filter((p) => p.completedAt).length;
-
-    const totalToComplete = taskCompletedPomodoros ?? 0;
-
-    if (totalToComplete !== currentCompletedCount) {
-      if (totalToComplete > currentCompletedCount) {
-        let remainingToComplete = totalToComplete - currentCompletedCount;
-
-        updatedPomodoros = updatedPomodoros.map((pomodoro) => {
-          if (remainingToComplete > 0 && !pomodoro.completedAt) {
-            remainingToComplete--;
-            return {
-              ...pomodoro,
-              completedAt: moment().valueOf(),
-            };
-          }
-          return pomodoro;
-        });
-
-        if (remainingToComplete > 0) {
-          const newPomodoros = Array.from({ length: remainingToComplete }, () => ({
-            id: crypto.randomUUID(),
-            createdAt: moment().valueOf(),
-            completedAt: moment().valueOf(),
-            skipped: true,
-            duration: tiresSettings[selectedTire].duration,
-            team: currentScuderia as Team,
-          }));
-
-          updatedPomodoros = [...updatedPomodoros, ...newPomodoros];
-        }
-      } else {
-        let remainingToIncomplete = currentCompletedCount - totalToComplete;
-
-        updatedPomodoros = updatedPomodoros.map((pomodoro) => {
-          if (remainingToIncomplete > 0 && !!pomodoro.completedAt) {
-            remainingToIncomplete--;
-            return {
-              ...pomodoro,
-              completedAt: null,
-              skipped: false,
-            };
-          }
-          return pomodoro;
-        });
-      }
-    }
-
-    const currentCount = updatedPomodoros.length;
-
-    if (numberOfPomodoros > currentCount) {
-      const newPomodoros = Array.from({ length: numberOfPomodoros - currentCount }, () => ({
-        id: crypto.randomUUID(),
-        createdAt: moment().valueOf(),
-        duration: tiresSettings[selectedTire].duration,
-        team: currentScuderia as Team,
-      }));
-
-      updatedPomodoros = [...updatedPomodoros, ...newPomodoros];
-    } else if (numberOfPomodoros < currentCount) {
-      updatedPomodoros = updatedPomodoros.slice(0, numberOfPomodoros);
-    }
-
-    updateTask(taskId, {
-      title: title ?? currentTaskEditing.title,
-      description: description ?? currentTaskEditing.description,
-      pomodoros: updatedPomodoros,
-    });
-  };
-
-  const handleAddTask = (taskId?: string) => {
-    const id = taskId || crypto.randomUUID();
-    setEditingTask(id);
-
-    const newTask = {
-      id,
-      title: '',
-      completed: false,
-      description: '',
-      createdAt: moment().valueOf(),
-      order: tasks.length + 1,
-      pomodoros: [
-        {
-          id: crypto.randomUUID(),
-          createdAt: moment().valueOf(),
-          duration: tiresSettings[selectedTire].duration,
-          team: currentScuderia as Team,
-        },
-      ],
+    const pomodoroData: Omit<Pomodoro, 'id'> = {
+      type,
+      duration,
+      startAt: Timestamp.now(),
+      startTeam: team,
+      task: taskToUse,
+      endTeam: null,
     };
 
-    addTask(newTask);
-    if (!currentTask) setCurrentTask(newTask);
+    const id = await pomodoroService.create(pomodoroData, user.uid);
+
+    setCurrentPomodoro({
+      ...pomodoroData,
+      id,
+      status: 'running',
+      completed: false,
+      interrupted: false,
+      pauses: [],
+    });
   };
 
-  const handleCheckTask = (taskId: string, isCompleted: boolean) => {
-    updateTaskStatus(taskId, isCompleted);
+  const pause = async () => {
+    if (!currentPomodoro) return;
+
+    const newPause = {
+      pausedAt: Timestamp.now(),
+      resumedAt: Timestamp.now(),
+    };
+
+    await pomodoroService.pause(currentPomodoro.id);
+
+    updateCurrentPomodoro({
+      status: 'paused',
+      pauses: [...(currentPomodoro.pauses || []), newPause],
+    });
   };
 
-  useEffect(() => {
-    if (!autoStartNextTask) return;
-    const incompleteTasks = tasks
-      .filter((task) => !task.completed)
-      .sort((a, b) => a.order - b.order);
+  const resume = async () => {
+    if (!currentPomodoro || !currentPomodoro.pauses?.length) return;
 
-    if (!currentTask || incompleteTasks.length === 1) {
-      setCurrentTask(incompleteTasks[0]);
+    const pauses = [...currentPomodoro.pauses];
+    pauses[pauses.length - 1].resumedAt = Timestamp.now();
+
+    await pomodoroService.resume(currentPomodoro.id, pauses);
+
+    updateCurrentPomodoro({
+      status: 'running',
+      pauses,
+    });
+  };
+
+  const complete = async () => {
+    if (!currentPomodoro || !user) return;
+
+    await pomodoroService.complete(currentPomodoro.id);
+
+    if (currentPomodoro.task && currentPomodoro.type === 'session') {
+      const workMinutes = currentPomodoro.duration || 25;
+      await taskService.incrementPomodoro(user.uid, currentPomodoro.task.id, workMinutes);
     }
-  }, [tasks, currentTask, autoStartNextTask, setCurrentTask]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNow(moment());
-    }, 60 * 1000);
+    setCurrentPomodoro(null);
+  };
 
-    return () => clearInterval(interval);
-  }, []);
+  const interrupt = async () => {
+    if (!currentPomodoro || !user) return;
+
+    await pomodoroService.interrupt(currentPomodoro.id);
+
+    if (currentPomodoro.task) {
+      await taskService.incrementInterruption(user.uid, currentPomodoro.task.id);
+    }
+
+    setCurrentPomodoro(null);
+  };
+
+  const switchTask = async (newTask: Task) => {
+    if (currentPomodoro && user) {
+      await interrupt();
+      useTaskStore.getState().setCurrentTask(newTask);
+    } else {
+      useTaskStore.getState().setCurrentTask(newTask);
+    }
+  };
 
   useEffect(() => {
     if (!tasks?.length) setCurrentTask(null);
   }, [tasks, setCurrentTask]);
 
+  useEffect(() => {
+    if (!autoStartNextTask) return;
+
+    if (!currentTask || incompleteTasks.length === 1) {
+      setCurrentTask(incompleteTasks[0]);
+    }
+  }, [tasks, currentTask, autoStartNextTask, setCurrentTask, incompleteTasks]);
+
   return {
-    allPomodoros,
-    completedPomodoros,
-    editingTask,
-    estTimeFinish,
-    handleAddTask,
-    handleEditTask,
-    setEditingTask,
-    handleReorderTasks,
-    handleCompleteInterval,
-    handleCheckTask,
-    handleDeleteTask,
+    currentPomodoro,
+    currentTask,
+    start,
+    pause,
+    resume,
+    complete,
+    interrupt,
+    switchTask,
   };
 };

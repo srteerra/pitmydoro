@@ -1,66 +1,37 @@
-import { HStack, Separator, Text, useBreakpointValue } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { usePomodoro } from '@/hooks/usePomodoro';
-import usePomodoroStore from '@/stores/Pomodoro.store';
+import { HStack, Separator, Text } from '@chakra-ui/react';
+import React, { useMemo } from 'react';
 import { Task } from '@/interfaces/Task.interface';
 import { ZoneButton } from '../components/ZoneButton';
 import { LuCirclePlus } from 'react-icons/lu';
 import { SortableList } from '@/components/SortableList';
 import { TaskCard } from '@/components/Pomodoro/Tasks/TaskCard';
 import { useTranslations } from 'use-intl';
-import { Tooltip } from '@/components/ui/tooltip';
-import useUserHintsStore from '@/stores/UserHints.store';
+import { useTasks } from '@/hooks/useTasks';
+import { useTaskStore } from '@/stores/Tasks.store';
+import _ from 'lodash';
 
 export const Tasks = () => {
-  const {
-    handleAddTask,
-    editingTask,
-    setEditingTask,
-    handleEditTask,
-    handleDeleteTask,
-    handleCheckTask,
-    handleReorderTasks,
-  } = usePomodoro();
-  const tasks = usePomodoroStore((state) => state.tasks);
-  const currentTask = usePomodoroStore((state) => state.currentTask);
-  const setCurrentTask = usePomodoroStore((state) => state.setCurrentTask);
-  const hasSeenTasksTooltip = useUserHintsStore((state) => state.hasSeenTasksTooltip);
-  const setHasSeenTasksTooltip = useUserHintsStore((state) => state.setHasSeenTasksTooltip);
+  const { loading, handleAddTask, selectTask, handleReorderTasks } = useTasks();
+  const tasks = useTaskStore((state) => state.tasks);
+  const editingTask = useTaskStore((state) => state.editingTask);
+  const setEditingTask = useTaskStore((state) => state.setEditingTask);
   const t = useTranslations('pomodoro.tasks');
-  const [showTooltip, setShowTooltip] = useState(false);
 
-  const placementHint = useBreakpointValue({
-    base: 'bottom',
-    md: 'left-start',
-  });
+  const sortedTasks = useMemo(() => {
+    return _.sortBy(tasks, 'order');
+  }, [tasks]);
 
   const handleTaskClick = (task: Task) => {
     if (!editingTask) {
-      setCurrentTask(task);
+      selectTask(task);
     } else {
-      if (tasks?.length && tasks.some((t) => !t.title)) {
-        return;
-      }
-
+      if (tasks?.length && tasks.some((t) => !t.title)) return;
       setEditingTask(null);
-      setCurrentTask(task);
+      selectTask(task);
     }
   };
 
-  const handleMouseEnter = () => {
-    if (!hasSeenTasksTooltip) {
-      setHasSeenTasksTooltip(true);
-      setShowTooltip(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!hasSeenTasksTooltip) {
-      setTimeout(() => {
-        setShowTooltip(true);
-      }, 3000);
-    }
-  }, [hasSeenTasksTooltip]);
+  if (loading) return <div>Cargando...</div>;
 
   return (
     <React.Fragment>
@@ -73,48 +44,31 @@ export const Tasks = () => {
       </HStack>
 
       <SortableList
-        items={tasks}
+        items={sortedTasks}
         onChange={handleReorderTasks}
         renderItem={(task) => (
           <SortableList.Item id={task.id}>
             <TaskCard
               task={task}
-              onTaskCheck={handleCheckTask}
-              onTaskEdit={setEditingTask}
-              onTaskDelete={handleDeleteTask}
-              onTaskSubmit={handleEditTask}
               onTaskClick={handleTaskClick}
-              isActive={currentTask?.id === task.id}
-              isEditing={editingTask === task.id}
-              disabledEditing={!!editingTask}
               draggableIcon={<SortableList.DragHandle />}
             />
           </SortableList.Item>
         )}
       />
 
-      <Tooltip
-        content={t('tasksHint')}
-        open={showTooltip}
-        contentProps={{ css: { '--tooltip-bg': 'tomato' }, _dark: { color: 'white' } }}
-        positioning={{ placement: placementHint as 'bottom' | 'left-start' }}
-        showArrow
+      <ZoneButton
+        isDisabled={!!editingTask}
+        onClick={() => {
+          handleAddTask();
+        }}
+        fontWeight={'semibold'}
+        size={'sm'}
+        mt={6}
       >
-        <ZoneButton
-          isDisabled={!!editingTask}
-          onClick={() => {
-            handleMouseEnter();
-            handleAddTask();
-          }}
-          onMouseEnter={handleMouseEnter}
-          fontWeight={'semibold'}
-          size={'sm'}
-          mt={6}
-        >
-          <LuCirclePlus size={25} />
-          {t('addTask')}
-        </ZoneButton>
-      </Tooltip>
+        <LuCirclePlus size={25} />
+        {t('addTask')}
+      </ZoneButton>
     </React.Fragment>
   );
 };

@@ -5,17 +5,17 @@ import { Counter } from '@/components/Pomodoro/Counter';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import useSessionStore from '@/stores/Session.store';
 import tinycolor from 'tinycolor2';
-import usePomodoroStore from '@/stores/Pomodoro.store';
 import { Tasks } from '@/components/Pomodoro/Tasks';
 import { SpriteAnimation } from '@/components/SpriteAnimation';
 import { FlagSwitcher } from '@/components/Pomodoro/components/FlagSwitcher';
 import { useTranslations } from 'use-intl';
 import { SCUDERIAS } from '@/constants/Scuderias';
+import useSettingsStore from '@/stores/Settings.store';
 
 export const Pomodoro = () => {
   const sessionStatus = useSessionStore((state) => state.status);
   const isStopped = useSessionStore((state) => state.isStopped);
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const setStatus = useSessionStore((state) => state.setStatus);
   const selectedTire = useSessionStore((state) => state.selectedTire);
   const setSelectedTire = useSessionStore((state) => state.setSelectedTire);

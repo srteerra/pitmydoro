@@ -4,10 +4,10 @@ import { ChakraProvider, createSystem, defaultConfig, defineConfig } from '@chak
 import { ThemeProvider } from 'next-themes';
 import React, { useEffect, useMemo, useState } from 'react';
 import useSessionStore from '@/stores/Session.store';
-import usePomodoroStore from '@/stores/Pomodoro.store';
+import useSettingsStore from '@/stores/Settings.store';
 
-export default function Provider(props: { children: React.ReactNode }) {
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
+export default function ChakraUIProvider(props: { children: React.ReactNode }) {
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const sessionStatus = useSessionStore((state) => state.status);
   const [isClient, setIsClient] = useState(false);
 
@@ -70,11 +70,11 @@ export default function Provider(props: { children: React.ReactNode }) {
               value: '#10b981',
             },
             primary: {
-              default: { value: currentScuderia?.colors?.primary.default ?? '#486192' },
+              default: { value: currentScuderia?.colors?.primary?.default ?? '#486192' },
               defaultDark: { value: currentScuderia?.colors?.primary?.dark ?? '#2E3A4D' },
             },
             secondary: {
-              default: { value: currentScuderia?.colors?.secondary.default ?? '#FFD700' },
+              default: { value: currentScuderia?.colors?.secondary?.default ?? '#FFD700' },
               defaultDark: { value: currentScuderia?.colors?.secondary?.dark ?? '#2E3A4D' },
             },
           },

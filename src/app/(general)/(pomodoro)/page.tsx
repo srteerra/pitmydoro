@@ -4,16 +4,16 @@ import { Pomodoro } from '@/components/Pomodoro';
 import React, { useEffect, useState } from 'react';
 import { Loader } from '@/components/Loader';
 import { Router } from 'next/router';
-import usePomodoroStore from '@/stores/Pomodoro.store';
 import { NextSeo } from 'next-seo';
 import { useSeo } from '@/hooks/useSEO';
 import { SCUDERIAS } from '@/constants/Scuderias';
+import useSettingsStore from '@/stores/Settings.store';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const seo = useSeo();
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
-  const setCurrentScuderia = usePomodoroStore((state) => state.setCurrentScuderia);
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
+  const setCurrentScuderia = useSettingsStore((state) => state.setCurrentScuderia);
 
   useEffect(() => {
     const handleStart = () => setLoading(true);

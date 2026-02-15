@@ -6,13 +6,13 @@ import React from 'react';
 import { useTranslations } from 'use-intl';
 import tinycolor from 'tinycolor2';
 import useSessionStore from '@/stores/Session.store';
-import usePomodoroStore from '@/stores/Pomodoro.store';
 import { TiDivider } from '@/components/Layout/WrapSections/components/Divider';
 import { jersey15 } from '@/assets/fonts/Jersey';
+import useSettingsStore from '@/stores/Settings.store';
 
 export const WrapSections = () => {
   const sessionStatus = useSessionStore((state) => state.status);
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const t = useTranslations('sections');
 
   const bgColor = tinycolor(currentScuderia?.colors?.background?.[sessionStatus])

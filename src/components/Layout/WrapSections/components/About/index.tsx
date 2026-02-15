@@ -6,14 +6,14 @@ import { useTranslations } from 'use-intl';
 import { TiDivider } from '@/components/Layout/WrapSections/components/Divider';
 import tinycolor from 'tinycolor2';
 import useSessionStore from '@/stores/Session.store';
-import usePomodoroStore from '@/stores/Pomodoro.store';
 import { jersey15 } from '@/assets/fonts/Jersey';
 import Link from 'next/link';
 import { useColorModeValue } from '@/components/ui/color-mode';
+import useSettingsStore from '@/stores/Settings.store';
 
 export const About = () => {
   const sessionStatus = useSessionStore((state) => state.status);
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const darkenColor = tinycolor(currentScuderia?.colors?.background?.[sessionStatus])
     .darken(50)
     .toString();

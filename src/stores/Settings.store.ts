@@ -4,9 +4,11 @@ import { TireTypeEnum } from '@/enums/TireType.enum';
 import { DefaultSettings } from '@/constants/DefaultSettings';
 import { Settings, TireSettings } from '@/interfaces/Settings.interface';
 import { Locale } from '@/i18n/config';
+import { Team } from '@/interfaces/Teams.interface';
 
 interface SettingsActions {
   setLocale: (locale: Locale) => void;
+  setCurrentScuderia: (team: Team) => void;
   setTiresSettings: (tiresSettings: Record<TireTypeEnum, TireSettings>) => void;
   updateTireDuration: (type: TireTypeEnum, duration: number) => void;
   setBreaksInterval: (interval: number) => void;
@@ -21,6 +23,7 @@ interface SettingsActions {
   setEnableSounds: (enableSounds: boolean) => void;
   setVolume: (volume: number) => void;
   setEnableNotifications: (enableNotifications: boolean) => void;
+  setSettings: (settings: Partial<Settings>) => void;
 }
 
 const useSettingsStore = create<Settings & SettingsActions>()(
@@ -40,6 +43,9 @@ const useSettingsStore = create<Settings & SettingsActions>()(
         enableSounds: DefaultSettings.enableSounds,
         volume: DefaultSettings.volume,
         enableNotifications: DefaultSettings.enableNotifications,
+        currentScuderia: DefaultSettings.currentScuderia,
+        setSettings: (settings) => set((state) => ({ ...state, ...settings })),
+        setCurrentScuderia: (team) => set(() => ({ currentScuderia: team })),
         setEnableSounds: (enableSounds) => set(() => ({ enableSounds })),
         setVolume: (volume) => set(() => ({ volume })),
         setEnableNotifications: (enableNotifications) => set(() => ({ enableNotifications })),
@@ -73,7 +79,7 @@ const useSettingsStore = create<Settings & SettingsActions>()(
           })),
       }),
       {
-        name: 'settings-pitmydoro',
+        name: 'pitmydoro_settings',
         storage: typeof window !== 'undefined' ? createJSONStorage(() => localStorage) : undefined,
       }
     )

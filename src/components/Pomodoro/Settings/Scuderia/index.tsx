@@ -15,14 +15,14 @@ import { useSettings } from '@/hooks/useSettings';
 import { ColorPreview } from '@/components/Pomodoro/components/ColorPreview';
 import { useTranslations } from 'use-intl';
 import { SCUDERIAS } from '@/constants/Scuderias';
-import usePomodoroStore from '@/stores/Pomodoro.store';
 import _ from 'lodash';
 import tinycolor from 'tinycolor2';
 import { SpriteAnimation } from '@/components/SpriteAnimation';
+import useSettingsStore from '@/stores/Settings.store';
 
 export const Scuderia = () => {
   const { changeScuderia } = useSettings();
-  const currentScuderia = usePomodoroStore((state) => state.currentScuderia);
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const t = useTranslations('settings');
   const [selectedYear, setSelectedYear] = useState(currentScuderia?.year || '2025');
   const [selectedScuderia, setSelectedScuderia] = useState<string | null>(
