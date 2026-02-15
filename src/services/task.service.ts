@@ -70,29 +70,89 @@ export const taskService = {
     });
   },
 
-  async incrementPomodoro(userId: string, taskId: string, workMinutes: number) {
+  async updateTaskStats(
+    userId: string,
+    taskId: string,
+    stats: {
+      workTime?: number;
+      breakTime?: number;
+      pomodoros?: number;
+      pausedTime?: number;
+      pauses?: number;
+      interruptions?: number;
+    }
+  ) {
     const taskRef = doc(db, 'users', userId, 'tasks', taskId);
     const snap = await getDoc(taskRef);
     const data = snap.data() || {};
-    const totalPomodoros = (data.totalPomodoros ?? 0) + 1;
-    const totalWorkTime = (data.stats?.totalWorkTime ?? 0) + workMinutes;
-    await updateDoc(taskRef, {
-      totalPomodoros,
-      'stats.totalWorkTime': totalWorkTime,
+
+    const currentStats = data.stats || {};
+    const currentTotalPomodoros = data.totalPomodoros || 0;
+
+    const updates: any = {
+      updatedAt: Timestamp.now(),
       'stats.lastSessionAt': Timestamp.now(),
+    };
+
+    if (stats.workTime !== undefined) {
+      updates['stats.totalWorkTime'] = (currentStats.totalWorkTime || 0) + stats.workTime;
+    }
+
+    if (stats.breakTime !== undefined) {
+      updates['stats.totalBreakTime'] = (currentStats.totalBreakTime || 0) + stats.breakTime;
+    }
+
+    if (stats.pomodoros !== undefined) {
+      updates.totalPomodoros = currentTotalPomodoros + stats.pomodoros;
+    }
+
+    if (stats.pausedTime !== undefined) {
+      updates['stats.totalPausedTime'] = (currentStats.totalPausedTime || 0) + stats.pausedTime;
+    }
+
+    if (stats.pauses !== undefined) {
+      updates['stats.totalPauses'] = (currentStats.totalPauses || 0) + stats.pauses;
+    }
+
+    if (stats.interruptions !== undefined) {
+      updates['stats.totalInterruptions'] =
+        (currentStats.totalInterruptions || 0) + stats.interruptions;
+    }
+
+    await updateDoc(taskRef, updates);
+  },
+
+  async addPauseToTask(
+    userId: string,
+    taskId: string,
+    pause: { pausedAt: Timestamp; resumedAt: Timestamp | null }
+  ) {
+    const taskRef = doc(db, 'users', userId, 'tasks', taskId);
+    const snap = await getDoc(taskRef);
+    const data = snap.data() || {};
+
+    const currentPauses = data.pauses || [];
+
+    await updateDoc(taskRef, {
+      pauses: [...currentPauses, pause],
       updatedAt: Timestamp.now(),
     });
   },
 
-  async incrementInterruption(userId: string, taskId: string) {
+  async updateLastPause(userId: string, taskId: string, resumedAt: Timestamp) {
     const taskRef = doc(db, 'users', userId, 'tasks', taskId);
     const snap = await getDoc(taskRef);
     const data = snap.data() || {};
-    const totalInterruptions = (data.stats?.totalInterruptions ?? 0) + 1;
-    await updateDoc(taskRef, {
-      'stats.totalInterruptions': totalInterruptions,
-      updatedAt: Timestamp.now(),
-    });
+
+    const pauses = data.pauses || [];
+    if (pauses.length > 0) {
+      pauses[pauses.length - 1].resumedAt = resumedAt;
+
+      await updateDoc(taskRef, {
+        pauses,
+        updatedAt: Timestamp.now(),
+      });
+    }
   },
 
   async saveActiveTasksOrder(userId: string, orderIds: string[]) {

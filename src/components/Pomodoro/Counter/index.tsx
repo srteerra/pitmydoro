@@ -22,6 +22,7 @@ import { jua } from '@/assets/fonts/Jua';
 import _ from 'lodash';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';
+import { usePomodoroStore } from '@/stores/Pomodoro.store';
 
 export const Counter = () => {
   const status = useSessionStore((state) => state.status);
@@ -37,8 +38,9 @@ export const Counter = () => {
   const enableNotifications = useSettingsStore((state) => state.enableNotifications);
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
   const countdownRef = useRef<CountdownApi | null>(null);
+  const { currentPomodoro } = usePomodoroStore();
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
-  const { complete } = usePomodoro();
+  const { complete, start, pause, resume } = usePomodoro();
   const { theme } = useTheme();
   const [date, setDate] = useState(Date.now() + 1000000);
   const [isActive, setIsActive] = useState(false);
@@ -139,28 +141,36 @@ export const Counter = () => {
     }
   }, [status, selectedTire, tiresSettings, breaksDuration, setStopped]);
 
-  const handleStartClick = () => {
+  const handleStartClick = async () => {
     countdownRef.current?.start();
     playSound();
+
     if (status === SessionStatusEnum.IN_SESSION) {
       setFlag(FlagEnum.GREEN);
     } else {
       setFlag(null);
     }
+
     setStopped(false);
     setIsActive(true);
+
+    if (currentPomodoro) await resume();
+    else await start(status, tiresSettings[selectedTire]?.duration, currentScuderia);
   };
 
-  const handlePauseClick = () => {
+  const handlePauseClick = async () => {
     countdownRef.current?.pause();
     resumeSound();
     setStopped(true);
+
     if (status === SessionStatusEnum.IN_SESSION) {
       setFlag(FlagEnum.YELLOW);
     } else {
       setFlag(null);
     }
+
     setIsActive(false);
+    await pause();
   };
 
   const handleResetTimer = () => {
