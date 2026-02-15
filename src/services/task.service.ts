@@ -6,6 +6,7 @@ import {
   doc,
   getDocs,
   query,
+  getCountFromServer,
   orderBy,
   getDoc,
   Timestamp,
@@ -50,6 +51,12 @@ export const taskService = {
       completedAt: isComplete ? Timestamp.now() : null,
       updatedAt: Timestamp.now(),
     });
+  },
+
+  async getTaskCount(userId: string) {
+    const q = query(collection(db, 'users', userId, 'tasks'));
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count;
   },
 
   async incrementPomodoro(userId: string, taskId: string, workMinutes: number) {
@@ -99,8 +106,12 @@ export const taskService = {
 
     const batch = writeBatch(db);
 
-    for (const task of unsyncTasks) {
-      await this.create(task, userId);
+    const remoteTasksCount = await this.getTaskCount(userId);
+
+    for (let i = 0; i < unsyncTasks.length; i++) {
+      const task = unsyncTasks[i];
+      const order = remoteTasksCount + i + 1;
+      await this.create({ ...task, order }, userId);
     }
 
     await batch.commit();

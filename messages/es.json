@@ -57,6 +57,11 @@
         "placeholder": "Vuelve a ingresar tu contraseña",
         "required": "La confirmación de contraseña es obligatoria"
       }
+    },
+    "userMenu": {
+      "profile": "Perfil",
+      "myAccount": "Mi cuenta",
+      "logOut": "Cerrar sesión"
     }
   },
   "pomodoro": {

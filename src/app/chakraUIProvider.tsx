@@ -6,7 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import useSessionStore from '@/stores/Session.store';
 import useSettingsStore from '@/stores/Settings.store';
 
-export default function Provider(props: { children: React.ReactNode }) {
+export default function ChakraUIProvider(props: { children: React.ReactNode }) {
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const sessionStatus = useSessionStore((state) => state.status);
   const [isClient, setIsClient] = useState(false);

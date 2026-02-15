@@ -89,7 +89,7 @@ export const usePomodoro = () => {
 
     if (currentPomodoro.task && currentPomodoro.type === 'session') {
       const workMinutes = currentPomodoro.duration || 25;
-      await taskService.incrementPomodoro(currentPomodoro.task.id, workMinutes);
+      await taskService.incrementPomodoro(user.uid, currentPomodoro.task.id, workMinutes);
     }
 
     setCurrentPomodoro(null);
@@ -101,7 +101,7 @@ export const usePomodoro = () => {
     await pomodoroService.interrupt(currentPomodoro.id);
 
     if (currentPomodoro.task) {
-      await taskService.incrementInterruption(currentPomodoro.task.id);
+      await taskService.incrementInterruption(user.uid, currentPomodoro.task.id);
     }
 
     setCurrentPomodoro(null);

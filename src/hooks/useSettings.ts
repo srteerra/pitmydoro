@@ -136,7 +136,7 @@ export const useSettings = () => {
   const loadConfig = async (userId: string) => {
     const userData = await userService.getUserData(userId);
     if (!userData?.preferences) return;
-    setSettings(userData.preferences);
+    setSettings({ ...DefaultSettings, ...userData.preferences });
   };
 
   const wipeConfig = async () => {

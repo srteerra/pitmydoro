@@ -1,4 +1,4 @@
-import Provider from './provider';
+import ChakraUIProvider from './chakraUIProvider';
 import React from 'react';
 import './globals.css';
 import { ColorModeProvider } from '@/components/ui/color-mode';
@@ -7,7 +7,6 @@ import { Metadata } from 'next';
 import Head from 'next/head';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { keywords } from '@/constants/Keywords';
-import { AuthModal } from '@/components/Auth/AuthModal';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
@@ -64,15 +63,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
       <body>
         <NextIntlClientProvider>
-          <AuthProvider>
-            <Provider>
+          <ChakraUIProvider>
+            <AuthProvider>
               <ColorModeProvider enableSystem={false}>
                 <Toaster />
                 {children}
-                <AuthModal />
               </ColorModeProvider>
-            </Provider>
-          </AuthProvider>
+            </AuthProvider>
+          </ChakraUIProvider>
         </NextIntlClientProvider>
       </body>
     </html>

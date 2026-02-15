@@ -3,6 +3,7 @@
 import React, { useRef } from 'react';
 import { User } from 'firebase/auth';
 import { Avatar, Circle, Float, Menu, Portal } from '@chakra-ui/react';
+import { useTranslations } from 'use-intl';
 
 interface Props {
   user: User;
@@ -11,6 +12,7 @@ interface Props {
 
 export const UserMenu = ({ user, onLogout }: Props) => {
   const ref = useRef<HTMLDivElement | null>(null);
+  const t = useTranslations('auth');
   const getAnchorRect = () => ref.current!.getBoundingClientRect();
 
   const handleLogout = () => {
@@ -20,15 +22,7 @@ export const UserMenu = ({ user, onLogout }: Props) => {
   return (
     <Menu.Root positioning={{ getAnchorRect }}>
       <Menu.Trigger rounded='full' focusRing='outside'>
-        <Avatar.Root
-          position={'absolute'}
-          right={30}
-          top={30}
-          borderRadius={'full'}
-          size='lg'
-          cursor='pointer'
-          ref={ref}
-        >
+        <Avatar.Root borderRadius={'full'} size='lg' cursor='pointer' ref={ref}>
           <Avatar.Fallback name='Segun Adebayo' />
           <Avatar.Image
             src={user.photoURL || `https://ui-avatars.com/api/?name=${user.email}`}
@@ -42,14 +36,14 @@ export const UserMenu = ({ user, onLogout }: Props) => {
       <Portal>
         <Menu.Positioner>
           <Menu.Content>
-            <Menu.Item cursor='pointer' value='account'>
-              Account
+            <Menu.Item disabled cursor='pointer' value='account'>
+              {t('userMenu.profile')}
             </Menu.Item>
-            <Menu.Item cursor='pointer' value='settings'>
-              Settings
+            <Menu.Item disabled cursor='pointer' value='settings'>
+              {t('userMenu.myAccount')}
             </Menu.Item>
             <Menu.Item cursor='pointer' value='logout' onClick={handleLogout}>
-              Logout
+              {t('userMenu.logOut')}
             </Menu.Item>
           </Menu.Content>
         </Menu.Positioner>

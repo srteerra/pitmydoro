@@ -15,12 +15,6 @@ interface ToastOptions {
 }
 
 export const useAlert = () => {
-  return {
-    toastSuccess: () => {},
-    toastError: () => {},
-    toastInfo: () => {},
-    toastWarning: () => {},
-  };
   const { theme } = useTheme();
   const [primaryColor] = useToken('colors', ['primary.default']);
   const [dangerColor] = useToken('colors', ['danger']);

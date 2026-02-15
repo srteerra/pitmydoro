@@ -100,13 +100,7 @@ export const AuthModal = () => {
       onExitComplete={() => setAuthMode('login')}
     >
       <Dialog.Trigger asChild>
-        <Button
-          position={'absolute'}
-          right={30}
-          borderRadius={'full'}
-          top={30}
-          onClick={() => setShowModal(true)}
-        >
+        <Button borderRadius={'full'} onClick={() => setShowModal(true)}>
           <MdLogin /> {t('join')}
         </Button>
       </Dialog.Trigger>
