@@ -10,7 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { DefaultSettings } from '@/constants/DefaultSettings';
 
 export const useSettings = () => {
-  const { toastSuccess } = useAlert();
+  const { toastSuccess, toastError } = useAlert();
   const { user } = useAuth();
   const t = useTranslations('settings');
 
@@ -63,6 +63,11 @@ export const useSettings = () => {
   };
 
   const handleBreaksInterval = async (value: number) => {
+    if (value < 1) {
+      toastError(t('sections.session.longBreakInterval.error'));
+      return;
+    }
+
     setBreaksInterval(value);
     if (user) await userService.updatePreferences(user.uid, { breaksInterval: value });
     toastSuccess(t('settingsSaved'));

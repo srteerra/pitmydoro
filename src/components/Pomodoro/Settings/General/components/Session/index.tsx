@@ -23,6 +23,7 @@ export const Session = () => {
   const debouncedBreaksInterval = useDebounce(handleBreaksInterval, 1000);
 
   const handleBreaksIntervalChange = (value: number) => {
+    if (value < 1) return;
     setLocalBreaksInterval(value);
     debouncedBreaksInterval(value);
   };
@@ -61,6 +62,7 @@ export const Session = () => {
           onValueChange={(e) => handleBreaksIntervalChange(Number(e.value))}
           unstyled
           spinOnPress={false}
+          min={1}
         >
           <HStack gap='2'>
             <NumberInput.DecrementTrigger asChild>
