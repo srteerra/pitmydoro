@@ -9,9 +9,11 @@ import { useTranslations } from 'use-intl';
 import { useTasks } from '@/hooks/useTasks';
 import { useTaskStore } from '@/stores/Tasks.store';
 import _ from 'lodash';
+import { usePomodoro } from '@/hooks/usePomodoro';
 
 export const Tasks = () => {
-  const { loading, handleAddTask, selectTask, handleReorderTasks } = useTasks();
+  const { loading, handleAddTask, handleReorderTasks } = useTasks();
+  const { switchTask } = usePomodoro();
   const tasks = useTaskStore((state) => state.tasks);
   const editingTask = useTaskStore((state) => state.editingTask);
   const setEditingTask = useTaskStore((state) => state.setEditingTask);
@@ -21,13 +23,13 @@ export const Tasks = () => {
     return _.sortBy(tasks, 'order');
   }, [tasks]);
 
-  const handleTaskClick = (task: Task) => {
+  const handleTaskClick = async (task: Task) => {
     if (!editingTask) {
-      selectTask(task);
+      await switchTask(task);
     } else {
       if (tasks?.length && tasks.some((t) => !t.title)) return;
       setEditingTask(null);
-      selectTask(task);
+      await switchTask(task);
     }
   };
 

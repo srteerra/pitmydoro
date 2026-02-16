@@ -10,162 +10,451 @@ import _ from 'lodash';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { useTasks } from '@/hooks/useTasks';
 import { usePomodoroStore } from '@/stores/Pomodoro.store';
+import useSessionStore from '@/stores/Session.store';
+import { FlagEnum } from '@/enums/Flag.enum';
+import moment from 'moment';
+import { useAlert } from '@/hooks/useAlert';
+import { TireTypeEnum } from '@/enums/TireType.enum';
+import { useTranslations } from 'use-intl';
 
 export const usePomodoro = () => {
   const { user } = useAuth();
-  const { checkTask } = useTasks();
-  const { currentPomodoro, setCurrentPomodoro } = usePomodoroStore();
+  const { confirmAlert } = useAlert();
+  const { checkTask, handleReorderTasks } = useTasks();
+  const t = useTranslations('pomodoro');
+
+  const {
+    currentPomodoro,
+    isActive,
+    isEndingSoon,
+    estTimeFinish,
+    setCurrentPomodoro,
+    setIsActive,
+    setIsEndingSoon,
+    setEstTimeFinish,
+    resetPomodoro,
+  } = usePomodoroStore();
+
   const { currentTask, tasks, setCurrentTask, updateTask } = useTaskStore();
+
+  const status = useSessionStore((state) => state.status);
+  const selectedTire = useSessionStore((state) => state.selectedTire);
+  const setStatus = useSessionStore((state) => state.setStatus);
+  const setFlag = useSessionStore((state) => state.setFlag);
+  const setStopped = useSessionStore((state) => state.setIsStopped);
+  const setDateClock = useSessionStore((state) => state.setDateClock);
+  const setSelectedTire = useSessionStore((state) => state.setSelectedTire);
+
   const autoStartNextTask = useSettingsStore((state) => state.autoStartNextTask);
+  const autoOrderTasks = useSettingsStore((state) => state.autoOrderTasks);
+  const autoCompleteTask = useSettingsStore((state) => state.autoCompleteTask);
+  const autoStartBreak = useSettingsStore((state) => state.autoStartBreak);
+  const breaksInterval = useSettingsStore((state) => state.breaksInterval);
+  const autoStartSession = useSettingsStore((state) => state.autoStartSession);
+  const tiresSettings = useSettingsStore((state) => state.tiresSettings);
+  const breaksDuration = useSettingsStore((state) => state.breaksDuration);
 
   const incompleteTasks = useMemo(() => {
     return _.chain(tasks).reject('completedAt').sortBy('order').value();
   }, [tasks]);
 
-  const calculatePausedTime = (pauses?: { pausedAt: Timestamp; resumedAt: Timestamp }[]) => {
+  const incompletePomodoros = useMemo(() => {
+    return _.chain(tasks)
+      .filter((task) => !task.completedAt)
+      .sumBy('estimatedPomodoros')
+      .value();
+  }, [tasks]);
+
+  const getCurrentDuration = (newTimer?: TireTypeEnum): number => {
+    const newTime =
+      status === SessionStatusEnum.LONG_BREAK
+        ? breaksDuration[SessionStatusEnum.LONG_BREAK]
+        : status === SessionStatusEnum.SHORT_BREAK
+          ? breaksDuration[SessionStatusEnum.SHORT_BREAK]
+          : tiresSettings[newTimer ?? selectedTire].duration;
+
+    return moment.duration(Number(newTime), 'minutes').asMilliseconds();
+  };
+
+  const calculatePausedTime = (pauses?: Array<{ pausedAt: any; resumedAt: any }>) => {
     if (!pauses || pauses.length === 0) return 0;
 
+    const convertToMillis = (timestamp: any): number => {
+      if (!timestamp) return 0;
+
+      try {
+        if (timestamp.toMillis && typeof timestamp.toMillis === 'function') {
+          return timestamp.toMillis();
+        }
+
+        if (timestamp.seconds !== undefined && timestamp.nanoseconds !== undefined) {
+          return timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000;
+        }
+
+        if (typeof timestamp === 'number') {
+          return timestamp;
+        }
+
+        return 0;
+      } catch (error) {
+        console.error('Error converting timestamp:', error, timestamp);
+        return 0;
+      }
+    };
+
     return pauses.reduce((total, pause) => {
-      const pausedMs = pause.pausedAt.toMillis();
-      const resumedMs = pause.resumedAt.toMillis();
-      const diff = (resumedMs - pausedMs) / 1000 / 60;
-      return total + diff;
+      if (!pause.resumedAt) return total;
+
+      const pausedMs = convertToMillis(pause.pausedAt);
+      const resumedMs = convertToMillis(pause.resumedAt);
+
+      if (pausedMs === 0 || resumedMs === 0) {
+        console.warn('Invalid pause timestamps:', pause);
+        return total;
+      }
+
+      const diff = resumedMs - pausedMs;
+      return total + Math.max(0, diff);
     }, 0);
   };
 
-  const start = async (type: SessionStatusEnum, duration: number, team: Team, task?: Task) => {
-    const taskToUse = task || currentTask || null;
+  const updateEstimatedFinish = (totalRemainingMs: number) => {
+    const now = Date.now();
+    const tireDuration = tiresSettings[selectedTire]?.duration ?? 25;
+    const msPerPomodoro = tireDuration * 60 * 1000;
+    const remainingFuture = (incompletePomodoros - 1) * msPerPomodoro;
+    const totalRemaining = Math.max(totalRemainingMs, 0) + Math.max(remainingFuture, 0);
+    const newEst = moment(now + totalRemaining).format('HH:mm');
+    setEstTimeFinish(newEst);
+  };
 
-    setCurrentPomodoro({
-      type,
-      duration,
-      startAt: Timestamp.now(),
-      startTeam: team,
-      task: taskToUse,
-      status: 'running',
-    });
+  const changeCompoundTime = (selectedTire: TireTypeEnum) => {
+    setSelectedTire(selectedTire);
+    reset(selectedTire);
+  };
+
+  const start = async (type: SessionStatusEnum, duration: number, team: Team, task?: Task) => {
+    try {
+      setIsActive(true);
+      setStopped(false);
+
+      const taskToUse = task || currentTask || null;
+
+      setCurrentPomodoro({
+        type,
+        duration,
+        startAt: Timestamp.now(),
+        startTeam: team,
+        task: taskToUse,
+        status: 'running',
+      });
+
+      if (type === SessionStatusEnum.IN_SESSION) {
+        setFlag(FlagEnum.GREEN);
+      } else {
+        setFlag(null);
+      }
+    } catch (error) {
+      console.error('Error starting pomodoro:', error);
+      throw error;
+    }
   };
 
   const pause = async () => {
-    if (!currentPomodoro || !currentPomodoro.task || !user) return;
+    if (!currentPomodoro) {
+      return;
+    }
 
-    const pausedAt = Timestamp.now();
+    if (!currentPomodoro.task) {
+      return;
+    }
 
-    await taskService.addPauseToTask(user.uid, currentPomodoro.task.id, {
-      pausedAt,
-      resumedAt: null,
-    });
+    if (!user) {
+      return;
+    }
 
-    setCurrentPomodoro({
-      ...currentPomodoro,
-      status: 'paused',
-      currentPauseStart: pausedAt,
-    });
+    if (currentPomodoro.status === 'paused') {
+      console.warn('Pomodoro already paused');
+      return;
+    }
+
+    try {
+      const pausedAt = Timestamp.now();
+
+      setCurrentPomodoro({
+        ...currentPomodoro,
+        status: 'paused',
+        currentPauseStart: pausedAt,
+      });
+
+      setIsActive(false);
+      setStopped(true);
+
+      if (status === SessionStatusEnum.IN_SESSION) {
+        setFlag(FlagEnum.YELLOW);
+
+        await taskService.updateTaskStats(user.uid, currentPomodoro.task.id, {
+          pauses: 1,
+        });
+
+        await taskService.addPauseToTask(user.uid, currentPomodoro.task.id, {
+          pausedAt,
+          resumedAt: null,
+        });
+      } else {
+        setFlag(null);
+      }
+    } catch (error) {
+      console.error('Error pausing pomodoro:', error);
+      throw error;
+    }
   };
 
   const resume = async () => {
-    if (!currentPomodoro || !currentPomodoro.task || !user) return;
-
-    const resumedAt = Timestamp.now();
-
-    await taskService.updateLastPause(user.uid, currentPomodoro.task.id, resumedAt);
-
-    if (currentPomodoro.currentPauseStart) {
-      const pausedMs = currentPomodoro.currentPauseStart.toMillis();
-      const resumedMs = resumedAt.toMillis();
-      const pausedMinutes = (resumedMs - pausedMs) / 1000 / 60;
-
-      await taskService.updateTaskStats(user.uid, currentPomodoro.task.id, {
-        pausedTime: pausedMinutes,
-        pauses: 1,
-      });
+    if (!currentPomodoro) {
+      return;
     }
 
-    setCurrentPomodoro({
-      ...currentPomodoro,
-      status: 'running',
-      currentPauseStart: undefined,
-    });
+    if (!currentPomodoro.task || !user) {
+      return;
+    }
+
+    if (currentPomodoro.status !== 'paused') {
+      return;
+    }
+
+    try {
+      const resumedAt = Timestamp.now();
+
+      setCurrentPomodoro({
+        ...currentPomodoro,
+        status: 'running',
+        currentPauseStart: undefined,
+      });
+
+      setIsActive(true);
+      setStopped(false);
+
+      if (status === SessionStatusEnum.IN_SESSION) {
+        setFlag(FlagEnum.GREEN);
+      } else {
+        setFlag(null);
+      }
+
+      await taskService.updateLastPause(user.uid, currentPomodoro.task.id, resumedAt);
+
+      if (currentPomodoro.currentPauseStart) {
+        const convertToMillis = (timestamp: any): number => {
+          if (!timestamp) return 0;
+          if (timestamp.toMillis && typeof timestamp.toMillis === 'function') {
+            return timestamp.toMillis();
+          }
+          if (timestamp.seconds !== undefined && timestamp.nanoseconds !== undefined) {
+            return timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000;
+          }
+          if (typeof timestamp === 'number') {
+            return timestamp;
+          }
+          return 0;
+        };
+
+        const pausedMs = convertToMillis(currentPomodoro.currentPauseStart);
+        const resumedMs = convertToMillis(resumedAt);
+        const pausedMillis = Math.max(0, resumedMs - pausedMs);
+
+        await taskService.updateTaskStats(user.uid, currentPomodoro.task.id, {
+          pausedTime: pausedMillis,
+        });
+      }
+    } catch (error) {
+      console.error('Error resuming pomodoro:', error);
+      throw error;
+    }
   };
 
   const complete = async () => {
-    if (!currentPomodoro || !user) return;
-
-    if (currentPomodoro.type === 'session' && currentPomodoro.task) {
-      const task = currentPomodoro.task;
-
-      const pausedTime = calculatePausedTime(task.pauses);
-      console.log('pausedTime', pausedTime);
-      console.log('currentPomodoro.duration', currentPomodoro.duration);
-      const workTime = currentPomodoro.duration - pausedTime;
-
-      console.log('workTime', workTime);
-      await taskService.updateTaskStats(user.uid, task.id, {
-        workTime: workTime > 0 ? workTime : currentPomodoro.duration,
-        pomodoros: 1,
-      });
-
-      if (!task.completedAt)
-        await checkTask(task.id, task.estimatedPomodoros === task.totalPomodoros + 1);
-
-      updateTask(task.id, { totalPomodoros: task.totalPomodoros + 1 });
-      await taskService.update(user.uid, task.id, { pauses: [] });
+    if (!currentPomodoro || !user) {
+      return;
     }
 
-    if (
-      (currentPomodoro.type === 'shortBreak' || currentPomodoro.type === 'longBreak') &&
-      currentPomodoro.task
-    ) {
-      await taskService.updateTaskStats(user.uid, currentPomodoro.task.id, {
-        breakTime: currentPomodoro.duration,
-      });
-    }
+    try {
+      if (currentPomodoro.type === SessionStatusEnum.IN_SESSION && currentPomodoro.task) {
+        const task = currentPomodoro.task;
+        const taskInStore = tasks.find((t) => t.id === task.id);
 
-    setCurrentPomodoro(null);
+        if (!taskInStore) {
+          setCurrentPomodoro(null);
+          setIsActive(false);
+          setStopped(true);
+          return;
+        }
+
+        const newTotalPomodoros = taskInStore.totalPomodoros + 1;
+        updateTask(task.id, { totalPomodoros: newTotalPomodoros });
+
+        const pausedTimeMs = calculatePausedTime(taskInStore.pauses);
+        const workTimeMinutes = Math.max(0, currentPomodoro.duration - pausedTimeMs / 1000 / 60);
+
+        await taskService.updateTaskStats(user.uid, task.id, {
+          workTime: workTimeMinutes > 0 ? workTimeMinutes : currentPomodoro.duration,
+          pomodoros: 1,
+        });
+
+        await taskService.update(user.uid, task.id, { pauses: [] });
+        updateTask(task.id, { pauses: [] });
+
+        if (autoStartBreak) {
+          const shouldBeLongBreak =
+            newTotalPomodoros > 0 && newTotalPomodoros % breaksInterval === 0;
+          setStatus(
+            shouldBeLongBreak ? SessionStatusEnum.LONG_BREAK : SessionStatusEnum.SHORT_BREAK
+          );
+        }
+
+        const shouldCompleteTask =
+          !taskInStore.completedAt &&
+          taskInStore.estimatedPomodoros === newTotalPomodoros &&
+          autoCompleteTask;
+
+        if (shouldCompleteTask) {
+          await checkTask(task.id, true);
+          await new Promise((resolve) => setTimeout(resolve, 100));
+
+          const freshTasks = useTaskStore.getState().tasks;
+
+          const freshIncompleteTasks = _.chain(freshTasks)
+            .filter((t) => !t.completedAt)
+            .sortBy('order')
+            .value();
+
+          if (autoStartNextTask && freshIncompleteTasks.length > 0) {
+            await switchTask(freshIncompleteTasks[0], true);
+          }
+
+          if (autoOrderTasks) {
+            const freshCompletedTasks = _.chain(freshTasks)
+              .filter((t) => !!t.completedAt)
+              .sortBy('completedAt')
+              .value();
+
+            const orderedTasks = [...freshIncompleteTasks, ...freshCompletedTasks];
+            await handleReorderTasks(orderedTasks);
+          }
+        }
+      }
+
+      if (
+        (currentPomodoro.type === SessionStatusEnum.SHORT_BREAK ||
+          currentPomodoro.type === SessionStatusEnum.LONG_BREAK) &&
+        currentPomodoro.task
+      ) {
+        if (autoStartSession) {
+          setStatus(SessionStatusEnum.IN_SESSION);
+        }
+
+        await taskService.updateTaskStats(user.uid, currentPomodoro.task.id, {
+          breakTime: currentPomodoro.duration,
+        });
+      }
+
+      setCurrentPomodoro(null);
+      setIsActive(false);
+      setStopped(true);
+    } catch (error) {
+      console.error('Error completing pomodoro:', error);
+      throw error;
+    }
+  };
+
+  const reset = (newTire?: TireTypeEnum) => {
+    const newTime =
+      status === SessionStatusEnum.LONG_BREAK
+        ? breaksDuration[SessionStatusEnum.LONG_BREAK]
+        : status === SessionStatusEnum.SHORT_BREAK
+          ? breaksDuration[SessionStatusEnum.SHORT_BREAK]
+          : tiresSettings[newTire ?? selectedTire].duration;
+
+    const duration = moment.duration(Number(newTime), 'minutes').asMilliseconds();
+    setDateClock(Date.now() + duration);
+
+    resetPomodoro();
+    setStopped(true);
+    if (!_.isNull(newTire)) setFlag(FlagEnum.RED);
   };
 
   const interrupt = async () => {
-    if (!currentPomodoro || !user) return;
+    if (!currentPomodoro?.task?.id) {
+      return;
+    }
 
-    if (currentPomodoro.task) {
+    if (!user) {
+      reset();
+      return;
+    }
+
+    try {
+      updateTask(currentPomodoro.task.id, { pauses: [] });
+
       await taskService.updateTaskStats(user.uid, currentPomodoro.task.id, {
         interruptions: 1,
       });
 
       await taskService.update(user.uid, currentPomodoro.task.id, { pauses: [] });
-    }
 
-    setCurrentPomodoro(null);
+      reset();
+    } catch (error) {
+      console.error('Error interrupting pomodoro:', error);
+      reset();
+      throw error;
+    }
   };
 
-  const switchTask = async (newTask: Task) => {
-    if (currentPomodoro && user) {
-      await interrupt();
+  const switchTask = async (newTask: Task, bypassInterrupt?: boolean) => {
+    if (!newTask) {
+      return;
     }
 
-    setCurrentTask(newTask);
+    try {
+      if (
+        isActive &&
+        !bypassInterrupt &&
+        currentPomodoro?.task &&
+        newTask.id !== currentPomodoro.task.id
+      ) {
+        if (!(await confirmAlert(t('interruptAccept')))) return;
+        await interrupt();
+      }
+
+      setCurrentTask(newTask);
+    } catch (error) {
+      console.error('Error switching task:', error);
+      throw error;
+    }
   };
 
   useEffect(() => {
-    if (!tasks?.length) setCurrentTask(null);
+    if (!tasks?.length) {
+      setCurrentTask(null);
+    }
   }, [tasks, setCurrentTask]);
-
-  useEffect(() => {
-    if (!autoStartNextTask) return;
-
-    if (!currentTask && incompleteTasks.length > 0) {
-      setCurrentTask(incompleteTasks[0]);
-    }
-  }, [tasks, currentTask, autoStartNextTask, setCurrentTask, incompleteTasks]);
 
   return {
     currentPomodoro,
     currentTask,
+    isEndingSoon,
+    estTimeFinish,
+    incompleteTasks,
+    incompletePomodoros,
+    changeCompoundTime,
     start,
     pause,
     resume,
     complete,
     interrupt,
+    reset,
     switchTask,
+    setIsEndingSoon,
+    updateEstimatedFinish,
+    getCurrentDuration,
   };
 };

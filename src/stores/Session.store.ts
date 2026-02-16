@@ -10,6 +10,7 @@ interface SessionStore {
   selectedTire: TireTypeEnum;
   isEndingSoon: boolean;
   estTimeFinish: string;
+  dateClock: number;
 }
 
 interface SessionActions {
@@ -19,6 +20,7 @@ interface SessionActions {
   setSelectedTire: (tire: TireTypeEnum) => void;
   setIsEndingSoon: (val: boolean) => void;
   setEstTimeFinish: (estTimeFinish: string) => void;
+  setDateClock: (dateClock: number) => void;
 }
 
 const useSessionStore = create<SessionStore & SessionActions>((set) => ({
@@ -28,6 +30,7 @@ const useSessionStore = create<SessionStore & SessionActions>((set) => ({
   isStopped: false,
   isEndingSoon: false,
   estTimeFinish: '',
+  dateClock: Date.now() + 1000000,
 
   setStatus: (status) => set(() => ({ status })),
   setFlag: (flag) => set(() => ({ flag })),
@@ -35,6 +38,7 @@ const useSessionStore = create<SessionStore & SessionActions>((set) => ({
   setSelectedTire: (selectedTire) => set(() => ({ selectedTire })),
   setIsEndingSoon: (val: boolean) => set({ isEndingSoon: val }),
   setEstTimeFinish: (time: string) => set({ estTimeFinish: time }),
+  setDateClock: (dateClock: number) => set({ dateClock }),
 }));
 
 export default useSessionStore;
