@@ -27,31 +27,31 @@ export function useTasks() {
   }, [tasks]);
 
   const create = async (taskData: Task) => {
+    updateTask(taskData.id, { ...taskData, isSync: !!user });
+
     if (user) {
       await taskService.create(taskData, user.uid);
     }
-
-    updateTask(taskData.id, { ...taskData, isSync: !!user });
   };
 
   const update = async (id: string, updates: Partial<Task>) => {
+    updateTask(id, updates);
+
     const task = tasks.find((t) => t.id === id);
 
     if (user && task?.isSync) {
       await taskService.update(user.uid, id, updates);
     }
-
-    updateTask(id, updates);
   };
 
   const remove = async (id: string) => {
+    removeTask(id);
+
     const task = tasks.find((t) => t.id === id);
 
     if (user && task?.isSync) {
       await taskService.delete(user.uid, id);
     }
-
-    removeTask(id);
 
     const remainingTasks = _.sortBy(tasks, 'order').filter((t) => t.id !== id);
     await reorderTasks(remainingTasks);
@@ -68,16 +68,12 @@ export function useTasks() {
   };
 
   const check = async (id: string, isComplete?: boolean) => {
+    const updates = { completedAt: isComplete ? Timestamp.now() : null };
+    updateTask(id, updates);
+
     if (user) {
       await taskService.complete(user.uid, id, isComplete);
     }
-
-    const updates = { completedAt: isComplete ? Timestamp.now() : null };
-    updateTask(id, updates);
-  };
-
-  const selectTask = (task: Task) => {
-    setCurrentTask(task);
   };
 
   const unselectTask = () => {
@@ -148,11 +144,11 @@ export function useTasks() {
   };
 
   const handleReorderTasks = async (newOrderedTasks: Task[]) => {
-    await reorderTasks(newOrderedTasks);
-
     if (!currentTask && incompleteTasks.length > 0) {
       setCurrentTask(incompleteTasks[0]);
     }
+
+    await reorderTasks(newOrderedTasks);
   };
 
   const loadTasks = async (userId: string) => {
@@ -172,6 +168,7 @@ export function useTasks() {
     }));
 
     setTasks(sortedTasks);
+    if (sortedTasks?.length > 0) setCurrentTask(sortedTasks[0]);
   };
 
   const resetAllTasks = async () => {
@@ -199,7 +196,6 @@ export function useTasks() {
     handleAddTask,
     handleReorderTasks,
     handleEditTask,
-    selectTask,
     unselectTask,
   };
 }

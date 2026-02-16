@@ -11,15 +11,17 @@ import { FlagSwitcher } from '@/components/Pomodoro/components/FlagSwitcher';
 import { useTranslations } from 'use-intl';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
+import { usePomodoroStore } from '@/stores/Pomodoro.store';
+import { usePomodoro } from '@/hooks/usePomodoro';
 
 export const Pomodoro = () => {
   const sessionStatus = useSessionStore((state) => state.status);
-  const isStopped = useSessionStore((state) => state.isStopped);
+  const isActive = usePomodoroStore((state) => state.isActive);
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const setStatus = useSessionStore((state) => state.setStatus);
   const selectedTire = useSessionStore((state) => state.selectedTire);
-  const setSelectedTire = useSessionStore((state) => state.setSelectedTire);
   const t = useTranslations('pomodoro');
+  const { changeCompoundTime } = usePomodoro();
 
   const darkenColor = tinycolor(currentScuderia?.colors?.background?.[sessionStatus])
     .darken(80)
@@ -103,13 +105,14 @@ export const Pomodoro = () => {
             frameHeight={80}
             frameWidth={270}
             totalFrames={6}
-            paused={isStopped}
+            paused={!isActive}
           />
         )}
       </Center>
 
       <VStack display={'flex'} flexDirection={'column'}>
-        <TimerSelector value={selectedTire} onSelect={setSelectedTire} />
+        <TimerSelector value={selectedTire} onSelect={changeCompoundTime} />
+
         <Center w={'100%'}>
           <SegmentedControl
             size={'md'}

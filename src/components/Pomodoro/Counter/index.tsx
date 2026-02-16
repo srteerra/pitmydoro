@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import Countdown, { CountdownApi, zeroPad } from 'react-countdown';
 import { Box, Center, Flex, HStack, IconButton, Text, useDisclosure } from '@chakra-ui/react';
 import { GrPowerReset } from 'react-icons/gr';
@@ -12,7 +12,6 @@ import { usePomodoro } from '@/hooks/usePomodoro';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
 import { FaFlag } from 'react-icons/fa';
 import { LuTimerReset } from 'react-icons/lu';
-import { FlagEnum } from '@/enums/Flag.enum';
 import { useTranslations } from 'use-intl';
 import { useAlert } from '@/hooks/useAlert';
 import tinycolor from 'tinycolor2';
@@ -27,33 +26,26 @@ import { usePomodoroStore } from '@/stores/Pomodoro.store';
 export const Counter = () => {
   const status = useSessionStore((state) => state.status);
   const tasks = useTaskStore((state) => state.tasks);
-  const setStopped = useSessionStore((state) => state.setIsStopped);
-  const setFlag = useSessionStore((state) => state.setFlag);
-  const selectedTire = useSessionStore((state) => state.selectedTire);
-  const estTimeFinish = useSessionStore((state) => state.estTimeFinish);
-  const setEstTimeFinish = useSessionStore((state) => state.setEstTimeFinish);
-  const isEndingSoon = useSessionStore((state) => state.isEndingSoon);
-  const setIsEndingSoon = useSessionStore((state) => state.setIsEndingSoon);
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
   const enableNotifications = useSettingsStore((state) => state.enableNotifications);
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
-  const countdownRef = useRef<CountdownApi | null>(null);
-  const { currentPomodoro } = usePomodoroStore();
+  const selectedTire = useSessionStore((state) => state.selectedTire);
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
-  const { complete, start, pause, resume } = usePomodoro();
+  const dateClock = useSessionStore((state) => state.dateClock);
+  const setDateClock = useSessionStore((state) => state.setDateClock);
+  const { currentPomodoro, isActive, isEndingSoon, estTimeFinish, setIsEndingSoon } =
+    usePomodoroStore();
+
+  const countdownRef = useRef<CountdownApi | null>(null);
   const { theme } = useTheme();
-  const [date, setDate] = useState(Date.now() + 1000000);
-  const [isActive, setIsActive] = useState(false);
+
   const { confirmAlert } = useAlert();
   const { resetAllTasks } = useTasks();
   const { open, onOpen, onClose } = useDisclosure();
   const { playSound, resumeSound, radioSound } = useSounds();
   const t = useTranslations('pomodoro');
 
-  const incompletePomodoros = _.chain(tasks)
-    .filter((task) => !task.completedAt)
-    .sumBy('estimatedPomodoros')
-    .value();
+  const { incompletePomodoros, start, pause, resume, complete, reset } = usePomodoro();
 
   const completedPomodoros = _.chain(tasks).filter('completedAt').sumBy('totalPomodoros').value();
 
@@ -89,7 +81,6 @@ export const Counter = () => {
   };
 
   const handleTick = ({ total }: { total: number }) => {
-    const now = Date.now();
     const isRunning = countdownRef.current?.isStarted() && !countdownRef.current?.isPaused();
     if (!isRunning) return;
 
@@ -112,68 +103,48 @@ export const Counter = () => {
     if (total > 4000 && isEndingSoon) {
       setIsEndingSoon(false);
     }
-
-    const tireDuration = tiresSettings[selectedTire]?.duration ?? 25;
-    const msPerPomodoro = tireDuration * 60 * 1000;
-    const remainingFuture = (incompletePomodoros - 1) * msPerPomodoro;
-    const totalRemaining = Math.max(total, 0) + Math.max(remainingFuture, 0);
-    const newEst = moment(now + totalRemaining).format('HH:mm');
-
-    setEstTimeFinish(newEst);
   };
 
   const handleIntervalComplete = useCallback(() => {
     countdownRef.current?.pause();
-    setStopped(true);
-    setIsActive(false);
+
+    reset();
+
     if (status === SessionStatusEnum.IN_SESSION) {
       const currentTire = tiresSettings[selectedTire];
       if (currentTire) {
-        setDate(
+        setDateClock(
           Date.now() + moment.duration(Number(currentTire?.duration), 'minutes').asMilliseconds()
         );
       }
     } else {
       const currentBreak = breaksDuration[status];
       if (currentBreak) {
-        setDate(Date.now() + moment.duration(Number(currentBreak), 'minutes').asMilliseconds());
+        setDateClock(
+          Date.now() + moment.duration(Number(currentBreak), 'minutes').asMilliseconds()
+        );
       }
     }
-  }, [status, selectedTire, tiresSettings, breaksDuration, setStopped]);
+  }, [status, selectedTire, tiresSettings, breaksDuration, setDateClock]);
 
   const handleStartClick = async () => {
     countdownRef.current?.start();
     playSound();
 
-    if (status === SessionStatusEnum.IN_SESSION) {
-      setFlag(FlagEnum.GREEN);
+    if (currentPomodoro) {
+      await resume();
     } else {
-      setFlag(null);
+      await start(status, tiresSettings[selectedTire]?.duration, currentScuderia);
     }
-
-    setStopped(false);
-    setIsActive(true);
-
-    if (currentPomodoro) await resume();
-    else await start(status, tiresSettings[selectedTire]?.duration, currentScuderia);
   };
 
   const handlePauseClick = async () => {
     countdownRef.current?.pause();
     resumeSound();
-    setStopped(true);
-
-    if (status === SessionStatusEnum.IN_SESSION) {
-      setFlag(FlagEnum.YELLOW);
-    } else {
-      setFlag(null);
-    }
-
-    setIsActive(false);
     await pause();
   };
 
-  const handleResetTimer = () => {
+  const handleResetTimer = async () => {
     const newTime =
       status === SessionStatusEnum.LONG_BREAK
         ? breaksDuration[SessionStatusEnum.LONG_BREAK]
@@ -182,10 +153,9 @@ export const Counter = () => {
           : tiresSettings[selectedTire].duration;
 
     const duration = moment.duration(Number(newTime), 'minutes').asMilliseconds();
-    setDate(Date.now() + duration);
-    setStopped(true);
-    setIsActive(false);
-    setFlag(FlagEnum.RED);
+    setDateClock(Date.now() + duration);
+
+    await pause();
   };
 
   const handleResetClick = async () => {
@@ -199,7 +169,6 @@ export const Counter = () => {
     if (await confirmAlert(t('acceptResetAll'))) {
       handleResetTimer();
       resetAllTasks();
-      setEstTimeFinish('');
       onClose();
     }
   };
@@ -212,6 +181,12 @@ export const Counter = () => {
   useEffect(() => {
     handleIntervalComplete();
   }, [tiresSettings, selectedTire, status, handleIntervalComplete]);
+
+  useEffect(() => {
+    if (!isActive && countdownRef.current?.isStarted() && !countdownRef.current?.isPaused()) {
+      countdownRef.current?.pause();
+    }
+  }, [isActive]);
 
   return (
     <React.Fragment>
@@ -273,13 +248,13 @@ export const Counter = () => {
 
         <Center>
           <Countdown
-            key={date}
+            key={dateClock}
             ref={(countdown) => {
               if (countdown) countdownRef.current = countdown.getApi();
             }}
             autoStart={false}
             onComplete={handleComplete}
-            date={date}
+            date={dateClock}
             onTick={handleTick}
             renderer={({ hours, minutes, seconds }) => {
               const totalMinutes = hours * 60 + minutes;
