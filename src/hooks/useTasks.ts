@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { taskService } from '@/services/task.service';
 import { Timestamp } from 'firebase/firestore';
 import _ from 'lodash';
+import useSettingsStore from '@/stores/Settings.store';
 
 export function useTasks() {
   const { user } = useAuth();
@@ -21,6 +22,9 @@ export function useTasks() {
     setCurrentTask,
     clearCurrentTask,
   } = useTaskStore();
+
+  const autoOrderTasks = useSettingsStore((state) => state.autoOrderTasks);
+  const autoStartNextTask = useSettingsStore((state) => state.autoStartNextTask);
 
   const incompleteTasks = useMemo(() => {
     return _.chain(tasks).reject('completedAt').sortBy('order').value();
@@ -70,6 +74,27 @@ export function useTasks() {
   const check = async (id: string, isComplete?: boolean) => {
     const updates = { completedAt: isComplete ? Timestamp.now() : null };
     updateTask(id, updates);
+
+    const freshTasks = useTaskStore.getState().tasks;
+
+    const freshIncompleteTasks = _.chain(freshTasks)
+      .filter((t) => !t.completedAt)
+      .sortBy('order')
+      .value();
+
+    const freshCompletedTasks = _.chain(freshTasks)
+      .filter((t) => !!t.completedAt)
+      .sortBy('completedAt')
+      .value();
+
+    if (isComplete && autoStartNextTask && freshIncompleteTasks.length > 0) {
+      setCurrentTask(freshIncompleteTasks[0]);
+    }
+
+    if (autoOrderTasks) {
+      const orderedTasks = [...freshIncompleteTasks, ...freshCompletedTasks];
+      await handleReorderTasks(orderedTasks);
+    }
 
     if (user) {
       await taskService.complete(user.uid, id, isComplete);
