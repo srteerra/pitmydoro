@@ -145,17 +145,7 @@ export const Counter = () => {
   };
 
   const handleResetTimer = async () => {
-    const newTime =
-      status === SessionStatusEnum.LONG_BREAK
-        ? breaksDuration[SessionStatusEnum.LONG_BREAK]
-        : status === SessionStatusEnum.SHORT_BREAK
-          ? breaksDuration[SessionStatusEnum.SHORT_BREAK]
-          : tiresSettings[selectedTire].duration;
-
-    const duration = moment.duration(Number(newTime), 'minutes').asMilliseconds();
-    setDateClock(Date.now() + duration);
-
-    await pause();
+    reset(null, true);
   };
 
   const handleResetClick = async () => {
