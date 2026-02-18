@@ -3,6 +3,7 @@ import { Header } from '@/components/Layout/Header';
 import { Footer } from '@/components/Layout/Footer';
 import { Center, Text, Link, Box } from '@chakra-ui/react';
 import { IoIosConstruct } from 'react-icons/io';
+import moment from 'moment';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -23,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             The platform is under daily active development. Bugs may occur—please be patient and
             report any issues to{' '}
             <Link
-              href='mailto:srterradev@gmail.com'
+              href='mailto:contact@pitmydoro.com'
               color={'blue.400'}
               textDecoration={'underline'}
             >
@@ -33,14 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Center>
 
         <Center>
-          <Text as={'small'}>
-            Last update:{' '}
-            {new Date().toLocaleDateString('en-US', {
-              month: 'long',
-              year: 'numeric',
-              day: 'numeric',
-            })}
-          </Text>
+          <Text as={'small'}>Last update: {moment().format('DD/MM/YYYY')}</Text>
         </Center>
       </Box>
 
