@@ -1,4 +1,5 @@
 'use client';
+
 import { setUserLocale } from '@/services/locale.service';
 import { IconButton, Image, Menu, Text } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
@@ -26,18 +27,31 @@ export function LocaleSwitch({ portalDisabled = false }: Props) {
   return (
     <Menu.Root>
       <Menu.Trigger asChild>
-        <IconButton variant={'ghost'} rounded='full' disabled={isPending}>
+        <IconButton
+          data-pw-id={'locale-switcher'}
+          variant={'ghost'}
+          rounded='full'
+          disabled={isPending}
+        >
           <IoEarth />
         </IconButton>
       </Menu.Trigger>
       <Portal disabled={portalDisabled}>
         <Menu.Positioner>
-          <Menu.Content>
-            <Menu.Item value='new-txt' onClick={() => onChange('en')}>
+          <Menu.Content data-pw-id={'locale-content'}>
+            <Menu.Item
+              data-pw-id={'locale-menuItem'}
+              value='new-txt'
+              onClick={() => onChange('en')}
+            >
               <Image w={5} src='/icons/usa.png' alt='English' />
               <Text>English</Text>
             </Menu.Item>
-            <Menu.Item value='new-file' onClick={() => onChange('es')}>
+            <Menu.Item
+              data-pw-id={'locale-menuItem'}
+              value='new-file'
+              onClick={() => onChange('es')}
+            >
               <Image w={5} src='/icons/spain.png' alt='Italian' />
               <Text>Español</Text>
             </Menu.Item>

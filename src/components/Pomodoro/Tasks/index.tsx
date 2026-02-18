@@ -65,6 +65,7 @@ export const Tasks = () => {
           handleAddTask();
         }}
         fontWeight={'semibold'}
+        data-pw-id={'addTask-button'}
         size={'sm'}
         mt={6}
       >
