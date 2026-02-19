@@ -94,8 +94,13 @@ test.describe('Pomodoro', () => {
     await expect(timer).toContainText('25:00');
 
     await page.getByRole('button', { name: 'Start' }).click();
-    await page.waitForTimeout(10000);
+
+    await page.waitForTimeout(5000);
+    await expect(page).toHaveTitle(/24:5/);
+    await page.waitForTimeout(5000);
+
     await page.getByRole('button', { name: 'Pause' }).click();
+    await expect(page).not.toHaveTitle(/24:5/);
 
     await expect(timer).toContainText('24:50');
     await expect(page.getByTestId('flag-yellow')).toBeVisible();
@@ -111,5 +116,7 @@ test.describe('Pomodoro', () => {
     await expect(timer).toContainText('25:00');
     await expect(page.getByTestId('flag-red')).toBeVisible();
     await expect(page.getByTestId('flag-yellow')).not.toBeVisible();
+
+    await expect(page).not.toHaveTitle(/25:00/);
   });
 });

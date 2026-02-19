@@ -161,6 +161,8 @@ export const usePomodoro = () => {
   };
 
   const pause = async () => {
+    document.title = `Pitmydoro - ${t('pausedTitle')}`;
+
     setIsActive(false);
     setStopped(true);
 
@@ -255,6 +257,8 @@ export const usePomodoro = () => {
   };
 
   const complete = async () => {
+    document.title = `${t('boxTitle')}`;
+
     setIsActive(false);
     setStopped(true);
 
@@ -356,6 +360,8 @@ export const usePomodoro = () => {
   };
 
   const reset = (newTire?: TireTypeEnum | null, showRedFlag = false) => {
+    document.title = `Pitmydoro - ${t('pausedTitle')}`;
+
     if (showRedFlag || currentPomodoro?.status === 'running') setFlag(FlagEnum.RED);
     setStopped(true);
 

@@ -22,6 +22,7 @@ import _ from 'lodash';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';
 import { usePomodoroStore } from '@/stores/Pomodoro.store';
+import { formatMs } from '@/utils/formatMs.utils';
 
 export const Counter = () => {
   const status = useSessionStore((state) => state.status);
@@ -83,6 +84,8 @@ export const Counter = () => {
   const handleTick = ({ total }: { total: number }) => {
     const isRunning = countdownRef.current?.isStarted() && !countdownRef.current?.isPaused();
     if (!isRunning) return;
+
+    document.title = `${formatMs(total)} - ${t(status === SessionStatusEnum.IN_SESSION ? 'sessionLabel' : status === SessionStatusEnum.SHORT_BREAK ? 'shortBreakLabel' : 'longBreakLabel')}`;
 
     if (total <= 4000 && !isEndingSoon) {
       setIsEndingSoon(true);

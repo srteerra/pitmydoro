@@ -79,6 +79,7 @@
     "longBreakLabel": "Descanso largo",
     "boxTitle": "Box, Box!",
     "boxDescription": "Hora de tomar un descanso.",
+    "pausedTitle": "En pausa",
     "interruptAccept": "¿Deseas interrumpir la sesión actual?",
     "tasks": {
       "title": "Planifica tu estrategia",
