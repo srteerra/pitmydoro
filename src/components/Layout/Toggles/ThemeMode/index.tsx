@@ -20,7 +20,12 @@ export function ToggleMode() {
   if (!mounted) return null;
 
   return (
-    <IconButton variant={'ghost'} rounded='full' onClick={toggleColorMode}>
+    <IconButton
+      data-pw-id={'theme-switcher'}
+      variant={'ghost'}
+      rounded='full'
+      onClick={toggleColorMode}
+    >
       {theme === 'light' ? <LuMoon /> : <LuSun />}
     </IconButton>
   );
