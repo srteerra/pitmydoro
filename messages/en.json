@@ -78,6 +78,7 @@
     "longBreakLabel": "Long Break",
     "boxTitle": "Box, Box!",
     "boxDescription": "Time to break",
+    "pausedTitle": "Paused",
     "interruptAccept": "Are you sure you want to interrupt the session?",
     "tasks": {
       "title": "Plan your strategy",
