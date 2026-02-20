@@ -268,6 +268,19 @@ export const usePomodoro = () => {
 
     try {
       if (currentPomodoro.type === SessionStatusEnum.IN_SESSION) {
+        if (autoStartBreak) {
+          const taskInCaseStore = tasks.find((t) => t.id === currentPomodoro?.task?.id);
+          const newTotalPomodoros = (taskInCaseStore?.totalPomodoros || 0) + 1;
+          const shouldBeLongBreak =
+            currentPomodoro.task &&
+            newTotalPomodoros > 0 &&
+            newTotalPomodoros % breaksInterval === 0;
+
+          setStatus(
+            shouldBeLongBreak ? SessionStatusEnum.LONG_BREAK : SessionStatusEnum.SHORT_BREAK
+          );
+        }
+
         if (currentPomodoro.task) {
           const task = currentPomodoro.task;
           const taskInStore = tasks.find((t) => t.id === task.id);
@@ -279,14 +292,6 @@ export const usePomodoro = () => {
 
           const newTotalPomodoros = taskInStore.totalPomodoros + 1;
           updateTask(task.id, { totalPomodoros: newTotalPomodoros, pauses: [] });
-
-          if (autoStartBreak) {
-            const shouldBeLongBreak =
-              newTotalPomodoros > 0 && newTotalPomodoros % breaksInterval === 0;
-            setStatus(
-              shouldBeLongBreak ? SessionStatusEnum.LONG_BREAK : SessionStatusEnum.SHORT_BREAK
-            );
-          }
 
           const shouldCompleteTask =
             !taskInStore.completedAt &&
@@ -337,13 +342,12 @@ export const usePomodoro = () => {
       }
 
       if (
-        (currentPomodoro.type === SessionStatusEnum.SHORT_BREAK ||
-          currentPomodoro.type === SessionStatusEnum.LONG_BREAK) &&
-        currentPomodoro.task
+        currentPomodoro.type === SessionStatusEnum.SHORT_BREAK ||
+        currentPomodoro.type === SessionStatusEnum.LONG_BREAK
       ) {
         if (autoStartSession) setStatus(SessionStatusEnum.IN_SESSION);
 
-        if (user) {
+        if (user && currentPomodoro.task) {
           await taskService.updateTaskStats(user.uid, currentPomodoro.task.id, {
             breakTime: currentPomodoro.duration,
           });
