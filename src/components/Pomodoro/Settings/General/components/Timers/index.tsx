@@ -1,11 +1,10 @@
 import { Box, Flex, NumberInput, Text, VStack } from '@chakra-ui/react';
 import { TireTypeEnum } from '@/enums/TireType.enum';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSettings } from '@/hooks/useSettings';
 import { useTranslations } from 'use-intl';
 import useSettingsStore from '@/stores/Settings.store';
-import { useDebounce } from '@/hooks/useDebounce';
 
 export const Timers = () => {
   const { handleChangeBreakDuration, handleChangeTireDuration } = useSettings();
@@ -16,15 +15,22 @@ export const Timers = () => {
   const [localTiresSettings, setLocalTiresSettings] = useState(tiresSettings);
   const [localBreaksDuration, setLocalBreaksDuration] = useState(breaksDuration);
 
-  const debouncedTireDuration = useDebounce(handleChangeTireDuration, 1000);
-  const debouncedBreakDuration = useDebounce(handleChangeBreakDuration, 1000);
+  const tireTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const breakTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const handleTireChange = (tire: TireTypeEnum, value: number) => {
     setLocalTiresSettings((prev) => ({
       ...prev,
       [tire]: { ...prev[tire], duration: value },
     }));
-    debouncedTireDuration(tire, value);
+
+    if (tireTimers.current[tire]) {
+      clearTimeout(tireTimers.current[tire]);
+    }
+
+    tireTimers.current[tire] = setTimeout(() => {
+      handleChangeTireDuration(tire, value);
+    }, 1000);
   };
 
   const handleBreakChange = (status: SessionStatusEnum, value: number) => {
@@ -32,7 +38,14 @@ export const Timers = () => {
       ...prev,
       [status]: value,
     }));
-    debouncedBreakDuration(status, value);
+
+    if (breakTimers.current[status]) {
+      clearTimeout(breakTimers.current[status]);
+    }
+
+    breakTimers.current[status] = setTimeout(() => {
+      handleChangeBreakDuration(status, value);
+    }, 1000);
   };
 
   useEffect(() => {
