@@ -10,6 +10,7 @@ import { useTranslations } from 'use-intl';
 import { useAlert } from '@/hooks/useAlert';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';
+import { useDialog } from '@/contexts/DialogContext';
 
 interface Props {
   task: Task;
@@ -19,6 +20,7 @@ interface Props {
 
 export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const { deleteTask, checkTask, handleEditTask } = useTasks();
+  const { openDialog } = useDialog();
   const ref = useRef<HTMLInputElement | null>(null);
   const [taskTitle, setTaskTitle] = React.useState<string>(task.title);
   const [taskDescription, setTaskDescription] = React.useState<string>(task.description);
@@ -36,6 +38,14 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const isCurrentEditing = useMemo(() => {
     return editingTask === task.id;
   }, [editingTask, task.id]);
+
+  const handleOpenStats = () => {
+    setMenuOpen(false);
+    openDialog({
+      title: 'dasd',
+      component: <p>dasd</p>,
+    });
+  };
 
   const handleOnTaskSubmit = async (save?: boolean) => {
     if (!save) {
@@ -81,9 +91,9 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const handleCheckTask = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setMenuOpen(false);
+
     setTimeout(() => {
       checkTask(task.id, !task.completedAt);
-
       if (!task.completedAt) toastSuccess(t('successCheckTask'));
       else toastSuccess(t('successUncheckTask'));
     }, 100);
@@ -232,10 +242,17 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                       <MdModeEdit />
                       {t('editTask')}
                     </MenuItem>
+
                     <MenuItem onClick={(e) => handleCheckTask(e)} value='complete' cursor='pointer'>
                       {task.completedAt ? <TiTimes /> : <MdOutlineCheck />}
                       {task.completedAt ? t('markAsUncompleted') : t('markAsCompleted')}
                     </MenuItem>
+
+                    <MenuItem onClick={handleOpenStats} value='stats' cursor='pointer'>
+                      <MdOutlineCheck />
+                      See stats
+                    </MenuItem>
+
                     <MenuItem
                       value='delete'
                       color='fg.error'
