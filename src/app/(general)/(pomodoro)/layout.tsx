@@ -28,12 +28,6 @@ export async function generateMetadata(): Promise<Metadata> {
       ],
       type: 'website',
     },
-    twitter: {
-      card: 'summary_large_image',
-      title: t('title'),
-      description: t('description'),
-      images: ['https://pitmydoro.com/images/cover.png'],
-    },
     keywords: keywords,
   };
 }
@@ -41,6 +35,22 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <script
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: 'Pomodoro Timer — Pit My Doro',
+            description:
+              'Open source Pomodoro timer. Organize your time with sessions personalized for you.',
+            applicationCategory: 'ProductivityApplication',
+            operatingSystem: 'Web',
+            url: 'https://www.pitmydoro.com',
+          }),
+        }}
+      />
+
       <MainContainer>{children}</MainContainer>
       <WrapSections />
     </>
