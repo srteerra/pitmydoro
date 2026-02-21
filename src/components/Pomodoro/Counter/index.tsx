@@ -23,6 +23,8 @@ import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';
 import { usePomodoroStore } from '@/stores/Pomodoro.store';
 import { formatMs } from '@/utils/formatMs.utils';
+import { TiCogOutline } from 'react-icons/ti';
+import { useDialog } from '@/contexts/DialogContext';
 
 export const Counter = () => {
   const status = useSessionStore((state) => state.status);
@@ -42,9 +44,11 @@ export const Counter = () => {
 
   const { confirmAlert } = useAlert();
   const { resetAllTasks } = useTasks();
+  const { openDialog } = useDialog();
   const { open, onOpen, onClose } = useDisclosure();
   const { playSound, resumeSound, radioSound } = useSounds();
-  const t = useTranslations('pomodoro');
+  const pomodoroT = useTranslations('pomodoro');
+  const settingsT = useTranslations('settings');
 
   const { incompletePomodoros, start, pause, resume, complete, reset } = usePomodoro();
 
@@ -81,19 +85,27 @@ export const Counter = () => {
     );
   };
 
+  const handleSettingsClick = () => {
+    openDialog({
+      title: settingsT('title'),
+      component: <Settings />,
+      size: 'xl',
+    });
+  };
+
   const handleTick = ({ total }: { total: number }) => {
     const isRunning = countdownRef.current?.isStarted() && !countdownRef.current?.isPaused();
     if (!isRunning) return;
 
-    document.title = `${formatMs(total)} - ${t(status === SessionStatusEnum.IN_SESSION ? 'sessionLabel' : status === SessionStatusEnum.SHORT_BREAK ? 'shortBreakLabel' : 'longBreakLabel')}`;
+    document.title = `${formatMs(total)} - ${pomodoroT(status === SessionStatusEnum.IN_SESSION ? 'sessionLabel' : status === SessionStatusEnum.SHORT_BREAK ? 'shortBreakLabel' : 'longBreakLabel')}`;
 
     if (total <= 4000 && !isEndingSoon) {
       setIsEndingSoon(true);
       radioSound();
       if (isDesktop()) {
         if (Notification.permission === 'granted' && enableNotifications) {
-          new Notification(t('boxTitle'), {
-            body: t('boxDescription'),
+          new Notification(pomodoroT('boxTitle'), {
+            body: pomodoroT('boxDescription'),
             icon: '/f1-icon.webp',
           });
         }
@@ -152,14 +164,14 @@ export const Counter = () => {
   };
 
   const handleResetClick = async () => {
-    if (await confirmAlert(t('acceptReset'))) {
+    if (await confirmAlert(pomodoroT('acceptReset'))) {
       handleResetTimer();
       onClose();
     }
   };
 
   const handleResetAllClick = async () => {
-    if (await confirmAlert(t('acceptResetAll'))) {
+    if (await confirmAlert(pomodoroT('acceptResetAll'))) {
       handleResetTimer();
       resetAllTasks();
       onClose();
@@ -222,7 +234,7 @@ export const Counter = () => {
                 cursor='pointer'
               >
                 <LuTimerReset />
-                {t('resetTimer')}
+                {pomodoroT('resetTimer')}
               </MenuItem>
               <MenuItem
                 data-pw-id={'reset-all-menu-item'}
@@ -233,7 +245,7 @@ export const Counter = () => {
                 cursor='pointer'
               >
                 <FaFlag />
-                {t('resetAll')}
+                {pomodoroT('resetAll')}
               </MenuItem>
             </MenuContent>
           </MenuRoot>
@@ -265,8 +277,17 @@ export const Counter = () => {
             }}
           />
         </Center>
+
         <Box flex={1} display='flex' justifyContent='flex-start'>
-          <Settings />
+          <IconButton
+            onClick={handleSettingsClick}
+            variant='ghost'
+            size='md'
+            rounded='full'
+            aria-label='Settings'
+          >
+            <TiCogOutline />
+          </IconButton>
         </Box>
       </HStack>
 
@@ -280,7 +301,7 @@ export const Counter = () => {
         onClick={isActive ? handlePauseClick : handleStartClick}
         size='md'
       >
-        {isActive ? t('pauseTimer') : t('startTimer')}
+        {isActive ? pomodoroT('pauseTimer') : pomodoroT('startTimer')}
       </RippleButton>
 
       <Center>
@@ -296,7 +317,7 @@ export const Counter = () => {
             )}
           </Text>
           <Text as={'p'} fontSize='sm'>
-            {t('estFinishAt')}
+            {pomodoroT('estFinishAt')}
             {': '}
             <Text as='span' fontWeight='bolder' color={{ base: 'gray.800', _dark: 'gray.200' }}>
               {estTimeFinish || '--:--'}

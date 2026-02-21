@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useMemo } from 'react';
 import { Task } from '@/interfaces/Task.interface';
 import { HiDotsVertical } from 'react-icons/hi';
 import { MdModeEdit, MdOutlineRestoreFromTrash, MdOutlineCheck } from 'react-icons/md';
+import { IoIosStats } from 'react-icons/io';
 import { TiTimes } from 'react-icons/ti';
 import { FaCheck } from 'react-icons/fa';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
@@ -10,7 +11,8 @@ import { useTranslations } from 'use-intl';
 import { useAlert } from '@/hooks/useAlert';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';
-import { useDialog } from '@/contexts/DialogContext';
+import { useDrawer } from '@/contexts/DrawerContext';
+import { StatsDialog } from '@/components/Tasks/StatsDialog';
 
 interface Props {
   task: Task;
@@ -20,7 +22,7 @@ interface Props {
 
 export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const { deleteTask, checkTask, handleEditTask } = useTasks();
-  const { openDialog } = useDialog();
+  const { openDrawer } = useDrawer();
   const ref = useRef<HTMLInputElement | null>(null);
   const [taskTitle, setTaskTitle] = React.useState<string>(task.title);
   const [taskDescription, setTaskDescription] = React.useState<string>(task.description);
@@ -41,9 +43,10 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
 
   const handleOpenStats = () => {
     setMenuOpen(false);
-    openDialog({
-      title: 'dasd',
-      component: <p>dasd</p>,
+    openDrawer({
+      title: task.title,
+      component: <StatsDialog task={task} />,
+      offset: 4,
     });
   };
 
@@ -229,6 +232,11 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 </MenuTrigger>
                 {menuOpen && (
                   <MenuContent>
+                    <MenuItem onClick={handleOpenStats} value='stats' cursor='pointer'>
+                      <IoIosStats />
+                      See stats
+                    </MenuItem>
+
                     <MenuItem
                       disabled={!!editingTask}
                       onClick={(e) => {
@@ -246,11 +254,6 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                     <MenuItem onClick={(e) => handleCheckTask(e)} value='complete' cursor='pointer'>
                       {task.completedAt ? <TiTimes /> : <MdOutlineCheck />}
                       {task.completedAt ? t('markAsUncompleted') : t('markAsCompleted')}
-                    </MenuItem>
-
-                    <MenuItem onClick={handleOpenStats} value='stats' cursor='pointer'>
-                      <MdOutlineCheck />
-                      See stats
                     </MenuItem>
 
                     <MenuItem

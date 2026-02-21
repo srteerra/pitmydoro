@@ -9,6 +9,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { keywords } from '@/constants/Keywords';
 import { Toaster } from '@/components/ui/toaster';
 import { DialogProvider } from '@/contexts/DialogContext';
+import { DrawerProvider } from '@/contexts/DrawerContext';
 
 export const metadata: Metadata = {
   title: 'Pit My Doro',
@@ -42,12 +43,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <NextIntlClientProvider>
           <ChakraUIProvider>
             <DialogProvider>
-              <AuthProvider>
-                <ColorModeProvider enableSystem={false}>
-                  <Toaster />
-                  {children}
-                </ColorModeProvider>
-              </AuthProvider>
+              <DrawerProvider>
+                <AuthProvider>
+                  <ColorModeProvider enableSystem={false}>
+                    <Toaster />
+                    {children}
+                  </ColorModeProvider>
+                </AuthProvider>
+              </DrawerProvider>
             </DialogProvider>
           </ChakraUIProvider>
         </NextIntlClientProvider>

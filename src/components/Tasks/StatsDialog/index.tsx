@@ -1,39 +1,62 @@
-import { Button, CloseButton, Dialog } from '@chakra-ui/react';
-import { Portal } from '@zag-js/react';
+import { DataList } from '@chakra-ui/react';
+import { InfoTip } from '@/components/ui/toggle-tip';
+import { Task } from '@/interfaces/Task.interface';
+import { useMemo } from 'react';
+import { formatMs } from '@/utils/formatMs.utils';
+import moment from 'moment';
+import { formatMinutes } from '@/utils/formatMinutes.utils';
 
-export const StatsDialog = () => {
+interface Props {
+  task: Task;
+}
+
+interface StatItem {
+  label: string;
+  value: number | string;
+  info?: string;
+}
+
+export const StatsDialog = ({ task }: Props) => {
+  console.log(task);
+
+  const stats = useMemo<StatItem[]>(() => {
+    if (!task) return [];
+
+    return [
+      {
+        label: 'Last Session',
+        value: moment((task.stats?.lastSessionAt?.seconds || 0) * 1000).format(
+          'DD/MM/YYYY HH:mm a'
+        ),
+      },
+      {
+        label: 'Completed',
+        value: task?.completedAt ? moment((task.completedAt?.seconds || 0) * 1000).fromNow() : 'No',
+      },
+      {
+        label: 'Created At',
+        value: moment((task.createdAt?.seconds || 0) * 1000).format('DD/MM/YYYY HH:mm a'),
+      },
+      { label: 'Pauses', value: task.stats?.totalPauses || 0 },
+      { label: 'Break Time', value: formatMinutes(task.stats?.totalBreakTime || 0) },
+      { label: 'Work Time', value: formatMinutes(task.stats?.totalWorkTime || 0) },
+      { label: 'Time paused', value: formatMs(task.stats?.totalPausedTime || 0) },
+      { label: 'No. interruptions', value: task.stats?.totalInterruptions || 0 },
+    ];
+  }, [task]);
+
+  console.log(stats);
   return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <Button variant='outline' size='sm'>
-          Open Dialog
-        </Button>
-      </Dialog.Trigger>
-      <Portal>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content>
-            <Dialog.Header>
-              <Dialog.Title>Dialog Title</Dialog.Title>
-            </Dialog.Header>
-            <Dialog.Body>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua.
-              </p>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Dialog.ActionTrigger asChild>
-                <Button variant='outline'>Cancel</Button>
-              </Dialog.ActionTrigger>
-              <Button>Save</Button>
-            </Dialog.Footer>
-            <Dialog.CloseTrigger asChild>
-              <CloseButton size='sm' />
-            </Dialog.CloseTrigger>
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Portal>
-    </Dialog.Root>
+    <DataList.Root orientation='horizontal'>
+      {stats.map((item) => (
+        <DataList.Item key={item.label}>
+          <DataList.ItemLabel opacity={0.7}>{item.label}</DataList.ItemLabel>
+          <DataList.ItemValue display={'flex'} alignItems={'center'}>
+            {item.value}
+            {item.info && <InfoTip>{item.info}</InfoTip>}
+          </DataList.ItemValue>
+        </DataList.Item>
+      ))}
+    </DataList.Root>
   );
 };
