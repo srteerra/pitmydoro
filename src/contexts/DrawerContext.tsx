@@ -9,19 +9,25 @@ import {
   ComponentType,
   useEffect,
 } from 'react';
-import { Drawer, DrawerContent, Button, CloseButton } from '@chakra-ui/react';
+import { Drawer, DrawerContent, Button, CloseButton, Text } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
 
 type DrawerContent = ComponentType<{ onClose: () => void }> | ReactNode;
 
 export interface DrawerOptions {
   title?: string;
+  subTitle?: string;
+  topTitle?: {
+    label: string;
+    icon?: ReactNode;
+  };
   component: DrawerContent;
   onClose?: () => void;
   offset?: number;
   placement?: 'bottom' | 'top' | 'start' | 'end';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
   closeOnInteractOutside?: boolean;
+  onSubmit?: () => void;
 }
 
 interface DrawerContextValue {
@@ -87,14 +93,22 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
           <Drawer.Backdrop />
           <Drawer.Positioner padding={options?.offset ?? 0}>
             <Drawer.Content rounded='md'>
-              <Drawer.Header>
+              <Drawer.Header display={'flex'} flexDirection={'column'} alignItems={'start'}>
+                {options?.topTitle && (
+                  <Text opacity={0.6} display={'flex'} alignItems={'center'} gap={2}>
+                    {options.topTitle?.icon} {options.topTitle.label}
+                  </Text>
+                )}
                 {options?.title && <Drawer.Title>{options.title}</Drawer.Title>}
+                {options?.subTitle && <Text opacity={0.7}>{options.subTitle}</Text>}
               </Drawer.Header>
               <Drawer.Body>{resolveBody()}</Drawer.Body>
-              <Drawer.Footer>
-                <Button variant='outline'>Cancel</Button>
-                <Button>Save</Button>
-              </Drawer.Footer>
+              {options?.onSubmit && (
+                <Drawer.Footer>
+                  <Button variant='outline'>Cancel</Button>
+                  <Button>Save</Button>
+                </Drawer.Footer>
+              )}
               <Drawer.CloseTrigger asChild>
                 <CloseButton onClick={() => setIsOpen(false)} size='sm' />
               </Drawer.CloseTrigger>

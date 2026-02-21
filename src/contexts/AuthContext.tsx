@@ -13,6 +13,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import { userService } from '@/services/user.service';
+import useUserStore from '@/stores/User.store';
 import { useTasks } from '@/hooks/useTasks';
 import { useSettings } from '@/hooks/useSettings';
 
@@ -32,6 +33,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { fetchProfile, clearProfile } = useUserStore();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const { loadTasks, wipeTasks } = useTasks();
@@ -47,6 +49,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!exists) {
           await userService.create(user);
         }
+
+        await Promise.all([loadTasks(user.uid), loadConfig(user.uid), fetchProfile(user.uid)]);
       }
 
       setLoading(false);
@@ -66,8 +70,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password).then(async (userCredential) => {
       if (!userCredential?.user?.uid) return;
-      await loadTasks(userCredential?.user?.uid);
-      await loadConfig(userCredential?.user?.uid);
+      const uid = userCredential.user.uid;
+      await Promise.all([loadTasks(uid), loadConfig(uid), fetchProfile(uid)]);
     });
   };
 
@@ -75,8 +79,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider).then(async (userCredential) => {
       if (!userCredential?.user?.uid) return;
-      await loadTasks(userCredential?.user?.uid);
-      await loadConfig(userCredential?.user?.uid);
+      const uid = userCredential.user.uid;
+      await Promise.all([loadTasks(uid), loadConfig(uid), fetchProfile(uid)]);
     });
   };
 
@@ -85,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       await wipeTasks();
       await wipeConfig();
+      clearProfile();
     });
   };
 
