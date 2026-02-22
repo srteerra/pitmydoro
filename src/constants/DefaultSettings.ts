@@ -44,3 +44,5 @@ export const DefaultSettings: Settings = {
   volume: 0.5,
   enableNotifications: true,
 };
+
+export const MAX_DURATION = 120;
