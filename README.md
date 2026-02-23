@@ -91,6 +91,11 @@ You can check the [.env.example](https://github.com/srteerra/pitmydoro/blob/mast
 NEXT_PLAYWRIGHT_TEST_BASE_URL= // This is used for testing with playwright
 ```
 
+## Supported Languages
+- Spanish
+- English
+(feel free to add your translation)
+
 ## ! Disclaimer
 
 This project is not affiliated with Formula 1, or any of its teams or drivers.

@@ -142,7 +142,8 @@
         "longBreakDuration": {
           "title": "Long Break Duration",
           "label": "Duration (minutes)"
-        }
+        },
+        "maxDurationExceeded": "Maximum duration is {max} minutes."
       },
       "session": {
         "title": "Session",
