@@ -64,6 +64,22 @@
       "logOut": "Cerrar sesión"
     }
   },
+  "stats": {
+    "seeStats": "Ver estadísticas",
+    "title": "Estadísticas la tarea",
+    "userFrom": "Usuario",
+    "lastSession": "Última sesión",
+    "createdAt": "Creada el",
+    "isCompleted": "Completada",
+    "notCompleted": "En progreso",
+    "totalWorKTime": "Tiempo de trabajo",
+    "totalBreakTime": "Tiempo de descanso",
+    "totalPausedTime": "Tiempo en pausa",
+    "totalPomodoros": "Pomodoros",
+    "totalPauses": "Pausas",
+    "totalInterruptions": "Interrupciones",
+    "totalEstimatedPomodoros": "Pomodoros estimados"
+  },
   "pomodoro": {
     "resetTimer": "Reiniciar tiempo",
     "resetAll": "Reiniciar todo",
@@ -77,6 +93,7 @@
     "sessionLabel": "Sesión",
     "shortBreakLabel": "Descanso corto",
     "longBreakLabel": "Descanso largo",
+    "pausesLabel": "Pausas",
     "boxTitle": "Box, Box!",
     "boxDescription": "Hora de tomar un descanso.",
     "pausedTitle": "En pausa",

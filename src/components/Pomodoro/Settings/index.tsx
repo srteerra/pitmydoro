@@ -1,15 +1,4 @@
-import {
-  Box,
-  CloseButton,
-  Dialog,
-  Flex,
-  Grid,
-  GridItem,
-  Icon,
-  IconButton,
-  Tabs,
-} from '@chakra-ui/react';
-import { Portal } from '@zag-js/react';
+import { Box, Flex, Grid, GridItem, Icon, Tabs } from '@chakra-ui/react';
 import { TiCogOutline } from 'react-icons/ti';
 import React, { useState } from 'react';
 import { IconType } from 'react-icons';
@@ -77,76 +66,50 @@ export const Settings = () => {
   ];
 
   return (
-    <Dialog.Root placement={'center'} size={'xl'} preventScroll={true}>
-      <Dialog.Trigger asChild>
-        <IconButton variant='ghost' size='md' rounded='full' aria-label='Settings'>
-          <TiCogOutline />
-        </IconButton>
-      </Dialog.Trigger>
-      <Portal>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content
-            h='700px'
-            borderRadius={'3xl'}
-            backgroundColor={{ base: 'gray.50', _dark: 'dark.200' }}
-          >
-            <Dialog.Header display='flex' justifyContent='space-between'>
-              <Dialog.Title>{t('title')}</Dialog.Title>
-              <Dialog.CloseTrigger asChild>
-                <CloseButton rounded='full' size='sm' />
-              </Dialog.CloseTrigger>
-            </Dialog.Header>
-            <Dialog.Body>
-              <Grid
-                templateColumns={{ base: '1fr', md: '2fr 6fr' }}
-                templateRows={{ base: '1fr 6fr', md: '1fr' }}
-                gap={4}
-              >
-                <GridItem>
-                  <Tabs.Root
-                    display={{ base: 'initial', md: 'none' }}
-                    value={activeTab}
-                    onValueChange={(e) => setActiveTab(e.value)}
-                  >
-                    <Tabs.List>
-                      {LinkItems.map((link, idx) => (
-                        <Tabs.Trigger key={idx} value={link.id}>
-                          {link.name}
-                        </Tabs.Trigger>
-                      ))}
-                    </Tabs.List>
-                  </Tabs.Root>
+    <Grid
+      templateColumns={{ base: '1fr', md: '2fr 6fr' }}
+      templateRows={{ base: '1fr 6fr', md: '1fr' }}
+      gap={4}
+    >
+      <GridItem>
+        <Tabs.Root
+          display={{ base: 'initial', md: 'none' }}
+          value={activeTab}
+          onValueChange={(e) => setActiveTab(e.value)}
+        >
+          <Tabs.List>
+            {LinkItems.map((link, idx) => (
+              <Tabs.Trigger key={idx} value={link.id}>
+                {link.name}
+              </Tabs.Trigger>
+            ))}
+          </Tabs.List>
+        </Tabs.Root>
 
-                  <Box display={{ base: 'none', md: 'initial' }}>
-                    {LinkItems.map((link) => (
-                      <NavItem
-                        key={link.name}
-                        onClick={() => setActiveTab(link.id)}
-                        isActive={activeTab === link.id}
-                        icon={link.icon}
-                      >
-                        {link.name}
-                      </NavItem>
-                    ))}
-                  </Box>
-                </GridItem>
+        <Box display={{ base: 'none', md: 'initial' }}>
+          {LinkItems.map((link) => (
+            <NavItem
+              key={link.name}
+              onClick={() => setActiveTab(link.id)}
+              isActive={activeTab === link.id}
+              icon={link.icon}
+            >
+              {link.name}
+            </NavItem>
+          ))}
+        </Box>
+      </GridItem>
 
-                <GridItem
-                  paddingX={{ base: '0px', md: '20px' }}
-                  overflow='auto'
-                  maxH={{ base: '500px', md: '600px' }}
-                  className={'scrollStyles'}
-                >
-                  {activeTab === Tab.GENERAL && <General />}
-                  {activeTab === Tab.SCUDERIA && <Scuderia />}
-                  {activeTab === Tab.SUPPORT && <Support />}
-                </GridItem>
-              </Grid>
-            </Dialog.Body>
-          </Dialog.Content>
-        </Dialog.Positioner>
-      </Portal>
-    </Dialog.Root>
+      <GridItem
+        paddingX={{ base: '0px', md: '20px' }}
+        overflow='auto'
+        maxH={{ base: '500px', md: '600px' }}
+        className={'scrollStyles'}
+      >
+        {activeTab === Tab.GENERAL && <General />}
+        {activeTab === Tab.SCUDERIA && <Scuderia />}
+        {activeTab === Tab.SUPPORT && <Support />}
+      </GridItem>
+    </Grid>
   );
 };

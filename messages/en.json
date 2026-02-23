@@ -63,6 +63,22 @@
       "logOut": "Log out"
     }
   },
+  "stats": {
+    "seeStats": "See Stats",
+    "title": "Task Stats",
+    "userFrom": "User",
+    "lastSession": "Last Session",
+    "createdAt": "Created At",
+    "isCompleted": "Completed",
+    "notCompleted": "Not yet",
+    "totalWorKTime": "Work Time",
+    "totalBreakTime": "Break Time",
+    "totalPausedTime": "Time Paused",
+    "totalPomodoros": "Pomodoros",
+    "totalPauses": "Pauses",
+    "totalInterruptions": "Interruptions",
+    "totalEstimatedPomodoros": "Estimated Pomodoros"
+  },
   "pomodoro": {
     "resetTimer": "Reset Timer",
     "acceptResetAll": "Are you sure you want to reset all?",
@@ -76,6 +92,7 @@
     "sessionLabel": "Session",
     "shortBreakLabel": "Short Break",
     "longBreakLabel": "Long Break",
+    "pausesLabel": "Pauses",
     "boxTitle": "Box, Box!",
     "boxDescription": "Time to break",
     "pausedTitle": "Paused",
