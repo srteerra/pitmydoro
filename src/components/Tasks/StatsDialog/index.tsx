@@ -3,7 +3,7 @@ import { InfoTip } from '@/components/ui/toggle-tip';
 import { Task } from '@/interfaces/Task.interface';
 import React, { JSX, useMemo } from 'react';
 import { formatMs } from '@/utils/formatMs.utils';
-import moment from "moment/min/moment-with-locales";
+import moment from 'moment/min/moment-with-locales';
 import { formatMinutes } from '@/utils/formatMinutes.utils';
 import { BarSegment, useChart } from '@chakra-ui/charts';
 import useSettingsStore from '@/stores/Settings.store';
