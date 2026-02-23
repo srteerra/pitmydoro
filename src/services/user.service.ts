@@ -28,6 +28,7 @@ interface UserProfile {
   favoriteTeam: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  uid?: string;
 }
 
 interface UserData {
@@ -99,7 +100,7 @@ export const userService = {
 
   async getProfile(userId: string): Promise<UserProfile | null> {
     const profileDoc = await getDoc(doc(db, 'profiles', userId));
-    return profileDoc.exists() ? (profileDoc.data() as UserProfile) : null;
+    return profileDoc.exists() ? ({ ...profileDoc.data(), uid: userId } as UserProfile) : null;
   },
 
   async getUserData(userId: string): Promise<UserData | null> {
