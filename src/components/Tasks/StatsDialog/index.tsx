@@ -3,7 +3,7 @@ import { InfoTip } from '@/components/ui/toggle-tip';
 import { Task } from '@/interfaces/Task.interface';
 import React, { JSX, useMemo } from 'react';
 import { formatMs } from '@/utils/formatMs.utils';
-import moment from 'moment';
+import moment from "moment/min/moment-with-locales";
 import { formatMinutes } from '@/utils/formatMinutes.utils';
 import { BarSegment, useChart } from '@chakra-ui/charts';
 import useSettingsStore from '@/stores/Settings.store';
@@ -19,7 +19,7 @@ import {
   CgCloseO,
 } from 'react-icons/cg';
 import useUserStore from '@/stores/User.store';
-import { useTranslations } from 'use-intl';
+import { useLocale, useTranslations } from 'use-intl';
 
 interface Props {
   task: Task;
@@ -35,10 +35,13 @@ interface StatItem {
 
 export const StatsDialog = ({ task }: Props) => {
   const { theme } = useTheme();
+  const locale = useLocale();
   const statsT = useTranslations('stats');
   const pomodoroT = useTranslations('pomodoro');
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const { profile } = useUserStore();
+
+  moment.locale(locale);
 
   const hasData =
     (task?.stats?.totalWorkTime || 0) > 0 ||
