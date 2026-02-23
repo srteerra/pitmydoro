@@ -92,9 +92,10 @@ NEXT_PLAYWRIGHT_TEST_BASE_URL= // This is used for testing with playwright
 ```
 
 ## Supported Languages
+
 - Spanish
 - English
-(feel free to add your translation)
+  (feel free to add your translation)
 
 ## ! Disclaimer
 
