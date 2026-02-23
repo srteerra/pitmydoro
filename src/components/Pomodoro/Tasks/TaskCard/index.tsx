@@ -13,6 +13,7 @@ import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';
 import { useDrawer } from '@/contexts/DrawerContext';
 import { StatsDialog } from '@/components/Tasks/StatsDialog';
+import { BiStats } from 'react-icons/bi';
 
 interface Props {
   task: Task;
@@ -32,6 +33,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const [taskPomodoros, setTaskPomodoros] = React.useState<number>(task.estimatedPomodoros);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const { confirmAlert, toastSuccess } = useAlert();
+  const statsT = useTranslations('stats');
   const t = useTranslations('pomodoro.tasks');
   const editingTask = useTaskStore((state) => state.editingTask);
   const setEditingTask = useTaskStore((state) => state.setEditingTask);
@@ -45,6 +47,11 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
     setMenuOpen(false);
     openDrawer({
       title: task.title,
+      topTitle: {
+        label: statsT('title'),
+        icon: <BiStats />,
+      },
+      subTitle: task.description,
       component: <StatsDialog task={task} />,
       offset: 4,
     });
@@ -234,7 +241,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                   <MenuContent>
                     <MenuItem onClick={handleOpenStats} value='stats' cursor='pointer'>
                       <IoIosStats />
-                      See stats
+                      {statsT('seeStats')}
                     </MenuItem>
 
                     <MenuItem
