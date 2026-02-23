@@ -14,6 +14,7 @@ import { useTasks } from '@/hooks/useTasks';
 import { useDrawer } from '@/contexts/DrawerContext';
 import { StatsDialog } from '@/components/Tasks/StatsDialog';
 import { BiStats } from 'react-icons/bi';
+import useUserStore from '@/stores/User.store';
 
 interface Props {
   task: Task;
@@ -38,12 +39,15 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const editingTask = useTaskStore((state) => state.editingTask);
   const setEditingTask = useTaskStore((state) => state.setEditingTask);
   const currentTask = useTaskStore((state) => state.currentTask);
+  const profile = useUserStore((state) => state.profile);
 
   const isCurrentEditing = useMemo(() => {
     return editingTask === task.id;
   }, [editingTask, task.id]);
 
   const handleOpenStats = () => {
+    if (!profile?.uid) return;
+
     setMenuOpen(false);
     openDrawer({
       title: task.title,
@@ -239,7 +243,12 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 </MenuTrigger>
                 {menuOpen && (
                   <MenuContent>
-                    <MenuItem onClick={handleOpenStats} value='stats' cursor='pointer'>
+                    <MenuItem
+                      disabled={!profile?.uid}
+                      onClick={handleOpenStats}
+                      value='stats'
+                      cursor='pointer'
+                    >
                       <IoIosStats />
                       {statsT('seeStats')}
                     </MenuItem>

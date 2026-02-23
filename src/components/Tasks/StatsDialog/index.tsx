@@ -39,7 +39,7 @@ export const StatsDialog = ({ task }: Props) => {
   const statsT = useTranslations('stats');
   const pomodoroT = useTranslations('pomodoro');
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
-  const { profile } = useUserStore();
+  const profile = useUserStore((state) => state.profile);
 
   moment.locale(locale);
 
