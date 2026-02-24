@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Task } from '@/interfaces/Task.interface';
 import { HiDotsVertical } from 'react-icons/hi';
 import { MdModeEdit, MdOutlineRestoreFromTrash, MdOutlineCheck } from 'react-icons/md';
 import { IoIosStats } from 'react-icons/io';
 import { TiTimes } from 'react-icons/ti';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaLock } from 'react-icons/fa';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
 import { Box, Card, Input, Flex, IconButton, Text, NumberInput, Textarea } from '@chakra-ui/react';
 import { useTranslations } from 'use-intl';
@@ -15,6 +15,7 @@ import { useDrawer } from '@/contexts/DrawerContext';
 import { StatsDialog } from '@/components/Tasks/StatsDialog';
 import { BiStats } from 'react-icons/bi';
 import useUserStore from '@/stores/User.store';
+import { useTheme } from 'next-themes';
 
 interface Props {
   task: Task;
@@ -28,20 +29,21 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const ref = useRef<HTMLInputElement | null>(null);
   const [taskTitle, setTaskTitle] = React.useState<string>(task.title);
   const [taskDescription, setTaskDescription] = React.useState<string>(task.description);
-  const [taskCompletedPomodoros, setTaskCompletedPomodoros] = React.useState<number>(
-    task.totalPomodoros || 0
-  );
-  const [taskPomodoros, setTaskPomodoros] = React.useState<number>(task.estimatedPomodoros);
-  const [menuOpen, setMenuOpen] = React.useState(false);
+  const { theme } = useTheme();
   const { confirmAlert, toastSuccess } = useAlert();
   const statsT = useTranslations('stats');
   const t = useTranslations('pomodoro.tasks');
+  const [taskPomodoros, setTaskPomodoros] = React.useState<number>(task.estimatedPomodoros);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const [taskCompletedPomodoros, setTaskCompletedPomodoros] = React.useState<number>(
+    task.totalPomodoros || 0
+  );
   const editingTask = useTaskStore((state) => state.editingTask);
   const setEditingTask = useTaskStore((state) => state.setEditingTask);
   const currentTask = useTaskStore((state) => state.currentTask);
   const profile = useUserStore((state) => state.profile);
 
-  const isCurrentEditing = useMemo(() => {
+  const isCurrentEditing = React.useMemo(() => {
     return editingTask === task.id;
   }, [editingTask, task.id]);
 
@@ -140,12 +142,26 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   return (
     <Card.Root
       transition={'ease-in 0.2s'}
-      bgColor={{ base: 'white', _dark: { base: 'dark.200/60', md: 'dark.100/20' } }}
+      bgColor={{
+        base: 'white',
+        _dark: {
+          base: 'dark.200/60',
+          md: task?.id === currentTask?.id ? 'primary.default/5' : 'dark.100/20',
+        },
+      }}
       borderLeft={
         !!task.completedAt || isCurrentEditing || task?.id === currentTask?.id ? '6px solid' : ''
       }
       borderColor={
-        !!task.completedAt ? 'gray.400' : task?.id === currentTask?.id ? 'primary.default' : ''
+        !!task.completedAt
+          ? theme === 'dark'
+            ? 'gray.700'
+            : 'gray.300'
+          : task?.id === currentTask?.id
+            ? theme === 'dark'
+              ? 'primary.default/70'
+              : 'primary.default'
+            : ''
       }
       flexDirection='row'
       cursor={isCurrentEditing ? 'auto' : 'pointer'}
@@ -249,8 +265,8 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                       value='stats'
                       cursor='pointer'
                     >
-                      <IoIosStats />
-                      {statsT('seeStats')}
+                      {!profile?.uid ? <FaLock /> : <IoIosStats />}
+                      {!profile?.uid ? statsT('unlockStats') : statsT('seeStats')}
                     </MenuItem>
 
                     <MenuItem
