@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Team } from '@/interfaces/Teams.interface';
 import { Task } from '@/interfaces/Task.interface';
 import { Timestamp } from 'firebase/firestore';
@@ -54,15 +54,16 @@ export const usePomodoro = () => {
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
 
-  const incompleteTasks = useMemo(() => {
+  const incompleteTasks = React.useMemo(() => {
     return _.chain(tasks).reject('completedAt').sortBy('order').value();
   }, [tasks]);
 
-  const incompletePomodoros = useMemo(() => {
-    return _.chain(tasks)
-      .filter((task) => !task.completedAt)
-      .sumBy('estimatedPomodoros')
-      .value();
+  const completedPomodoros = React.useMemo(() => {
+    return _.chain(tasks).reject('completedAt').sumBy('totalPomodoros').value();
+  }, [tasks]);
+
+  const incompletePomodoros = React.useMemo(() => {
+    return _.chain(tasks).reject('completedAt').sumBy('estimatedPomodoros').value();
   }, [tasks]);
 
   const getCurrentDuration = (newTimer?: TireTypeEnum): number => {
@@ -438,6 +439,7 @@ export const usePomodoro = () => {
     estTimeFinish,
     incompleteTasks,
     incompletePomodoros,
+    completedPomodoros,
     changeCompoundTime,
     start,
     pause,

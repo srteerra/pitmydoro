@@ -65,6 +65,7 @@
   },
   "stats": {
     "seeStats": "See Stats",
+    "unlockStats": "Log in to unlock stats",
     "title": "Task Stats",
     "userFrom": "User",
     "lastSession": "Last Session",

@@ -66,6 +66,7 @@
   },
   "stats": {
     "seeStats": "Ver estadísticas",
+    "unlockStats": "Inicia sesión para ver estadísticas",
     "title": "Estadísticas la tarea",
     "userFrom": "Usuario",
     "lastSession": "Última sesión",
