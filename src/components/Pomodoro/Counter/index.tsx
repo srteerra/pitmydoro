@@ -18,7 +18,6 @@ import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
 import { useSounds } from '@/hooks/useSounds';
 import { jua } from '@/assets/fonts/Jua';
-import _ from 'lodash';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';
 import { usePomodoroStore } from '@/stores/Pomodoro.store';
@@ -27,6 +26,16 @@ import { TiCogOutline } from 'react-icons/ti';
 import { useDialog } from '@/contexts/DialogContext';
 
 export const Counter = () => {
+  const countdownRef = useRef<CountdownApi | null>(null);
+  const { theme } = useTheme();
+  const { confirmAlert } = useAlert();
+  const { resetAllTasks } = useTasks();
+  const { openDialog } = useDialog();
+  const { open, onOpen, onClose } = useDisclosure();
+  const { playSound, resumeSound, radioSound } = useSounds();
+  const pomodoroT = useTranslations('pomodoro');
+  const settingsT = useTranslations('settings');
+  const { incompletePomodoros, completedPomodoros, start, pause, resume, complete, reset } = usePomodoro();
   const status = useSessionStore((state) => state.status);
   const tasks = useTaskStore((state) => state.tasks);
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
@@ -38,21 +47,6 @@ export const Counter = () => {
   const setDateClock = useSessionStore((state) => state.setDateClock);
   const { currentPomodoro, isActive, isEndingSoon, estTimeFinish, setIsEndingSoon } =
     usePomodoroStore();
-
-  const countdownRef = useRef<CountdownApi | null>(null);
-  const { theme } = useTheme();
-
-  const { confirmAlert } = useAlert();
-  const { resetAllTasks } = useTasks();
-  const { openDialog } = useDialog();
-  const { open, onOpen, onClose } = useDisclosure();
-  const { playSound, resumeSound, radioSound } = useSounds();
-  const pomodoroT = useTranslations('pomodoro');
-  const settingsT = useTranslations('settings');
-
-  const { incompletePomodoros, start, pause, resume, complete, reset } = usePomodoro();
-
-  const completedPomodoros = _.chain(tasks).filter('completedAt').sumBy('totalPomodoros').value();
 
   const backButtonColor =
     theme === 'dark'
