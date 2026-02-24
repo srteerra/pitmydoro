@@ -8,12 +8,18 @@ interface TaskStore {
   loading: boolean;
   editingTask: string | null;
 
+  previousTasks: Task[] | null;
+  previousCurrentTask: Task | null;
+
   setTasks: (tasks: Task[]) => void;
   addTask: (task: Task) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
   removeTask: (id: string) => void;
   setLoading: (loading: boolean) => void;
   setEditingTask: (task: string | null) => void;
+
+  setPreviousTasks: (tasks: Task[]) => void;
+  setPreviousCurrentTask: (task: Task | null) => void;
 
   setCurrentTask: (task: Task | null) => void;
   clearCurrentTask: () => void;
@@ -27,6 +33,9 @@ export const useTaskStore = create<TaskStore>()(
       currentTask: null,
       loading: false,
       editingTask: null,
+
+      previousTasks: [],
+      previousCurrentTask: null,
 
       setEditingTask: (task) => set({ editingTask: task }),
 
@@ -55,6 +64,10 @@ export const useTaskStore = create<TaskStore>()(
       setCurrentTask: (task) => set({ currentTask: task }),
 
       clearCurrentTask: () => set({ currentTask: null }),
+
+      setPreviousTasks: (tasks) => set({ previousTasks: tasks }),
+
+      setPreviousCurrentTask: (task) => set({ previousCurrentTask: task }),
 
       resetAll: () => {
         set(() => ({
