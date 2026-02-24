@@ -21,6 +21,10 @@ export function useTasks() {
     removeTask,
     setCurrentTask,
     clearCurrentTask,
+    previousCurrentTask,
+    previousTasks,
+    setPreviousCurrentTask,
+    setPreviousTasks
   } = useTaskStore();
 
   const autoOrderTasks = useSettingsStore((state) => state.autoOrderTasks);
@@ -197,9 +201,29 @@ export function useTasks() {
   };
 
   const resetAllTasks = async () => {
+    //Setting previous tasks and current task before wiping everything 
+    setPreviousTasks(tasks);
+    setPreviousCurrentTask(currentTask);
+
     resetAll();
     if (!user) return;
     await taskService.resetAllTasks(user.uid);
+  };
+
+  const undoResetAllTasks = async () => {    
+    if (!previousTasks) return;
+
+    setTasks(previousTasks);
+    setCurrentTask(previousCurrentTask);
+
+    if (!user) return;
+
+    // Restore tasks in Firebase
+    for (const task of previousTasks) {
+      if (task.isSync) {
+        await taskService.create(task, user.uid);
+      }
+    }
   };
 
   const wipeTasks = async () => {
@@ -216,6 +240,7 @@ export function useTasks() {
     deleteTask: remove,
     checkTask: check,
     resetAllTasks,
+    undoResetAllTasks,
     loadTasks,
     wipeTasks,
     handleAddTask,
