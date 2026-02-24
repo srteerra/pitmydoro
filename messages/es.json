@@ -88,6 +88,8 @@
     "acceptReset": "¿Estás seguro de que deseas reiniciar?",
     "cancelReset": "Cancelar",
     "cancelResetAll": "Cancelar",
+    "resetAllSuccess": "Todas las tareas se han reiniciado. ¿Deseas deshacer esta acción?",
+    "undoResetAll": "Deshacer",
     "estFinishAt": "Est. Termina a",
     "startTimer": "Iniciar",
     "pauseTimer": "Pausar",
