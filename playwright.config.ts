@@ -27,7 +27,7 @@ export default defineConfig({
         { name: 'Mobile Safari', use: { ...devices['iPhone 12'] } },
       ],
   webServer: {
-    command: isCI ? 'bun run start' : 'bun run dev',
+    command: 'bun run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !isCI,
     timeout: 120_000,
