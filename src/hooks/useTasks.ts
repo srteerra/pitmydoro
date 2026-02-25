@@ -201,7 +201,6 @@ export function useTasks() {
   };
 
   const resetAllTasks = async () => {
-    //Setting previous tasks and current task before wiping everything 
     setPreviousTasks(tasks);
     setPreviousCurrentTask(currentTask);
 
@@ -210,7 +209,7 @@ export function useTasks() {
     await taskService.resetAllTasks(user.uid);
   };
 
-  const undoResetAllTasks = async () => {    
+  const undoResetAllTasks = async () => {
     if (!previousTasks) return;
 
     setTasks(previousTasks);
@@ -218,7 +217,6 @@ export function useTasks() {
 
     if (!user) return;
 
-    // Restore tasks in Firebase
     for (const task of previousTasks) {
       if (task.isSync) {
         await taskService.create(task, user.uid);
