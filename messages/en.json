@@ -86,6 +86,8 @@
     "acceptReset": "Are you sure you want to reset?",
     "cancelReset": "Cancel",
     "cancelResetAll": "Cancel",
+    "resetAllSuccess": "All tasks have been reset. Do you want to undo this action?",
+    "undoResetAll": "Undo",
     "resetAll": "Reset all",
     "estFinishAt": "Est. Finish at",
     "startTimer": "Start",

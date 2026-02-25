@@ -28,8 +28,8 @@ import { useDialog } from '@/contexts/DialogContext';
 export const Counter = () => {
   const countdownRef = useRef<CountdownApi | null>(null);
   const { theme } = useTheme();
-  const { confirmAlert } = useAlert();
-  const { resetAllTasks } = useTasks();
+  const { confirmAlert, toastWithAction } = useAlert();
+  const { resetAllTasks, undoResetAllTasks } = useTasks();
   const { openDialog } = useDialog();
   const { open, onOpen, onClose } = useDisclosure();
   const { playSound, resumeSound, radioSound } = useSounds();
@@ -169,6 +169,15 @@ export const Counter = () => {
     if (await confirmAlert(pomodoroT('acceptResetAll'))) {
       handleResetTimer();
       resetAllTasks();
+      toastWithAction({
+        title: pomodoroT('resetAllSuccess'),
+        type: 'success',
+        onActionClick: async () => {
+          await undoResetAllTasks();
+        },
+        duration: 5000,
+        actionLabel: pomodoroT('undoResetAll'),
+      });
       onClose();
     }
   };

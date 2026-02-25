@@ -6,12 +6,18 @@ import { useTheme } from 'next-themes';
 import { toaster } from '@/components/ui/toaster';
 import { useTranslations } from 'use-intl';
 
+type ToastType = 'success' | 'error' | 'info' | 'warning';
+
 interface ToastOptions {
   title: string;
   description?: string;
   duration?: number;
   closable?: boolean;
-  type?: 'success' | 'error' | 'info' | 'warning';
+  type?: ToastType;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
 export const useAlert = () => {
@@ -32,6 +38,7 @@ export const useAlert = () => {
     duration = 2000,
     closable = false,
     type,
+    action,
   }: ToastOptions) => {
     toaster.create({
       title,
@@ -39,6 +46,7 @@ export const useAlert = () => {
       duration,
       closable,
       type,
+      action,
     });
   };
 
@@ -71,6 +79,33 @@ export const useAlert = () => {
       title: title || t('infoTitle') || 'Info',
       description,
       type: 'info',
+    });
+  };
+
+  const toastWithAction = ({
+    title,
+    actionLabel,
+    type,
+    onActionClick,
+    description,
+    duration,
+  }: {
+    title: string;
+    description?: string;
+    type?: ToastType;
+    actionLabel: string;
+    onActionClick: () => void;
+    duration?: number;
+  }) => {
+    toaster.create({
+      title: title || t('infoTitle') || 'Info',
+      description,
+      type,
+      duration,
+      action: {
+        label: actionLabel,
+        onClick: onActionClick,
+      },
     });
   };
 
@@ -109,6 +144,7 @@ export const useAlert = () => {
     toastSuccess,
     toastError,
     toastInfo,
+    toastWithAction,
     toastWarning,
   };
 };
