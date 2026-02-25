@@ -13,6 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install unzip
+        run: apt-get update && apt-get install -y unzip
+
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
