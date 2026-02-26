@@ -63,6 +63,14 @@ export const taskService = {
     await deleteDoc(doc(db, 'users', userId, 'tasks', taskId));
   },
 
+  async archive(userId: string, taskId: string) {
+    await updateDoc(doc(db, 'users', userId, 'tasks', taskId), {
+      archive: true,
+      archiveAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+    });
+  },
+
   async complete(userId: string, taskId: string, isComplete?: boolean) {
     await updateDoc(doc(db, 'users', userId, 'tasks', taskId), {
       completedAt: isComplete ? Timestamp.now() : null,
@@ -170,22 +178,34 @@ export const taskService = {
   async resetAllTasks(userId: string) {
     const q = query(collection(db, 'users', userId, 'tasks'), where('isSync', '==', true));
     const snapshot = await getDocs(q);
-    const tasks = snapshot.docs.map((doc) => doc.id);
 
-    for (const taskId of tasks) {
-      await this.delete(userId, taskId);
+    for (const docSnap of snapshot.docs) {
+      await updateDoc(doc(db, 'users', userId, 'tasks', docSnap.id), {
+        archive: true,
+        archiveAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      });
     }
 
     await this.saveActiveTasksOrder(userId, []);
   },
 
+  async unarchiveTasks(userId: string, taskIds: string[]) {
+    for (const taskId of taskIds) {
+      await updateDoc(doc(db, 'users', userId, 'tasks', taskId), {
+        archive: false,
+        archiveAt: null,
+        updatedAt: Timestamp.now(),
+      });
+    }
+  },
+
   async getTasks(userId: string): Promise<Task[]> {
     const q = query(collection(db, 'users', userId, 'tasks'), orderBy('createdAt', 'asc'));
     const snapshot = await getDocs(q);
-    const tasks = snapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    })) as Task[];
+    const tasks = snapshot.docs
+      .map((doc) => ({ ...doc.data(), id: doc.id }))
+      .filter((t: any) => !t.archive) as Task[];
 
     const savedActiveOrder = await this.getActiveTasksOrder(userId);
 

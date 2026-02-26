@@ -13,7 +13,6 @@ export function useTasks() {
     tasks,
     currentTask,
     setEditingTask,
-    resetAll,
     loading,
     setTasks,
     addTask,
@@ -21,18 +20,21 @@ export function useTasks() {
     removeTask,
     setCurrentTask,
     clearCurrentTask,
-    previousCurrentTask,
-    previousTasks,
+    archiveAllTasks,
+    unarchiveTasks,
     setPreviousCurrentTask,
-    setPreviousTasks
+    setPreviousTasks,
   } = useTaskStore();
 
   const autoOrderTasks = useSettingsStore((state) => state.autoOrderTasks);
   const autoStartNextTask = useSettingsStore((state) => state.autoStartNextTask);
 
+  const activeTasks = useMemo(() => tasks.filter((t) => !t.archive), [tasks]);
+  console.log('activeTasks', activeTasks);
+
   const incompleteTasks = useMemo(() => {
-    return _.chain(tasks).reject('completedAt').sortBy('order').value();
-  }, [tasks]);
+    return _.chain(activeTasks).reject('completedAt').sortBy('order').value();
+  }, [activeTasks]);
 
   const create = async (taskData: Task) => {
     updateTask(taskData.id, { ...taskData, isSync: !!user });
@@ -58,7 +60,7 @@ export function useTasks() {
     const task = tasks.find((t) => t.id === id);
 
     if (user && task?.isSync) {
-      await taskService.delete(user.uid, id);
+      await taskService.archive(user.uid, id);
     }
 
     const remainingTasks = _.sortBy(tasks, 'order').filter((t) => t.id !== id);
@@ -201,27 +203,30 @@ export function useTasks() {
   };
 
   const resetAllTasks = async () => {
-    setPreviousTasks(tasks);
+    setPreviousTasks(activeTasks);
     setPreviousCurrentTask(currentTask);
 
-    resetAll();
+    archiveAllTasks();
+
     if (!user) return;
     await taskService.resetAllTasks(user.uid);
   };
 
   const undoResetAllTasks = async () => {
-    if (!previousTasks) return;
+    const { previousTasks, previousCurrentTask } = useTaskStore.getState();
+    if (!previousTasks || previousTasks.length === 0) return;
 
-    setTasks(previousTasks);
+    const idsToRestore = previousTasks.map((t) => t.id);
+
+    unarchiveTasks(idsToRestore);
     setCurrentTask(previousCurrentTask);
 
     if (!user) return;
 
-    for (const task of previousTasks) {
-      if (task.isSync) {
-        await taskService.create(task, user.uid);
-      }
-    }
+    const syncedIds = previousTasks.filter((t) => t.isSync).map((t) => t.id);
+
+    await taskService.unarchiveTasks(user.uid, syncedIds);
+    await taskService.saveActiveTasksOrder(user.uid, idsToRestore);
   };
 
   const wipeTasks = async () => {
@@ -229,7 +234,7 @@ export function useTasks() {
   };
 
   return {
-    tasks,
+    tasks: activeTasks,
     currentTask,
     loading,
     incompleteTasks,

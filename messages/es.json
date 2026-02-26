@@ -102,9 +102,10 @@
     "pausedTitle": "En pausa",
     "interruptAccept": "¿Deseas interrumpir la sesión actual?",
     "tasks": {
-      "title": "Planifica tu estrategia",
+      "title": "Tus Tareas",
       "addTask": "Agregar tarea",
       "deleteTask": "Eliminar tarea",
+      "archiveTask": "Archivar tarea",
       "editTask": "Editar tarea",
       "taskTitlePlaceholder": "Estoy trabajando en...",
       "taskDescriptionPlaceholder": "Ingresa una descripción (Opcional)",
@@ -115,7 +116,7 @@
       "successUncheckTask": "Tarea marcada como incompleta",
       "successUpdateTask": "Tarea actualizada con éxito",
       "successDeleteTask": "Tarea eliminada con éxito",
-      "deleteTaskConfirmTitle": "¿Estás seguro de que deseas eliminar esta tarea?",
+      "deleteTaskConfirmTitle": "¿Estás seguro de que deseas archivar esta tarea?",
       "deleteTaskConfirmMessage": "Esta acción no se puede deshacer.",
       "tasksHint": "\uD83D\uDCA1 Comienza a añadir tareas para organizar tu sesión de trabajo..."
     }

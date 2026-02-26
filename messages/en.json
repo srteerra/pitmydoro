@@ -101,9 +101,10 @@
     "pausedTitle": "Paused",
     "interruptAccept": "Are you sure you want to interrupt the session?",
     "tasks": {
-      "title": "Plan your strategy",
+      "title": "Your Tasks",
       "addTask": "Add Task",
       "deleteTask": "Delete Task",
+      "archiveTask": "Archive Task",
       "editTask": "Edit Task",
       "taskTitlePlaceholder": "I'm working on...",
       "taskDescriptionPlaceholder": "Enter a description (Optional)",
@@ -114,7 +115,7 @@
       "successUncheckTask": "Task marked as uncompleted",
       "successUpdateTask": "Task updated successfully",
       "successDeleteTask": "Task deleted successfully",
-      "deleteTaskConfirmTitle": "Are you sure you want to delete this task?",
+      "deleteTaskConfirmTitle": "Are you sure you want to archive this task?",
       "deleteTaskConfirmMessage": "This action cannot be undone.",
       "tasksHint": "\uD83D\uDCA1 Start adding tasks to organize your work session..."
     }

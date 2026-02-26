@@ -21,6 +21,9 @@ interface TaskStore {
   setPreviousTasks: (tasks: Task[]) => void;
   setPreviousCurrentTask: (task: Task | null) => void;
 
+  archiveAllTasks: () => void;
+  unarchiveTasks: (ids: string[]) => void;
+
   setCurrentTask: (task: Task | null) => void;
   clearCurrentTask: () => void;
   resetAll: () => void;
@@ -39,6 +42,18 @@ export const useTaskStore = create<TaskStore>()(
 
       setEditingTask: (task) => set({ editingTask: task }),
 
+      archiveAllTasks: () =>
+        set((state) => ({
+          tasks: state.tasks.map((t) => ({ ...t, archive: true })),
+          currentTask: null,
+          editingTask: null,
+        })),
+
+      unarchiveTasks: (ids: string[]) =>
+        set((state) => ({
+          tasks: state.tasks.map((t) => (ids.includes(t.id) ? { ...t, archive: false } : t)),
+        })),
+
       setTasks: (tasks) => set({ tasks }),
 
       addTask: (task) =>
@@ -55,7 +70,7 @@ export const useTaskStore = create<TaskStore>()(
 
       removeTask: (id) =>
         set((state) => ({
-          tasks: state.tasks.filter((t) => t.id !== id),
+          tasks: state.tasks.map((t) => (t.id === id ? { ...t, archive: true } : t)),
           currentTask: state.currentTask?.id === id ? null : state.currentTask,
         })),
 
