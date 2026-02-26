@@ -15,6 +15,7 @@ export interface Task {
   priority?: number;
   deletedAt?: Timestamp;
   archiveAt?: Timestamp;
+  archive?: boolean;
   recurring?: {
     enabled: boolean;
     frequency: 'daily' | 'weekly' | 'monthly';
