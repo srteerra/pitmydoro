@@ -116,7 +116,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   };
 
   const handleOnTaskDelete = async () => {
-    if (await confirmAlert(t('deleteTaskConfirmTitle'), t('deleteTaskConfirmMessage'))) {
+    if (await confirmAlert(t('deleteTaskConfirmTitle'))) {
       await deleteTask(task.id);
       toastSuccess(t('successDeleteTask'));
     }
@@ -299,7 +299,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                       _hover={{ bg: 'bg.error', color: 'fg.error' }}
                     >
                       <MdOutlineRestoreFromTrash />
-                      {t('deleteTask')}
+                      {t('archiveTask')}
                     </MenuItem>
                   </MenuContent>
                 )}

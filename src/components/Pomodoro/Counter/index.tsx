@@ -270,7 +270,7 @@ export const Counter = () => {
               return (
                 <Text
                   fontWeight='bold'
-                  fontSize='7xl'
+                  style={{ fontSize: '5rem' }}
                   data-pw-id={'timer-label'}
                   color={theme === 'dark' ? 'white' : counterColor}
                   className={jua.className}

@@ -19,15 +19,17 @@ export const Tasks = () => {
   const setEditingTask = useTaskStore((state) => state.setEditingTask);
   const t = useTranslations('pomodoro.tasks');
 
+  const activeTasks = useMemo(() => tasks.filter((t) => !t.archive), [tasks]);
+
   const sortedTasks = useMemo(() => {
-    return _.sortBy(tasks, 'order');
-  }, [tasks]);
+    return _.sortBy(activeTasks, 'order');
+  }, [activeTasks]);
 
   const handleTaskClick = async (task: Task) => {
     if (!editingTask) {
       await switchTask(task);
     } else {
-      if (tasks?.length && tasks.some((t) => !t.title)) return;
+      if (activeTasks?.length && activeTasks.some((t) => !t.title)) return;
       setEditingTask(null);
       await switchTask(task);
     }
