@@ -17,15 +17,15 @@ const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) =>
       if (!isNaN(n) && n > 0) onChange(n);
     }}
     style={{ display: 'inline' }}
-    fontSize="18px"
+    fontSize='18px'
   >
     <Editable.Context>
       {(ctx) => (
         <Box
-          as="span"
-          display="inline"
-          cursor="text"
-          fontSize="18px"
+          as='span'
+          display='inline'
+          cursor='text'
+          fontSize='18px'
           style={{
             borderBottom: `1.5px dashed ${accent}99`,
             paddingBottom: '1px',
@@ -34,7 +34,7 @@ const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) =>
           }}
         >
           <Editable.Preview
-            color="gray.800"
+            color='gray.800'
             style={{
               display: 'inline',
               fontWeight: 600,
@@ -73,23 +73,31 @@ export const SimpleTimerSelector = () => {
   if (mode !== PomodoroMode.MINIMAL) {
     return (
       <Box
-        as="p"
-        fontSize="13px"
+        as='p'
+        fontSize='13px'
         fontWeight={500}
-        color="gray.500"
-        lineHeight="2"
+        color='gray.500'
+        lineHeight='2'
         textAlign={'center'}
-        userSelect="none"
+        userSelect='none'
         marginBottom={'25px'}
         style={{ display: 'block' }}
       >
         Sesión de{' '}
-        <DurationEditable value={timerDuration} onChange={setTimerDuration} accent="#e05c5c" />
-        {' '}mins, descanso corto de{' '}
-        <DurationEditable value={shortBreakDuration} onChange={setShortBreakDuration} accent="#5c9ee0" />
-        {' '}mins y descanso largo de{' '}
-        <DurationEditable value={longBreakDuration} onChange={setLongBreakDuration} accent="#5cc9a0" />
-        {' '}mins.
+        <DurationEditable value={timerDuration} onChange={setTimerDuration} accent='#e05c5c' />{' '}
+        mins, descanso corto de{' '}
+        <DurationEditable
+          value={shortBreakDuration}
+          onChange={setShortBreakDuration}
+          accent='#5c9ee0'
+        />{' '}
+        mins y descanso largo de{' '}
+        <DurationEditable
+          value={longBreakDuration}
+          onChange={setLongBreakDuration}
+          accent='#5cc9a0'
+        />{' '}
+        mins.
       </Box>
     );
   }
