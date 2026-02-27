@@ -8,6 +8,7 @@ import { NextSeo } from 'next-seo';
 import { useSeo } from '@/hooks/useSEO';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
+import { SimpleTimerSelector } from '@/components/Pomodoro/SimpleTimerSelector';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -41,6 +42,7 @@ export default function Home() {
   return (
     <>
       <NextSeo {...seo} />
+      <SimpleTimerSelector />
       <Pomodoro />
     </>
   );
