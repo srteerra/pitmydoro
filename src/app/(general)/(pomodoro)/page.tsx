@@ -9,10 +9,12 @@ import { useSeo } from '@/hooks/useSEO';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
 import { SimpleTimerSelector } from '@/components/Pomodoro/SimpleTimerSelector';
+import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const seo = useSeo();
+  const mode = useSettingsStore((state) => state.mode);
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const setCurrentScuderia = useSettingsStore((state) => state.setCurrentScuderia);
 
@@ -42,7 +44,7 @@ export default function Home() {
   return (
     <>
       <NextSeo {...seo} />
-      <SimpleTimerSelector />
+      {mode === PomodoroMode.MINIMAL && <SimpleTimerSelector />}
       <Pomodoro />
     </>
   );
