@@ -8,6 +8,11 @@ export interface TireSettings {
   duration: number;
 }
 
+export enum PomodoroMode {
+  F1 = 'f1',
+  MINIMAL = 'minimal',
+}
+
 export interface Settings {
   locale: Locale;
   tiresSettings: Record<TireTypeEnum, TireSettings>;
@@ -23,4 +28,5 @@ export interface Settings {
   enableSounds: boolean;
   volume: number;
   enableNotifications: boolean;
+  mode: PomodoroMode;
 }
