@@ -59,7 +59,7 @@ export const Pomodoro = () => {
       boxShadow={{ base: 'none', md: 'md' }}
       width={{ base: '100%', md: '600px' }}
       margin='auto'
-      marginBottom={{ base: '0', md: '100px' }}
+      marginBottom={{ base: '0', md: '50px' }}
       display='flex'
       flexDirection='column'
       padding={{ base: '30px 10px', md: '30px 40px' }}
