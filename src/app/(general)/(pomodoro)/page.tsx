@@ -10,6 +10,7 @@ import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
 import { SimpleTimerSelector } from '@/components/Pomodoro/SimpleTimerSelector';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
+import { Container } from '@chakra-ui/react';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -42,10 +43,10 @@ export default function Home() {
 
   if (loading) return <Loader />;
   return (
-    <>
+    <Container minHeight={'80vh'}>
       <NextSeo {...seo} />
       {mode === PomodoroMode.MINIMAL && <SimpleTimerSelector />}
       <Pomodoro />
-    </>
+    </Container>
   );
 }
