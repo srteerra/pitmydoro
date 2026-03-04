@@ -32,7 +32,7 @@ const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) =>
           }}
         >
           <Editable.Preview
-            color='gray.800'
+            color={{ base: 'gray.800', _dark: 'white' }}
             style={{
               display: 'inline',
               fontWeight: 600,
