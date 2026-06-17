@@ -44,6 +44,7 @@ export const DefaultSettings: Settings = {
   enableSounds: true,
   volume: 0.5,
   enableNotifications: true,
+  minimalSessionDuration: 25,
 };
 
 export const MAX_DURATION = 120;
