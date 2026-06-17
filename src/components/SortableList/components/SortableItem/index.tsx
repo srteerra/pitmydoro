@@ -1,11 +1,10 @@
-import React, { createContext, useContext, useMemo } from 'react';
 import type { CSSProperties, PropsWithChildren } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import type { DraggableSyntheticListeners, UniqueIdentifier } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Box } from '@chakra-ui/react';
+import { Box, IconButton } from '@chakra-ui/react';
 import { RiDraggable } from 'react-icons/ri';
-import { IconButton } from '@chakra-ui/react';
 
 interface Props {
   id: UniqueIdentifier;
@@ -64,6 +63,7 @@ export function DragHandle() {
       cursor={'grabbing'}
       size={'xs'}
       variant={'ghost'}
+      data-pw-id='task-drag-handle'
       {...attributes}
       {...listeners}
       ref={ref}

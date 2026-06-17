@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo '🏗️ Preparing your code for commit...'
 echo ''
+
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 
 # Auto-format code
 echo '📝 Running auto-format...'

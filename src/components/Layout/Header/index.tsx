@@ -1,5 +1,5 @@
-import { ToggleMode } from '@/components/Layout/Toggles/ThemeMode';
-import { Center, HStack, Image, Grid, GridItem } from '@chakra-ui/react';
+import { ToggleThemeMode } from '@/components/Layout/Toggles/ThemeMode';
+import { Center, HStack, Image, Grid, GridItem, IconButton } from '@chakra-ui/react';
 import React from 'react';
 import NextImage from 'next/image';
 import Logo from '../../../../public/images/pitmydoro.webp';
@@ -7,6 +7,8 @@ import { LocaleSwitch } from '@/components/Layout/Toggles/LocaleSwitch';
 import Link from 'next/link';
 import { AuthModal } from '@/components/Auth/AuthModal';
 import GitHubStars from '@/components/GithubStars';
+import { LuBookText } from 'react-icons/lu';
+import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
 
 export const Header = () => {
   return (
@@ -42,10 +44,17 @@ export const Header = () => {
         display='flex'
         justifyContent='center'
       >
-        <HStack>
+        <HStack gap={0}>
+          <IconButton
+            variant={'ghost'}
+            rounded='full'
+            color={{ base: 'gray.500', _hover: 'gray.700' }}
+          >
+            <LuBookText />
+          </IconButton>
           <LocaleSwitch />
 
-          <Center>
+          <Center paddingX={3}>
             <Link rel='noopener noreferrer' href={'/public'}>
               <Image asChild filter='none' alt={'...'} _dark={{ filter: 'invert(1)' }}>
                 <NextImage width={250} src={Logo} alt='...' />
@@ -53,7 +62,8 @@ export const Header = () => {
             </Link>
           </Center>
 
-          <ToggleMode />
+          <ToggleThemeMode />
+          <TogglePomodoroMode />
         </HStack>
       </GridItem>
     </Grid>

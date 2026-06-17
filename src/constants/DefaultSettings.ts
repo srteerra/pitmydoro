@@ -1,11 +1,12 @@
 import { TireTypeEnum } from '@/enums/TireType.enum';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
-import { Settings } from '@/interfaces/Settings.interface';
+import { PomodoroMode, Settings } from '@/interfaces/Settings.interface';
 import { defaultLocale } from '@/i18n/config';
 import { SCUDERIAS } from '@/constants/Scuderias';
 
 export const DefaultSettings: Settings = {
   locale: defaultLocale,
+  mode: PomodoroMode.F1,
   currentScuderia: SCUDERIAS[0],
   breaksInterval: 4,
   isLongBreakPerTask: false,
@@ -43,6 +44,7 @@ export const DefaultSettings: Settings = {
   enableSounds: true,
   volume: 0.5,
   enableNotifications: true,
+  minimalSessionDuration: 25,
 };
 
 export const MAX_DURATION = 120;

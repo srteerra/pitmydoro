@@ -31,6 +31,7 @@ export function LocaleSwitch({ portalDisabled = false }: Props) {
           data-pw-id={'locale-switcher'}
           variant={'ghost'}
           rounded='full'
+          color={{ base: 'gray.500', _hover: 'gray.700' }}
           disabled={isPending}
         >
           <IoEarth />

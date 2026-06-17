@@ -24,6 +24,7 @@ import { usePomodoroStore } from '@/stores/Pomodoro.store';
 import { formatMs } from '@/utils/formatMs.utils';
 import { TiCogOutline } from 'react-icons/ti';
 import { useDialog } from '@/contexts/DialogContext';
+import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 export const Counter = () => {
   const countdownRef = useRef<CountdownApi | null>(null);
@@ -42,6 +43,8 @@ export const Counter = () => {
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
   const enableNotifications = useSettingsStore((state) => state.enableNotifications);
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
+  const mode = useSettingsStore((state) => state.mode);
+  const minimalSessionDuration = useSettingsStore((state) => state.minimalSessionDuration);
   const selectedTire = useSessionStore((state) => state.selectedTire);
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const dateClock = useSessionStore((state) => state.dateClock);
@@ -121,10 +124,13 @@ export const Counter = () => {
     reset();
 
     if (status === SessionStatusEnum.IN_SESSION) {
-      const currentTire = tiresSettings[selectedTire];
-      if (currentTire) {
+      const sessionMinutes =
+        mode === PomodoroMode.MINIMAL
+          ? minimalSessionDuration
+          : tiresSettings[selectedTire]?.duration;
+      if (sessionMinutes) {
         setDateClock(
-          Date.now() + moment.duration(Number(currentTire?.duration), 'minutes').asMilliseconds()
+          Date.now() + moment.duration(Number(sessionMinutes), 'minutes').asMilliseconds()
         );
       }
     } else {
@@ -135,7 +141,15 @@ export const Counter = () => {
         );
       }
     }
-  }, [status, selectedTire, tiresSettings, breaksDuration, setDateClock]);
+  }, [
+    status,
+    selectedTire,
+    tiresSettings,
+    breaksDuration,
+    mode,
+    minimalSessionDuration,
+    setDateClock,
+  ]);
 
   const handleStartClick = async () => {
     countdownRef.current?.start();
@@ -144,7 +158,11 @@ export const Counter = () => {
     if (currentPomodoro) {
       await resume();
     } else {
-      await start(status, tiresSettings[selectedTire]?.duration, currentScuderia);
+      const sessionMinutes =
+        mode === PomodoroMode.MINIMAL
+          ? minimalSessionDuration
+          : tiresSettings[selectedTire]?.duration;
+      await start(status, sessionMinutes, currentScuderia);
     }
   };
 
@@ -311,13 +329,22 @@ export const Counter = () => {
       <Center>
         <Flex gap={3} color={{ base: 'gray.500', _dark: 'gray.400' }}>
           <Text fontSize='sm'>
-            <Text as={'span'} marginRight={2}>
-              Pomodoros:
-            </Text>
-            {!!tasks.length && (
-              <Text as='span' fontWeight='bolder' color={{ base: 'gray.800', _dark: 'gray.200' }}>
-                {completedPomodoros} / {incompletePomodoros}
+            {!tasks?.length && (
+              <Text as={'span'} marginRight={2}>
+                {pomodoroT('noPomodoros')}
               </Text>
+            )}
+
+            {!!tasks.length && (
+              <>
+                <Text as={'span'} marginRight={2}>
+                  Pomodoros:
+                </Text>
+
+                <Text as='span' fontWeight='bolder' color={{ base: 'gray.800', _dark: 'gray.200' }}>
+                  {completedPomodoros} / {incompletePomodoros}
+                </Text>
+              </>
             )}
           </Text>
           <Text as={'p'} fontSize='sm'>

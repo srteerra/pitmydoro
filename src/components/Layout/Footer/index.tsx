@@ -37,15 +37,15 @@ export const Footer = () => {
           {t('madeWith')}
         </Text>
 
-        <Flex alignItems='center' gap={2}>
+        <Flex alignItems='center' gap={2} marginTop={3}>
           <BiLogoGithub />
           <Link
             className={'cursor-pointer link underline'}
             target={'_blank'}
             href={'https://github.com/srteerra/pitmydoro'}
           >
-            <Text fontSize='sm' fontWeight='medium' color='gray.800'>
-              Contributions are welcome!
+            <Text fontSize='sm' fontWeight='medium' color={{ base: 'gray.500', _dark: 'white' }}>
+              {t('license')}
             </Text>
           </Link>
         </Flex>

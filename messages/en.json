@@ -90,6 +90,7 @@
     "undoResetAll": "Undo",
     "resetAll": "Reset all",
     "estFinishAt": "Est. Finish at",
+    "noPomodoros": "No Pomodoros",
     "startTimer": "Start",
     "pauseTimer": "Pause",
     "sessionLabel": "Session",
@@ -250,15 +251,9 @@
     }
   },
   "footer": {
-    "copyright": "Pit my doro",
     "madeWith": "Made with ❤️ by @srteerra",
     "disclaimer": "This site is not affiliated with F1, Formula 1, or any of its teams or drivers.",
-    "links": {
-      "about": "About",
-      "terms": "Terms & Conditions",
-      "privacy": "Privacy Policy",
-      "legal": "Legal Notice"
-    }
+    "license": "Open source · GPL-3.0 License"
   },
   "meta": {
     "title": "Pit My Doro – F1-Themed Pomodoro Timer",

@@ -13,11 +13,13 @@ import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
 import { usePomodoroStore } from '@/stores/Pomodoro.store';
 import { usePomodoro } from '@/hooks/usePomodoro';
+import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 export const Pomodoro = () => {
   const sessionStatus = useSessionStore((state) => state.status);
   const isActive = usePomodoroStore((state) => state.isActive);
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
+  const mode = useSettingsStore((state) => state.mode);
   const setStatus = useSessionStore((state) => state.setStatus);
   const selectedTire = useSessionStore((state) => state.selectedTire);
   const t = useTranslations('pomodoro');
@@ -57,61 +59,65 @@ export const Pomodoro = () => {
       boxShadow={{ base: 'none', md: 'md' }}
       width={{ base: '100%', md: '600px' }}
       margin='auto'
-      marginBottom={{ base: '0', md: '100px' }}
+      marginBottom={{ base: '0', md: '50px' }}
       display='flex'
       flexDirection='column'
       padding={{ base: '30px 10px', md: '30px 40px' }}
     >
-      <Center marginBottom={'10px'} marginTop={{ base: '0', md: '50px' }} position='relative'>
-        <Box
-          position='absolute'
-          top='10%'
-          left='40%'
-          height={'auto'}
-          transform='translate(-50%, -50%)'
-          display='inline-block'
-        >
-          <FlagSwitcher />
-        </Box>
+      {mode === PomodoroMode.F1 && (
+        <Center marginBottom={'10px'} marginTop={{ base: '0', md: '50px' }} position='relative'>
+          <Box
+            position='absolute'
+            top='10%'
+            left='40%'
+            height={'auto'}
+            transform='translate(-50%, -50%)'
+            display='inline-block'
+          >
+            <FlagSwitcher />
+          </Box>
 
-        <Box
-          position='absolute'
-          top='10%'
-          left='50%'
-          height={'auto'}
-          transform='translate(-50%, -50%)'
-          display='inline-block'
-        >
-          {!SCUDERIAS?.length || !currentScuderia?.logoURL ? (
-            <Loader opacity={0.6} width={40} height={40} />
-          ) : (
-            <Image
-              src={currentScuderia?.logoURL}
-              data-pw-id={'scuderia-logo'}
-              alt={'scuderia-logo'}
-              w='auto'
-              h='auto'
-              style={{
-                WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0) 25%, rgba(0,0,0,1) 100%)',
-                maskImage: 'linear-gradient(to top, rgba(0,0,0,0) 25%, rgba(0,0,0,1) 100%)',
-              }}
+          <Box
+            position='absolute'
+            top='10%'
+            left='50%'
+            height={'auto'}
+            transform='translate(-50%, -50%)'
+            display='inline-block'
+          >
+            {!SCUDERIAS?.length || !currentScuderia?.logoURL ? (
+              <Loader opacity={0.6} width={40} height={40} />
+            ) : (
+              <Image
+                src={currentScuderia?.logoURL}
+                data-pw-id={'scuderia-logo'}
+                alt={'scuderia-logo'}
+                w='auto'
+                h='auto'
+                style={{
+                  WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,0) 25%, rgba(0,0,0,1) 100%)',
+                  maskImage: 'linear-gradient(to top, rgba(0,0,0,0) 25%, rgba(0,0,0,1) 100%)',
+                }}
+              />
+            )}
+          </Box>
+
+          {currentScuderia && (
+            <SpriteAnimation
+              src={currentScuderia?.spriteURL as string}
+              frameHeight={80}
+              frameWidth={270}
+              totalFrames={6}
+              paused={!isActive}
             />
           )}
-        </Box>
-
-        {currentScuderia && (
-          <SpriteAnimation
-            src={currentScuderia?.spriteURL as string}
-            frameHeight={80}
-            frameWidth={270}
-            totalFrames={6}
-            paused={!isActive}
-          />
-        )}
-      </Center>
+        </Center>
+      )}
 
       <VStack display={'flex'} flexDirection={'column'}>
-        <TimerSelector value={selectedTire} onSelect={changeCompoundTime} />
+        {mode === PomodoroMode.F1 && (
+          <TimerSelector value={selectedTire} onSelect={changeCompoundTime} />
+        )}
 
         <Center w={'100%'}>
           <SegmentedControl

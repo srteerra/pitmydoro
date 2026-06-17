@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  createContext,
-  useState,
-  useCallback,
-  ReactNode,
-  ComponentType,
-  useContext,
-  useEffect,
-} from 'react';
+import { ComponentType, createContext, ReactNode, useCallback, useContext, useState } from 'react';
 import { Button, CloseButton, Dialog } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
 
@@ -59,17 +51,6 @@ export function DialogProvider({ children }: { children: ReactNode }) {
 
     return content as ReactNode;
   }
-
-  useEffect(() => {
-    if (isOpen) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.documentElement.style.overflow = 'hidden';
-      document.documentElement.style.paddingRight = `${scrollbarWidth}px`;
-    } else {
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.paddingRight = '';
-    }
-  }, [isOpen]);
 
   return (
     <DialogContext.Provider value={{ openDialog, closeDialog }}>

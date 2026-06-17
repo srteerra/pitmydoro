@@ -1,15 +1,7 @@
 'use client';
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  ReactNode,
-  ComponentType,
-  useEffect,
-} from 'react';
-import { Drawer, DrawerContent, Button, CloseButton, Text } from '@chakra-ui/react';
+import { ComponentType, createContext, ReactNode, useCallback, useContext, useState } from 'react';
+import { Button, CloseButton, Drawer, DrawerContent, Text } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
 
 type DrawerContent = ComponentType<{ onClose: () => void }> | ReactNode;
@@ -65,17 +57,6 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
 
     return content as ReactNode;
   }
-
-  useEffect(() => {
-    if (isOpen) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.documentElement.style.overflow = 'hidden';
-      document.documentElement.style.paddingRight = `${scrollbarWidth}px`;
-    } else {
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.paddingRight = '';
-    }
-  }, [isOpen]);
 
   return (
     <DrawerContext.Provider value={{ openDrawer, closeDrawer }}>
