@@ -15,7 +15,6 @@ export function useTasks() {
     setEditingTask,
     loading,
     setTasks,
-    addTask,
     updateTask,
     removeTask,
     setCurrentTask,
@@ -30,7 +29,6 @@ export function useTasks() {
   const autoStartNextTask = useSettingsStore((state) => state.autoStartNextTask);
 
   const activeTasks = useMemo(() => tasks.filter((t) => !t.archive), [tasks]);
-  console.log('activeTasks', activeTasks);
 
   const incompleteTasks = useMemo(() => {
     return _.chain(activeTasks).reject('completedAt').sortBy('order').value();
@@ -119,13 +117,15 @@ export function useTasks() {
       id,
       title: '',
       description: '',
-      order: tasks.length + 1,
+      order: 1,
       estimatedPomodoros: 1,
       totalPomodoros: 0,
       isSync: false,
     };
 
-    addTask({ ...newTask, isSync: false });
+    const shifted = tasks.map((t) => (t.archive ? t : { ...t, order: (t.order ?? 0) + 1 }));
+    setTasks([...shifted, newTask]);
+
     if (!currentTask) setCurrentTask(newTask);
   };
 

@@ -16,6 +16,7 @@ import moment from 'moment';
 import { useAlert } from '@/hooks/useAlert';
 import { TireTypeEnum } from '@/enums/TireType.enum';
 import { useTranslations } from 'use-intl';
+import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 export const usePomodoro = () => {
   const { user } = useAuth();
@@ -53,6 +54,8 @@ export const usePomodoro = () => {
   const autoStartSession = useSettingsStore((state) => state.autoStartSession);
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
+  const mode = useSettingsStore((state) => state.mode);
+  const minimalSessionDuration = useSettingsStore((state) => state.minimalSessionDuration);
 
   const incompleteTasks = React.useMemo(() => {
     return _.chain(tasks).reject('completedAt').sortBy('order').value();
@@ -67,12 +70,17 @@ export const usePomodoro = () => {
   }, [tasks]);
 
   const getCurrentDuration = (newTimer?: TireTypeEnum): number => {
+    const sessionMinutes =
+      mode === PomodoroMode.MINIMAL
+        ? minimalSessionDuration
+        : tiresSettings[newTimer ?? selectedTire].duration;
+
     const newTime =
       status === SessionStatusEnum.LONG_BREAK
         ? breaksDuration[SessionStatusEnum.LONG_BREAK]
         : status === SessionStatusEnum.SHORT_BREAK
           ? breaksDuration[SessionStatusEnum.SHORT_BREAK]
-          : tiresSettings[newTimer ?? selectedTire].duration;
+          : sessionMinutes;
 
     return moment.duration(Number(newTime), 'minutes').asMilliseconds();
   };
@@ -121,7 +129,10 @@ export const usePomodoro = () => {
 
   const updateEstimatedFinish = (totalRemainingMs: number) => {
     const now = Date.now();
-    const tireDuration = tiresSettings[selectedTire]?.duration ?? 25;
+    const tireDuration =
+      mode === PomodoroMode.MINIMAL
+        ? minimalSessionDuration
+        : (tiresSettings[selectedTire]?.duration ?? 25);
     const msPerPomodoro = tireDuration * 60 * 1000;
     const remainingFuture = (incompletePomodoros - 1) * msPerPomodoro;
     const totalRemaining = Math.max(totalRemainingMs, 0) + Math.max(remainingFuture, 0);
@@ -370,12 +381,17 @@ export const usePomodoro = () => {
     if (showRedFlag || currentPomodoro?.status === 'running') setFlag(FlagEnum.RED);
     setStopped(true);
 
+    const sessionMinutes =
+      mode === PomodoroMode.MINIMAL
+        ? minimalSessionDuration
+        : tiresSettings[newTire ?? selectedTire].duration;
+
     const newTime =
       status === SessionStatusEnum.LONG_BREAK
         ? breaksDuration[SessionStatusEnum.LONG_BREAK]
         : status === SessionStatusEnum.SHORT_BREAK
           ? breaksDuration[SessionStatusEnum.SHORT_BREAK]
-          : tiresSettings[newTire ?? selectedTire].duration;
+          : sessionMinutes;
 
     const duration = moment.duration(Number(newTime), 'minutes').asMilliseconds();
     setDateClock(Date.now() + duration);

@@ -8,6 +8,7 @@ import { useTranslations } from 'use-intl';
 import { userService } from '@/services/user.service';
 import { useAuth } from '@/contexts/AuthContext';
 import { DefaultSettings } from '@/constants/DefaultSettings';
+import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 export const useSettings = () => {
   const { toastSuccess, toastError } = useAlert();
@@ -29,8 +30,14 @@ export const useSettings = () => {
     setEnableSounds,
     setVolume,
     setSettings,
+    setPomodoroMode,
     setEnableNotifications,
   } = useSettingsStore();
+
+  const handleToggleMode = async (mode: PomodoroMode) => {
+    setPomodoroMode(mode);
+    if (user) await userService.updatePreferences(user.uid, { mode });
+  };
 
   const handleSwitchSession = async (value: boolean) => {
     setAutoStartSession(value);
@@ -163,6 +170,7 @@ export const useSettings = () => {
     changeScuderia,
     loadConfig,
     wipeConfig,
+    handleToggleMode,
     handleChangeTireDuration,
   };
 };
