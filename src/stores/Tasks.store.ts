@@ -1,6 +1,33 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { Task } from '@/interfaces/Task.interface';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import { Timestamp } from 'firebase/firestore';
+import { Task, TaskStats, TaskStatsDelta } from '@/interfaces/Task.interface';
+
+const emptyStats = (): TaskStats => ({
+  totalWorkTime: 0,
+  totalBreakTime: 0,
+  totalPausedTime: 0,
+  totalPauses: 0,
+  totalInterruptions: 0,
+  lastSessionAt: Timestamp.now(),
+});
+
+const mergeStats = (task: Task, delta: TaskStatsDelta): Task => {
+  const stats = task.stats ?? emptyStats();
+
+  return {
+    ...task,
+    totalPomodoros: task.totalPomodoros + (delta.pomodoros ?? 0),
+    stats: {
+      totalWorkTime: stats.totalWorkTime + (delta.workTime ?? 0),
+      totalBreakTime: stats.totalBreakTime + (delta.breakTime ?? 0),
+      totalPausedTime: stats.totalPausedTime + (delta.pausedTime ?? 0),
+      totalPauses: stats.totalPauses + (delta.pauses ?? 0),
+      totalInterruptions: stats.totalInterruptions + (delta.interruptions ?? 0),
+      lastSessionAt: Timestamp.now(),
+    },
+  };
+};
 
 interface TaskStore {
   tasks: Task[];
@@ -14,6 +41,7 @@ interface TaskStore {
   setTasks: (tasks: Task[]) => void;
   addTask: (task: Task) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
+  applyTaskStats: (id: string, delta: TaskStatsDelta) => void;
   removeTask: (id: string) => void;
   setLoading: (loading: boolean) => void;
   setEditingTask: (task: string | null) => void;
@@ -66,6 +94,13 @@ export const useTaskStore = create<TaskStore>()(
           tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
           currentTask:
             state.currentTask?.id === id ? { ...state.currentTask, ...updates } : state.currentTask,
+        })),
+
+      applyTaskStats: (id, delta) =>
+        set((state) => ({
+          tasks: state.tasks.map((t) => (t.id === id ? mergeStats(t, delta) : t)),
+          currentTask:
+            state.currentTask?.id === id ? mergeStats(state.currentTask, delta) : state.currentTask,
         })),
 
       removeTask: (id) =>

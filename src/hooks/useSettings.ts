@@ -32,6 +32,7 @@ export const useSettings = () => {
     setSettings,
     setPomodoroMode,
     setEnableNotifications,
+    setMinimalSessionDuration,
   } = useSettingsStore();
 
   const handleToggleMode = async (mode: PomodoroMode) => {
@@ -114,6 +115,16 @@ export const useSettings = () => {
     toastSuccess(t('settingsSaved'));
   };
 
+  const handleChangeMinimalSessionDuration = async (duration: number) => {
+    setMinimalSessionDuration(duration);
+
+    if (user) {
+      await userService.updatePreferences(user.uid, { minimalSessionDuration: duration });
+    }
+
+    toastSuccess(t('settingsSaved'));
+  };
+
   const handleChangeTireDuration = async (tire: TireTypeEnum, duration: number) => {
     const newTiresSettingsData = {
       ...tiresSettings,
@@ -172,5 +183,6 @@ export const useSettings = () => {
     wipeConfig,
     handleToggleMode,
     handleChangeTireDuration,
+    handleChangeMinimalSessionDuration,
   };
 };

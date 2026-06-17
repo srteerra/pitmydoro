@@ -4,7 +4,9 @@ import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { MAX_DURATION } from '@/constants/DefaultSettings';
 import { useAlert } from '@/hooks/useAlert';
 import { useTranslations } from 'use-intl';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useSettings } from '@/hooks/useSettings';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface DurationEditableProps {
   value: number;
@@ -79,11 +81,24 @@ const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) =>
 
 export const SimpleTimerSelector = () => {
   const minimalSessionDuration = useSettingsStore((state) => state.minimalSessionDuration);
-  const setMinimalSessionDuration = useSettingsStore((state) => state.setMinimalSessionDuration);
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
-  const updateBreakDuration = useSettingsStore((state) => state.updateBreakDuration);
+  const { handleChangeMinimalSessionDuration, handleChangeBreakDuration } = useSettings();
   const { toastError } = useAlert();
   const t = useTranslations('settings.sections.timers');
+
+  const [localSession, setLocalSession] = useState(minimalSessionDuration);
+  const [localBreaks, setLocalBreaks] = useState(breaksDuration);
+
+  const debouncedSession = useDebounce(handleChangeMinimalSessionDuration, 1000);
+  const debouncedBreak = useDebounce(handleChangeBreakDuration, 1000);
+
+  useEffect(() => {
+    setLocalSession(minimalSessionDuration);
+  }, [minimalSessionDuration]);
+
+  useEffect(() => {
+    setLocalBreaks(breaksDuration);
+  }, [breaksDuration]);
 
   const validateDuration = useCallback(
     (value: number): number => {
@@ -95,6 +110,18 @@ export const SimpleTimerSelector = () => {
     },
     [toastError, t]
   );
+
+  const handleSessionChange = (value: number) => {
+    const validated = validateDuration(value);
+    setLocalSession(validated);
+    debouncedSession(validated);
+  };
+
+  const handleBreakChange = (status: SessionStatusEnum, value: number) => {
+    const validated = validateDuration(value);
+    setLocalBreaks((prev) => ({ ...prev, [status]: validated }));
+    debouncedBreak(status, validated);
+  };
 
   return (
     <Box
@@ -109,23 +136,17 @@ export const SimpleTimerSelector = () => {
       style={{ display: 'block' }}
     >
       Sesión de{' '}
-      <DurationEditable
-        value={minimalSessionDuration}
-        onChange={(val) => setMinimalSessionDuration(validateDuration(val))}
-        accent='#e05c5c'
-      />{' '}
+      <DurationEditable value={localSession} onChange={handleSessionChange} accent='#e05c5c' />{' '}
       mins, descanso corto de{' '}
       <DurationEditable
-        value={breaksDuration[SessionStatusEnum.SHORT_BREAK]}
-        onChange={(val) =>
-          updateBreakDuration(SessionStatusEnum.SHORT_BREAK, validateDuration(val))
-        }
+        value={localBreaks[SessionStatusEnum.SHORT_BREAK]}
+        onChange={(val) => handleBreakChange(SessionStatusEnum.SHORT_BREAK, val)}
         accent='#5c9ee0'
       />{' '}
       mins y descanso largo de{' '}
       <DurationEditable
-        value={breaksDuration[SessionStatusEnum.LONG_BREAK]}
-        onChange={(val) => updateBreakDuration(SessionStatusEnum.LONG_BREAK, validateDuration(val))}
+        value={localBreaks[SessionStatusEnum.LONG_BREAK]}
+        onChange={(val) => handleBreakChange(SessionStatusEnum.LONG_BREAK, val)}
         accent='#5cc9a0'
       />{' '}
       mins.

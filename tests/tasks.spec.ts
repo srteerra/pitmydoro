@@ -8,10 +8,6 @@ test.describe('Tasks', () => {
     await page.goto('/');
   });
 
-  // ---------------------------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------------------------
-
   async function addTask(page: any, title: string, description?: string) {
     await page.getByTestId('addTask-button').click();
     await page.getByTestId('task-title-input').fill(title);
@@ -24,21 +20,12 @@ test.describe('Tasks', () => {
 
   async function openTaskMenu(page: any, index = 0) {
     await page.getByTestId('task-menu-trigger').nth(index).click();
-    // task-menu-edit is always present when the menu is open (visible+enabled
-    // normally, visible+disabled during concurrent edit) — reliable open signal.
     await page.getByTestId('task-menu-edit').first().waitFor({ state: 'visible' });
   }
 
-  // Menu items render inside a Zag.js portal. The page container can briefly
-  // intercept pointer events while the menu positions itself, so every item
-  // click uses force:true to dispatch directly at the element's center.
   async function clickMenuItem(page: any, testId: string) {
     await page.getByTestId(testId).click({ force: true });
   }
-
-  // ---------------------------------------------------------------------------
-  // Initial state
-  // ---------------------------------------------------------------------------
 
   test.describe('initial state', () => {
     test('should display the add task button', async ({ page }) => {
@@ -49,10 +36,6 @@ test.describe('Tasks', () => {
       await expect(page.getByTestId('task-card')).toHaveCount(0);
     });
   });
-
-  // ---------------------------------------------------------------------------
-  // Creation
-  // ---------------------------------------------------------------------------
 
   test.describe('creation', () => {
     test('should open the inline editor when clicking add task', async ({ page }) => {
@@ -114,10 +97,6 @@ test.describe('Tasks', () => {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Editing
-  // ---------------------------------------------------------------------------
-
   test.describe('editing', () => {
     test.beforeEach(async ({ page }) => {
       await addTask(page, 'Original Title', 'Original description');
@@ -162,7 +141,6 @@ test.describe('Tasks', () => {
       await openTaskMenu(page);
       await clickMenuItem(page, 'task-menu-edit');
       await page.getByTestId('task-title-input').clear();
-      // save is disabled on empty title; cancelling an empty task removes it
       await page.getByTestId('task-cancel-button').click();
       await expect(page.getByTestId('task-card')).toHaveCount(0);
     });
@@ -173,16 +151,10 @@ test.describe('Tasks', () => {
       await clickMenuItem(page, 'task-menu-edit');
       await expect(page.getByTestId('task-title-input')).toBeVisible();
 
-      // Task 1 is in edit mode — its menu trigger is unmounted.
-      // The only remaining trigger (nth(0)) belongs to task 2.
       await openTaskMenu(page, 0);
       await expect(page.getByTestId('task-menu-edit')).toBeDisabled();
     });
   });
-
-  // ---------------------------------------------------------------------------
-  // Completion
-  // ---------------------------------------------------------------------------
 
   test.describe('completion', () => {
     test.beforeEach(async ({ page }) => {
@@ -218,10 +190,6 @@ test.describe('Tasks', () => {
       await expect(page.getByTestId('task-card').first()).toHaveCSS('cursor', 'default');
     });
   });
-
-  // ---------------------------------------------------------------------------
-  // Deletion / Archiving
-  // ---------------------------------------------------------------------------
 
   test.describe('deletion', () => {
     test.beforeEach(async ({ page }) => {
@@ -259,10 +227,6 @@ test.describe('Tasks', () => {
     });
   });
 
-  // ---------------------------------------------------------------------------
-  // Reordering
-  // ---------------------------------------------------------------------------
-
   test.describe('reordering', () => {
     test.beforeEach(async ({ page }) => {
       await addTask(page, 'First Task');
@@ -280,8 +244,6 @@ test.describe('Tasks', () => {
     });
 
     test('should reorder tasks via keyboard drag-and-drop', async ({ page, browserName }) => {
-      // dnd-kit's KeyboardSensor only fires consistently in Chromium;
-      // Firefox and WebKit handle space/arrow differently inside the sensor.
       test.skip(
         browserName !== 'chromium',
         'keyboard DnD via dnd-kit is reliable in Chromium only'
@@ -297,8 +259,6 @@ test.describe('Tasks', () => {
       await firstHandle.press('Space');
       await page.waitForTimeout(300);
 
-      // beforeEach adds First then Second; Second is at index 0 (top-insert).
-      // Dragging index 0 (Second Task) down one yields [First, Second].
       const cards = page.getByTestId('task-card');
       await expect(cards.nth(0)).toContainText('First Task');
       await expect(cards.nth(1)).toContainText('Second Task');

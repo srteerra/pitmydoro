@@ -7,29 +7,17 @@ import {
   IconButton,
   Input,
   InputGroup,
-  Stack,
   mergeRefs,
+  Stack,
   useControllableState,
 } from '@chakra-ui/react';
 import * as React from 'react';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
 
 export interface PasswordVisibilityProps {
-  /**
-   * The default visibility state of the password input.
-   */
   defaultVisible?: boolean;
-  /**
-   * The controlled visibility state of the password input.
-   */
   visible?: boolean;
-  /**
-   * Callback invoked when the visibility state changes.
-   */
   onVisibleChange?: (visible: boolean) => void;
-  /**
-   * Custom icons for the visibility toggle button.
-   */
   visibilityIcon?: { on: React.ReactNode; off: React.ReactNode };
 }
 

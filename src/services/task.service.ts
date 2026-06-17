@@ -1,19 +1,28 @@
 import {
+  arrayUnion,
   collection,
-  setDoc,
-  updateDoc,
   deleteDoc,
   doc,
-  getDocs,
-  query,
-  orderBy,
   getDoc,
+  getDocs,
+  orderBy,
+  query,
+  setDoc,
   Timestamp,
-  arrayUnion,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
-import { Task } from '@/interfaces/Task.interface';
+import { Task, TaskStatsDelta } from '@/interfaces/Task.interface';
+
+export const emptyTaskStats = () => ({
+  totalWorkTime: 0,
+  totalBreakTime: 0,
+  totalPausedTime: 0,
+  totalPauses: 0,
+  totalInterruptions: 0,
+  lastSessionAt: Timestamp.now(),
+});
 
 interface TaskOrderDoc {
   order: string[];
@@ -31,14 +40,7 @@ export const taskService = {
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
       isSync: true,
-      stats: {
-        totalWorkTime: 0,
-        totalBreakTime: 0,
-        totalPausedTime: 0,
-        totalPauses: 0,
-        totalInterruptions: 0,
-        lastSessionAt: Timestamp.now(),
-      },
+      stats: taskData.stats ?? emptyTaskStats(),
     });
 
     updateDoc(doc(db, 'users', userId, 'tasksList', 'activeTasks'), {
@@ -78,18 +80,7 @@ export const taskService = {
     });
   },
 
-  async updateTaskStats(
-    userId: string,
-    taskId: string,
-    stats: {
-      workTime?: number;
-      breakTime?: number;
-      pomodoros?: number;
-      pausedTime?: number;
-      pauses?: number;
-      interruptions?: number;
-    }
-  ) {
+  async updateTaskStats(userId: string, taskId: string, stats: TaskStatsDelta) {
     const taskRef = doc(db, 'users', userId, 'tasks', taskId);
     const snap = await getDoc(taskRef);
     const data = snap.data() || {};
@@ -97,7 +88,7 @@ export const taskService = {
     const currentStats = data.stats || {};
     const currentTotalPomodoros = data.totalPomodoros || 0;
 
-    const updates: any = {
+    const updates: Record<string, unknown> = {
       updatedAt: Timestamp.now(),
       'stats.lastSessionAt': Timestamp.now(),
     };
@@ -128,39 +119,6 @@ export const taskService = {
     }
 
     await updateDoc(taskRef, updates);
-  },
-
-  async addPauseToTask(
-    userId: string,
-    taskId: string,
-    pause: { pausedAt: Timestamp; resumedAt: Timestamp | null }
-  ) {
-    const taskRef = doc(db, 'users', userId, 'tasks', taskId);
-    const snap = await getDoc(taskRef);
-    const data = snap.data() || {};
-
-    const currentPauses = data.pauses || [];
-
-    await updateDoc(taskRef, {
-      pauses: [...currentPauses, pause],
-      updatedAt: Timestamp.now(),
-    });
-  },
-
-  async updateLastPause(userId: string, taskId: string, resumedAt: Timestamp) {
-    const taskRef = doc(db, 'users', userId, 'tasks', taskId);
-    const snap = await getDoc(taskRef);
-    const data = snap.data() || {};
-
-    const pauses = data.pauses || [];
-    if (pauses.length > 0) {
-      pauses[pauses.length - 1].resumedAt = resumedAt;
-
-      await updateDoc(taskRef, {
-        pauses,
-        updatedAt: Timestamp.now(),
-      });
-    }
   },
 
   async saveActiveTasksOrder(userId: string, orderIds: string[]) {
