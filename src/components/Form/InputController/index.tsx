@@ -1,19 +1,19 @@
 import { Field, Input } from '@chakra-ui/react';
-import { Controller, FieldError, Control } from 'react-hook-form';
+import { Control, Controller, FieldError, FieldValues, Path } from 'react-hook-form';
 import { PasswordInput } from '@/components/ui/password-input';
 import React from 'react';
 
-interface Props extends React.ComponentPropsWithoutRef<typeof Input> {
+interface Props<T extends FieldValues> extends React.ComponentPropsWithoutRef<typeof Input> {
   label: string;
-  name: string;
-  control: Control<any>;
+  name: Path<T>;
+  control: Control<T>;
   placeholder?: string;
   isRequired?: boolean | string;
   rules?: Record<string, any>;
   isPassword?: boolean;
 }
 
-export const InputController: React.FC<Props> = ({
+export const InputController = <T extends FieldValues>({
   label,
   name,
   control,
@@ -22,7 +22,7 @@ export const InputController: React.FC<Props> = ({
   rules,
   isPassword = false,
   ...props
-}) => {
+}: Props<T>) => {
   const InputElement = isPassword ? PasswordInput : Input;
 
   return (
