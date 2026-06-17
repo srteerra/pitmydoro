@@ -91,6 +91,7 @@
     "resetAllSuccess": "Todas las tareas se han reiniciado. ¿Deseas deshacer esta acción?",
     "undoResetAll": "Deshacer",
     "estFinishAt": "Est. Termina a",
+    "noPomodoros": "Sin pomodoros",
     "startTimer": "Iniciar",
     "pauseTimer": "Pausar",
     "sessionLabel": "Sesión",
@@ -251,15 +252,9 @@
     }
   },
   "footer": {
-    "copyright": "Pit my doro",
     "madeWith": "Hecho con ❤️ por @srteerra",
     "disclaimer": "Este sitio no está afiliado con F1, Formula 1, ni con sus equipos o pilotos.",
-    "links": {
-      "about": "Acerca de",
-      "terms": "Términos y Condiciones",
-      "privacy": "Política de Privacidad",
-      "legal": "Aviso Legal"
-    }
+    "license": "Código abierto · Licencia GPL-3.0"
   },
   "meta": {
     "title": "Pit My Doro – Temporizador Pomodoro estilo F1",
