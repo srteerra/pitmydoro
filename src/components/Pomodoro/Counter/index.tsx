@@ -36,8 +36,16 @@ export const Counter = () => {
   const { playSound, resumeSound, radioSound } = useSounds();
   const pomodoroT = useTranslations('pomodoro');
   const settingsT = useTranslations('settings');
-  const { incompletePomodoros, completedPomodoros, start, pause, resume, complete, reset } =
-    usePomodoro();
+  const {
+    incompletePomodoros,
+    completedPomodoros,
+    start,
+    pause,
+    resume,
+    complete,
+    reset,
+    flushElapsed,
+  } = usePomodoro();
   const status = useSessionStore((state) => state.status);
   const tasks = useTaskStore((state) => state.tasks);
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
@@ -214,6 +222,21 @@ export const Counter = () => {
       countdownRef.current?.pause();
     }
   }, [isActive]);
+
+  useEffect(() => {
+    const handleHide = () => {
+      if (document.visibilityState === 'hidden') flushElapsed();
+    };
+    const handlePageHide = () => flushElapsed();
+
+    document.addEventListener('visibilitychange', handleHide);
+    window.addEventListener('pagehide', handlePageHide);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleHide);
+      window.removeEventListener('pagehide', handlePageHide);
+    };
+  }, [flushElapsed]);
 
   return (
     <React.Fragment>

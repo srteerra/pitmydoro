@@ -47,7 +47,9 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
     return editingTask === task.id;
   }, [editingTask, task.id]);
 
-  const handleOpenStats = () => {
+  const handleOpenStats = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
     if (!profile?.uid) return;
 
     setMenuOpen(false);
@@ -308,7 +310,8 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                       value='delete'
                       color='fg.error'
                       cursor='pointer'
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         handleMenuClose();
                         handleOnTaskDelete();
                       }}

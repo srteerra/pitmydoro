@@ -3,6 +3,7 @@ import { InfoTip } from '@/components/ui/toggle-tip';
 import { Task } from '@/interfaces/Task.interface';
 import React, { JSX, useMemo } from 'react';
 import { formatMs } from '@/utils/formatMs.utils';
+import { toMillis } from '@/utils/timestamp.utils';
 import moment from 'moment/min/moment-with-locales';
 import { formatMinutes } from '@/utils/formatMinutes.utils';
 import { BarSegment, useChart } from '@chakra-ui/charts';
@@ -11,12 +12,12 @@ import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
 import {
   CgCheckO,
+  CgCloseO,
   CgCoffee,
+  CgPlayPauseO,
   CgProfile,
   CgStopwatch,
   CgTime,
-  CgPlayPauseO,
-  CgCloseO,
 } from 'react-icons/cg';
 import useUserStore from '@/stores/User.store';
 import { useLocale, useTranslations } from 'use-intl';
@@ -32,6 +33,11 @@ interface StatItem {
   icon?: JSX.Element;
   valueIcon?: JSX.Element;
 }
+
+const formatDate = (timestamp: unknown) => {
+  const ms = toMillis(timestamp);
+  return ms ? moment(ms).format('DD/MM/YYYY hh:mm A') : '—';
+};
 
 export const StatsDialog = ({ task }: Props) => {
   const { theme } = useTheme();
@@ -82,20 +88,18 @@ export const StatsDialog = ({ task }: Props) => {
       general: [
         {
           label: statsT('lastSession'),
-          value: moment((task.stats?.lastSessionAt?.seconds || 0) * 1000).format(
-            'DD/MM/YYYY HH:mm a'
-          ),
+          value: formatDate(task.stats?.lastSessionAt),
           icon: <CgTime />,
         },
         {
           label: statsT('createdAt'),
-          value: moment((task.createdAt?.seconds || 0) * 1000).format('DD/MM/YYYY HH:mm a'),
+          value: formatDate(task.createdAt),
           icon: <CgTime />,
         },
         {
           label: statsT('isCompleted'),
           value: task?.completedAt
-            ? moment((task.completedAt?.seconds || 0) * 1000).fromNow()
+            ? moment(toMillis(task.completedAt)).fromNow()
             : statsT('notCompleted'),
           icon: <CgCheckO />,
           valueIcon: (
@@ -135,7 +139,7 @@ export const StatsDialog = ({ task }: Props) => {
         },
       ],
     };
-  }, [task]);
+  }, [task, statsT]);
 
   const StatsList = ({ items }: { items: StatItem[] }) => (
     <DataList.Root orientation='horizontal'>
