@@ -24,6 +24,7 @@ interface SettingsActions {
   setEnableSounds: (enableSounds: boolean) => void;
   setVolume: (volume: number) => void;
   setEnableNotifications: (enableNotifications: boolean) => void;
+  setMinimalSessionDuration: (duration: number) => void;
   setSettings: (settings: Partial<Settings>) => void;
 }
 
@@ -46,6 +47,7 @@ const useSettingsStore = create<Settings & SettingsActions>()(
         volume: DefaultSettings.volume,
         enableNotifications: DefaultSettings.enableNotifications,
         currentScuderia: DefaultSettings.currentScuderia,
+        minimalSessionDuration: DefaultSettings.minimalSessionDuration,
         setPomodoroMode: (mode) => set(() => ({ mode })),
         setSettings: (settings) => set((state) => ({ ...state, ...settings })),
         setCurrentScuderia: (team) => set(() => ({ currentScuderia: team })),
@@ -72,6 +74,7 @@ const useSettingsStore = create<Settings & SettingsActions>()(
               },
             },
           })),
+        setMinimalSessionDuration: (duration) => set(() => ({ minimalSessionDuration: duration })),
         setBreaksDuration: (breaksDuration) => set(() => ({ breaksDuration })),
         updateBreakDuration: (type, duration) =>
           set((state) => ({

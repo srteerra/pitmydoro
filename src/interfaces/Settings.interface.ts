@@ -29,4 +29,5 @@ export interface Settings {
   volume: number;
   enableNotifications: boolean;
   mode: PomodoroMode;
+  minimalSessionDuration: number;
 }
