@@ -1,5 +1,10 @@
 import { Box, Editable } from '@chakra-ui/react';
-import useSessionStore from '@/stores/Session.store';
+import useSettingsStore from '@/stores/Settings.store';
+import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
+import { MAX_DURATION } from '@/constants/DefaultSettings';
+import { useAlert } from '@/hooks/useAlert';
+import { useTranslations } from 'use-intl';
+import { useCallback } from 'react';
 
 interface DurationEditableProps {
   value: number;
@@ -42,6 +47,19 @@ const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) =>
             }}
           />
           <Editable.Input
+            onKeyDown={(e) => {
+              if (!/^\d$/.test(e.key)) return;
+              const input = e.currentTarget;
+              const next =
+                input.value.slice(0, input.selectionStart ?? input.value.length) +
+                e.key +
+                input.value.slice(input.selectionEnd ?? input.value.length);
+              if (Number(next) > MAX_DURATION) {
+                e.preventDefault();
+                onChange(Number(next));
+                ctx.cancel();
+              }
+            }}
             style={{
               display: 'inline',
               fontWeight: 600,
@@ -60,12 +78,23 @@ const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) =>
 );
 
 export const SimpleTimerSelector = () => {
-  const timerDuration = useSessionStore((state) => state.timerDuration);
-  const setTimerDuration = useSessionStore((state) => state.setTimerDuration);
-  const shortBreakDuration = useSessionStore((state) => state.shortBreakDuration);
-  const setShortBreakDuration = useSessionStore((state) => state.setShortBreakDuration);
-  const longBreakDuration = useSessionStore((state) => state.longBreakDuration);
-  const setLongBreakDuration = useSessionStore((state) => state.setLongBreakDuration);
+  const minimalSessionDuration = useSettingsStore((state) => state.minimalSessionDuration);
+  const setMinimalSessionDuration = useSettingsStore((state) => state.setMinimalSessionDuration);
+  const breaksDuration = useSettingsStore((state) => state.breaksDuration);
+  const updateBreakDuration = useSettingsStore((state) => state.updateBreakDuration);
+  const { toastError } = useAlert();
+  const t = useTranslations('settings.sections.timers');
+
+  const validateDuration = useCallback(
+    (value: number): number => {
+      if (value > MAX_DURATION) {
+        toastError(t('maxDurationExceeded', { max: MAX_DURATION }));
+        return MAX_DURATION;
+      }
+      return Math.max(1, value);
+    },
+    [toastError, t]
+  );
 
   return (
     <Box
@@ -80,17 +109,23 @@ export const SimpleTimerSelector = () => {
       style={{ display: 'block' }}
     >
       Sesión de{' '}
-      <DurationEditable value={timerDuration} onChange={setTimerDuration} accent='#e05c5c' /> mins,
-      descanso corto de{' '}
       <DurationEditable
-        value={shortBreakDuration}
-        onChange={setShortBreakDuration}
+        value={minimalSessionDuration}
+        onChange={(val) => setMinimalSessionDuration(validateDuration(val))}
+        accent='#e05c5c'
+      />{' '}
+      mins, descanso corto de{' '}
+      <DurationEditable
+        value={breaksDuration[SessionStatusEnum.SHORT_BREAK]}
+        onChange={(val) =>
+          updateBreakDuration(SessionStatusEnum.SHORT_BREAK, validateDuration(val))
+        }
         accent='#5c9ee0'
       />{' '}
       mins y descanso largo de{' '}
       <DurationEditable
-        value={longBreakDuration}
-        onChange={setLongBreakDuration}
+        value={breaksDuration[SessionStatusEnum.LONG_BREAK]}
+        onChange={(val) => updateBreakDuration(SessionStatusEnum.LONG_BREAK, validateDuration(val))}
         accent='#5cc9a0'
       />{' '}
       mins.

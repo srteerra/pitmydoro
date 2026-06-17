@@ -8,17 +8,24 @@ import { Sounds } from '@/components/Pomodoro/Settings/General/components/Sounds
 import { Notifications } from '@/components/Pomodoro/Settings/General/components/Notifcations';
 import { useSettings } from '@/hooks/useSettings';
 import { useTranslations } from 'use-intl';
+import useSettingsStore from '@/stores/Settings.store';
+import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 export const General = () => {
   const t = useTranslations('settings');
+  const mode = useSettingsStore((state) => state.mode);
   useSettings();
 
   const sections = [
-    {
-      title: t('sections.timers.title'),
-      description: t('sections.timers.description'),
-      component: <Timers />,
-    },
+    ...(mode === PomodoroMode.F1
+      ? [
+          {
+            title: t('sections.timers.title'),
+            description: t('sections.timers.description'),
+            component: <Timers />,
+          },
+        ]
+      : []),
     {
       title: t('sections.session.title'),
       description: t('sections.session.description'),

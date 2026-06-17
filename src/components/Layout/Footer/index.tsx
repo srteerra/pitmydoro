@@ -45,7 +45,7 @@ export const Footer = () => {
             href={'https://github.com/srteerra/pitmydoro'}
           >
             <Text fontSize='sm' fontWeight='medium' color={{ base: 'gray.500', _dark: 'white' }}>
-              Contributions are welcome!
+              {t('license')}
             </Text>
           </Link>
         </Flex>

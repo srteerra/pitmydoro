@@ -5,18 +5,19 @@ import { RxEyeOpen } from 'react-icons/rx';
 import { useEffect, useState } from 'react';
 import useSettingsStore from '@/stores/Settings.store';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
+import { useSettings } from '@/hooks/useSettings';
 
 export function TogglePomodoroMode() {
   const mode = useSettingsStore((state) => state.mode);
-  const setPomodoroMode = useSettingsStore((state) => state.setPomodoroMode);
   const [mounted, setMounted] = useState(false);
+  const { handleToggleMode } = useSettings();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const togglePomodoroMode = () => {
-    setPomodoroMode(mode === PomodoroMode.F1 ? PomodoroMode.MINIMAL : PomodoroMode.F1);
+  const togglePomodoroMode = async () => {
+    await handleToggleMode(mode === PomodoroMode.F1 ? PomodoroMode.MINIMAL : PomodoroMode.F1);
   };
 
   if (!mounted) return null;

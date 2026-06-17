@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { Task } from '@/interfaces/Task.interface';
 import { HiDotsVertical } from 'react-icons/hi';
-import { MdModeEdit, MdOutlineRestoreFromTrash, MdOutlineCheck } from 'react-icons/md';
+import { MdModeEdit, MdOutlineCheck, MdOutlineRestoreFromTrash } from 'react-icons/md';
 import { IoIosStats } from 'react-icons/io';
 import { TiTimes } from 'react-icons/ti';
 import { FaCheck, FaLock } from 'react-icons/fa';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
-import { Box, Card, Input, Flex, IconButton, Text, NumberInput, Textarea } from '@chakra-ui/react';
+import { Box, Card, Flex, IconButton, Input, NumberInput, Text, Textarea } from '@chakra-ui/react';
 import { useTranslations } from 'use-intl';
 import { useAlert } from '@/hooks/useAlert';
 import { useTaskStore } from '@/stores/Tasks.store';
@@ -141,6 +141,8 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
 
   return (
     <Card.Root
+      data-pw-id='task-card'
+      data-task-id={task.id}
       transition={'ease-in 0.2s'}
       bgColor={{
         base: 'white',
@@ -164,7 +166,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
             : ''
       }
       flexDirection='row'
-      cursor={isCurrentEditing ? 'auto' : 'pointer'}
+      cursor={isCurrentEditing ? 'auto' : task.completedAt ? 'default' : 'pointer'}
       overflow='hidden'
       width='100%'
       onClick={() => {
@@ -197,6 +199,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 variant={'flushed'}
                 ref={ref}
                 placeholder={t('taskTitlePlaceholder')}
+                data-pw-id='task-title-input'
               />
               <Textarea
                 value={taskDescription}
@@ -204,6 +207,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 variant='flushed'
                 w={'full'}
                 placeholder={t('taskDescriptionPlaceholder')}
+                data-pw-id='task-description-input'
               />
             </Box>
           ) : (
@@ -253,7 +257,12 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 positioning={{ placement: 'right-start', hideWhenDetached: true }}
               >
                 <MenuTrigger asChild>
-                  <IconButton rounded={'full'} variant={'ghost'} onClick={handleMenuToggle}>
+                  <IconButton
+                    rounded={'full'}
+                    variant={'ghost'}
+                    onClick={handleMenuToggle}
+                    data-pw-id='task-menu-trigger'
+                  >
                     <HiDotsVertical />
                   </IconButton>
                 </MenuTrigger>
@@ -264,6 +273,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                       onClick={handleOpenStats}
                       value='stats'
                       cursor='pointer'
+                      data-pw-id='task-menu-stats'
                     >
                       {!profile?.uid ? <FaLock /> : <IoIosStats />}
                       {!profile?.uid ? statsT('unlockStats') : statsT('seeStats')}
@@ -278,12 +288,18 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                       }}
                       value='edit'
                       cursor='pointer'
+                      data-pw-id='task-menu-edit'
                     >
                       <MdModeEdit />
                       {t('editTask')}
                     </MenuItem>
 
-                    <MenuItem onClick={(e) => handleCheckTask(e)} value='complete' cursor='pointer'>
+                    <MenuItem
+                      onClick={(e) => handleCheckTask(e)}
+                      value='complete'
+                      cursor='pointer'
+                      data-pw-id='task-menu-complete'
+                    >
                       {task.completedAt ? <TiTimes /> : <MdOutlineCheck />}
                       {task.completedAt ? t('markAsUncompleted') : t('markAsCompleted')}
                     </MenuItem>
@@ -297,6 +313,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                         handleOnTaskDelete();
                       }}
                       _hover={{ bg: 'bg.error', color: 'fg.error' }}
+                      data-pw-id='task-menu-delete'
                     >
                       <MdOutlineRestoreFromTrash />
                       {t('archiveTask')}
@@ -354,6 +371,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 flex={{ base: '1', sm: '0' }}
                 bgColor={'red.400'}
                 color='white'
+                data-pw-id='task-cancel-button'
               >
                 <TiTimes />
               </IconButton>
@@ -366,6 +384,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 flex={{ base: '1', sm: '0' }}
                 bgColor={'green.400'}
                 color='white'
+                data-pw-id='task-save-button'
               >
                 <FaCheck />
               </IconButton>
