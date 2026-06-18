@@ -10,6 +10,8 @@ import { keywords } from '@/constants/Keywords';
 import { Toaster } from '@/components/ui/toaster';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { DrawerProvider } from '@/contexts/DrawerContext';
+import { ScrollToTop } from '@/components/ScrollToTop';
+import { AnnouncementCard } from '@/components/AnnouncementCard';
 
 export const metadata: Metadata = {
   title: 'Pit My Doro',
@@ -47,7 +49,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <AuthProvider>
                   <ColorModeProvider enableSystem={false}>
                     <Toaster />
+                    <ScrollToTop />
                     {children}
+                    <AnnouncementCard />
                   </ColorModeProvider>
                 </AuthProvider>
               </DrawerProvider>
