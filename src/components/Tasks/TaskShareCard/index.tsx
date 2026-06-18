@@ -1,6 +1,7 @@
 import { Task } from '@/interfaces/Task.interface';
 import { formatMinutes } from '@/utils/formatMinutes.utils';
 import { formatMs } from '@/utils/formatMs.utils';
+import Image from 'next/image';
 
 interface Props {
   task: Task;
@@ -30,7 +31,7 @@ export const TaskShareCard = ({ task, photoURL }: Props) => {
         }}
       >
         {photoURL ? (
-          <img
+          <Image
             src={photoURL}
             alt='cover'
             style={{ width: '100%', height: '100%', opacity: 0.85 }}
