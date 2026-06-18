@@ -255,6 +255,302 @@
     "disclaimer": "This site is not affiliated with F1, Formula 1, or any of its teams or drivers.",
     "license": "Open source · GPL-3.0 License"
   },
+  "announcement": {
+    "title": "What's new",
+    "viewRelease": "View full release notes",
+    "community": "Share your ideas",
+    "close": "Dismiss"
+  },
+  "learn": {
+    "hero": {
+      "badge": "Beginner's guide",
+      "title": "Formula 1, explained for beginners",
+      "subtitle": "Everything you need to start watching and actually understand what's going on — the championship, the race weekend, pit stops, tires, and the language fans use.",
+      "intro": "Formula 1 (F1) is the highest class of international single-seater racing. 11 teams and 22 drivers travel the world across a season, racing on circuits that range from city streets to purpose-built speedways."
+    },
+    "toc": {
+      "title": "On this page"
+    },
+    "championship": {
+      "title": "How the championship works",
+      "body": "A season runs roughly from March to December and is made up of many races called Grands Prix. Points scored at each race add up over the year toward two separate titles.",
+      "drivers": {
+        "title": "Drivers' Championship",
+        "body": "Awarded to the individual driver with the most points at the end of the season. This is the title that crowns the World Champion."
+      },
+      "constructors": {
+        "title": "Constructors' Championship",
+        "body": "Awarded to the team. Both of a team's cars score points and those points are combined, so prize money and prestige are tied to this standing."
+      }
+    },
+    "weekend": {
+      "title": "The race weekend",
+      "intro": "A Grand Prix is more than just Sunday's race. A typical weekend is spread across three days:",
+      "practice": {
+        "title": "Practice",
+        "body": "Free Practice sessions (FP1–FP3) let teams test car setups and let drivers learn the track. No points are awarded."
+      },
+      "qualifying": {
+        "title": "Qualifying",
+        "body": "A timed shootout split into three parts (Q1, Q2, Q3) that decides the starting order — the 'grid'. The fastest lap earns pole position, the very first place on the grid."
+      },
+      "sprint": {
+        "title": "Sprint (some weekends)",
+        "body": "A short, flat-out race held on selected weekends. It has its own shorter qualifying and awards a handful of points of its own."
+      },
+      "race": {
+        "title": "The Grand Prix",
+        "body": "The main event on Sunday. Drivers start from their qualifying positions and race a set number of laps. First across the line wins."
+      }
+    },
+    "raceLength": {
+      "title": "How long is a race?",
+      "body": "A Grand Prix covers the number of laps needed to exceed 305 km (about 190 miles) — Monaco is the famous exception at around 260 km. Races also have a maximum running time of roughly two hours (three hours total including stoppages). In practice that means about 50 to 70 laps depending on the circuit."
+    },
+    "rules": {
+      "title": "Basic rules and scoring",
+      "points": {
+        "title": "Points",
+        "body": "The top ten finishers score points on this scale:"
+      },
+      "fastestLap": "In seasons that award it, one extra point can go to the driver who sets the fastest lap of the race, as long as they finish in the top ten.",
+      "flags": {
+        "title": "Flags",
+        "intro": "Marshals wave colored flags to talk to drivers. Hover or tap each one to see what it means:",
+        "items": {
+          "green": { "name": "Green", "meaning": "Track is clear — racing or the session resumes normally." },
+          "yellow": { "name": "Yellow", "meaning": "Danger ahead. Slow down and no overtaking." },
+          "doubleYellow": { "name": "Double yellow", "meaning": "Greater danger; slow down significantly and be ready to stop." },
+          "blue": { "name": "Blue", "meaning": "A faster car is behind — let the leaders lap you." },
+          "red": { "name": "Red", "meaning": "Session stopped. All cars return slowly to the pits." },
+          "yellowRed": { "name": "Yellow & red stripes", "meaning": "Slippery surface ahead — oil, water or gravel on track." },
+          "white": { "name": "White", "meaning": "A slow vehicle is on track ahead." },
+          "black": { "name": "Black", "meaning": "A driver is disqualified and must return to the pits." },
+          "chequered": { "name": "Chequered", "meaning": "The session or race is over." }
+        }
+      },
+      "penalties": {
+        "title": "Penalties",
+        "body": "Breaking the rules — speeding in the pit lane, causing a collision, repeatedly exceeding track limits — can bring time penalties, grid drops, or in serious cases disqualification."
+      }
+    },
+    "raceControl": {
+      "title": "Race control: neutralizing the race",
+      "intro": "When there's danger on track, race control slows everyone down instead of stopping the race outright:",
+      "safetyCar": {
+        "title": "Safety Car (SC)",
+        "body": "A real car comes out to lead the field at reduced speed, bunching everyone together. Overtaking is banned until it pulls in and racing resumes."
+      },
+      "vsc": {
+        "title": "Virtual Safety Car (VSC)",
+        "body": "No physical car: instead, every driver must hold a delta — a slower target time — all the way around the lap. It's used for smaller incidents that don't need a full Safety Car."
+      },
+      "intervals": {
+        "title": "Intervals",
+        "body": "The time gaps between cars, shown in seconds on the timing screens. Watching the interval tells you whether a chasing driver is closing in or dropping back."
+      }
+    },
+    "pitstops": {
+      "title": "Pit stops",
+      "body": "During the race, cars stop in the pit lane so the crew can change tires and make small adjustments. A modern pit crew of around twenty people can swap all four wheels in roughly two to three seconds. A stop is effectively mandatory in dry races because the rules require each driver to use at least two different tire compounds.",
+      "why": "Strategy lives here: when you stop, and which tires you fit, can win or lose a race."
+    },
+    "tires": {
+      "title": "Tire compounds",
+      "intro": "Tires are at the heart of F1 strategy. The supplier brings dry-weather 'slick' tires in different compounds, plus two types for rain. Softer rubber grips better but wears out faster; harder rubber lasts longer but offers less grip.",
+      "headers": {
+        "compound": "Compound",
+        "color": "Color",
+        "grip": "Grip",
+        "durability": "Durability",
+        "life": "Avg. life",
+        "use": "Best for"
+      },
+      "items": {
+        "soft": {
+          "name": "Soft",
+          "color": "Red",
+          "grip": "Highest",
+          "durability": "Lowest",
+          "life": "≈ 10–15 laps",
+          "use": "Qualifying and short, aggressive stints"
+        },
+        "medium": {
+          "name": "Medium",
+          "color": "Yellow",
+          "grip": "Balanced",
+          "durability": "Balanced",
+          "life": "≈ 20–30 laps",
+          "use": "An all-round compromise between speed and life"
+        },
+        "hard": {
+          "name": "Hard",
+          "color": "White",
+          "grip": "Lowest",
+          "durability": "Highest",
+          "life": "≈ 30–40+ laps",
+          "use": "Long stints and high-wear circuits"
+        },
+        "intermediate": {
+          "name": "Intermediate",
+          "color": "Green",
+          "grip": "Medium",
+          "durability": "Conditions-dependent",
+          "life": "Varies with conditions",
+          "use": "A damp track or light rain"
+        },
+        "wet": {
+          "name": "Wet",
+          "color": "Blue",
+          "grip": "Wet only",
+          "durability": "Conditions-dependent",
+          "life": "Varies with conditions",
+          "use": "Heavy rain and standing water"
+        }
+      }
+    },
+    "tech": {
+      "title": "The 2026 car: active aero & overtake mode",
+      "intro": "For 2026 the rules changed dramatically and DRS was retired. Two new tools take its place:",
+      "activeAero": {
+        "title": "Active aerodynamics",
+        "body": "Front and rear wings now move automatically between a high-downforce mode for the corners and a low-drag mode on the straights, making the cars faster and far more efficient."
+      },
+      "overtake": {
+        "title": "Manual Override (overtake mode)",
+        "body": "A push-to-pass style burst of extra electrical power a chasing driver can deploy to help attack the car ahead — the modern, battery-powered replacement for DRS."
+      }
+    },
+    "teams": {
+      "title": "Teams and how they're built",
+      "body": "F1 is contested by constructors — teams that design and build their own cars. Each team enters two cars, so the size of the grid is simply the number of teams times two.",
+      "season2026": {
+        "title": "A bigger grid for 2026",
+        "body": "2026 marks a new era: the grid grows to eleven teams and twenty-two drivers. Cadillac joins as a brand-new constructor, while Audi takes over the squad formerly known as Sauber."
+      },
+      "roster": {
+        "title": "Who's in a team",
+        "body": "Beyond the two race drivers, a team includes a team principal who runs it, race engineers who guide each driver, strategists, mechanics, aerodynamicists, and a pit crew — often hundreds of people back at the factory."
+      },
+      "reserve": {
+        "title": "Reserve drivers",
+        "body": "Teams also keep reserve (or test) drivers ready to step in if a race driver can't compete."
+      },
+      "grid": {
+        "title": "The 2026 grid",
+        "note": "Driver line-ups can still change before the season begins.",
+        "driversLabel": "Drivers",
+        "items": {
+          "mclaren": { "name": "McLaren", "drivers": "Lando Norris · Oscar Piastri" },
+          "ferrari": { "name": "Ferrari", "drivers": "Charles Leclerc · Lewis Hamilton" },
+          "redbull": { "name": "Red Bull Racing", "drivers": "Max Verstappen · Isack Hadjar" },
+          "mercedes": { "name": "Mercedes", "drivers": "George Russell · Kimi Antonelli" },
+          "aston": { "name": "Aston Martin", "drivers": "Fernando Alonso · Lance Stroll" },
+          "alpine": { "name": "Alpine", "drivers": "Pierre Gasly · Franco Colapinto" },
+          "williams": { "name": "Williams", "drivers": "Alex Albon · Carlos Sainz" },
+          "racingbulls": { "name": "Racing Bulls", "drivers": "Arvid Lindblad · Liam Lawson" },
+          "haas": { "name": "Haas", "drivers": "Esteban Ocon · Oliver Bearman" },
+          "audi": { "name": "Audi", "drivers": "Nico Hülkenberg · Gabriel Bortoleto" },
+          "cadillac": { "name": "Cadillac", "drivers": "Sergio Pérez · Valtteri Bottas" }
+        }
+      }
+    },
+    "glossary": {
+      "title": "Speak the language",
+      "intro": "A few terms you'll hear over and over:",
+      "terms": {
+        "pole": {
+          "term": "Pole position",
+          "def": "First place on the starting grid, earned by the fastest qualifying lap."
+        },
+        "podium": {
+          "term": "Podium",
+          "def": "The top three finishers, celebrated on a raised platform after the race."
+        },
+        "dnf": {
+          "term": "DNF",
+          "def": "'Did Not Finish' — a car that retired before the end, usually from a crash or mechanical failure."
+        },
+        "dns": {
+          "term": "DNS",
+          "def": "'Did Not Start' — a driver who qualified but couldn't take the start of the race."
+        },
+        "boxBox": {
+          "term": "Box, box",
+          "def": "The radio call telling a driver to come into the pits ('box' comes from the German Boxenstopp)."
+        },
+        "stint": {
+          "term": "Stint",
+          "def": "A continuous run on one set of tires, between the start (or a pit stop) and the next stop."
+        },
+        "outInLap": {
+          "term": "Out-lap / In-lap",
+          "def": "The lap leaving the pits on fresh tires (out-lap) and the lap returning to the pits (in-lap)."
+        },
+        "formationLap": {
+          "term": "Formation lap",
+          "def": "The lap before the start, used to warm up tires and brakes before cars line up on the grid."
+        },
+        "undercut": {
+          "term": "Undercut",
+          "def": "Pitting earlier than a rival for fresh tires to gain time and jump ahead of them."
+        },
+        "overcut": {
+          "term": "Overcut",
+          "def": "The opposite of an undercut: staying out longer on older tires while a rival pits, hoping clear track lets you leapfrog them."
+        },
+        "pitWindow": {
+          "term": "Pit window",
+          "def": "The range of laps in which it makes strategic sense for a driver to make their pit stop."
+        },
+        "slipstream": {
+          "term": "Slipstream (tow)",
+          "def": "Following closely in another car's wake to cut air resistance and gain a speed boost on the straights."
+        },
+        "dirtyAir": {
+          "term": "Dirty air",
+          "def": "The turbulent air behind a car that reduces grip for whoever is following, making overtaking harder."
+        },
+        "backmarker": {
+          "term": "Backmarker",
+          "def": "A slower car at the back of the field, often about to be lapped by the leaders."
+        },
+        "lockUp": {
+          "term": "Lock-up",
+          "def": "When a wheel stops turning under heavy braking, flat-spotting the tire and usually running wide."
+        },
+        "graining": {
+          "term": "Graining",
+          "def": "A type of surface tire wear that costs grip until the rubber 'cleans up' again."
+        },
+        "marbles": {
+          "term": "Marbles",
+          "def": "Bits of worn rubber that gather off the racing line; driving over them is slippery."
+        },
+        "delta": {
+          "term": "Delta",
+          "def": "A target lap time drivers must respect, for example under a Virtual Safety Car."
+        },
+        "parcFerme": {
+          "term": "Parc fermé",
+          "def": "Conditions under which teams may no longer change a car's setup, usually from qualifying until the race."
+        },
+        "paddock": {
+          "term": "Paddock",
+          "def": "The restricted area behind the pits where teams base their garages and motorhomes."
+        },
+        "grandChelem": {
+          "term": "Grand Chelem",
+          "def": "A rare feat: pole position, win, fastest lap, and leading every lap in a single race."
+        }
+      }
+    },
+    "cta": {
+      "title": "An F1-themed Pomodoro timer",
+      "body": "Pit My Doro is a Pomodoro timer inspired by Formula 1. Focus in work stints, take your pit stops, and keep your pace.",
+      "button": "Open the timer"
+    }
+  },
   "meta": {
     "title": "Pit My Doro – F1-Themed Pomodoro Timer",
     "description": "Pitmydoro offers a unique take on the Pomodoro technique: focus, rest, and move forward at your own pace—no pressure.",
@@ -279,6 +575,10 @@
     "pomodoro": {
       "title": "Pit My Doro – F1-style Pomodoro Timer",
       "description": "Use PitMyDoro to stay focused with a dynamic Formula 1-inspired Pomodoro timer."
+    },
+    "learn": {
+      "title": "Learn Formula 1 – A Beginner's Guide | Pit My Doro",
+      "description": "New to Formula 1? Learn the basics in minutes: how the championship and race weekend work, race length, rules, pit stops, tire compounds, and the F1 terms every fan should know."
     }
   }
 }
