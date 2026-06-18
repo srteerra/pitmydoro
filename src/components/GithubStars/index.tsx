@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { CiStar } from 'react-icons/ci';
 
@@ -36,15 +36,15 @@ const GitHubStars = ({ initialCount = 0 }) => {
     <Box>
       <Button
         onClick={handleRepoClick}
-        color={{ _dark: 'white', _light: 'black' }}
-        borderColor={{ _dark: 'gray.600', _light: 'gray.900' }}
-        variant={'outline'}
+        color={'black'}
+        bgColor={'white'}
+        variant={'solid'}
         borderRadius={'full'}
+        boxShadow={'sm'}
         transition='all 0.2s'
         gap={2}
         _hover={{
-          bg: { _dark: 'gray.600', _light: 'gray.800' },
-          color: 'white',
+          color: 'gray.500',
         }}
       >
         <svg width='16' height='16' viewBox='0 0 16 16' fill='currentColor'>
