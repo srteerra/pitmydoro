@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Flex, Text, Grid, GridItem, Image } from '@chakra-ui/react';
+import { Box, Flex, Grid, GridItem, Image, Text } from '@chakra-ui/react';
 import React from 'react';
 import { useTranslations } from 'use-intl';
 import { TiDivider } from '@/components/Layout/WrapSections/components/Divider';
@@ -202,7 +202,7 @@ export const About = () => {
           <Text as={'p'} w={{ base: '100%', lg: '60%' }} fontSize={'sm'} color={'gray.500'}>
             {t.rich('nonF1.description2', {
               f1Blog: (chunks) => (
-                <Link href={'/what-is-f1'} target={'_blank'} rel='noopener noreferrer'>
+                <Link href={'/learn'} rel='noopener noreferrer'>
                   <strong>{chunks}</strong>
                 </Link>
               ),
