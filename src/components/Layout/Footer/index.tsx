@@ -23,21 +23,22 @@ export const Footer = () => {
       flexDirection='column'
       alignItems='center'
       bgColor={{ base: darkenColor, _dark: 'gray.950' }}
-      paddingY={12}
+      paddingY={{ base: 10, md: 12 }}
+      paddingX={{ base: 6, md: 4 }}
       gap={4}
     >
       <Center>
-        <Text fontSize='sm' color='gray.500'>
+        <Text fontSize='sm' color='gray.500' textAlign='center' maxW='560px'>
           {t('disclaimer')}
         </Text>
       </Center>
 
-      <VStack>
+      <VStack gap={1} textAlign='center'>
         <Text fontSize='sm' fontWeight='bold' color='gray.500'>
           {t('madeWith')}
         </Text>
 
-        <Flex alignItems='center' gap={2} marginTop={3}>
+        <Flex alignItems='center' justifyContent='center' gap={2} marginTop={3}>
           <BiLogoGithub />
           <Link
             className={'cursor-pointer link underline'}

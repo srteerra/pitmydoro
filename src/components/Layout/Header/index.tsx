@@ -1,5 +1,5 @@
 import { ToggleThemeMode } from '@/components/Layout/Toggles/ThemeMode';
-import { Center, HStack, Image, Grid, GridItem, IconButton } from '@chakra-ui/react';
+import { Center, Grid, GridItem, HStack, IconButton, Image } from '@chakra-ui/react';
 import React from 'react';
 import NextImage from 'next/image';
 import Logo from '../../../../public/images/pitmydoro.webp';
@@ -16,8 +16,9 @@ export const Header = () => {
       templateColumns={{ base: '1fr', md: '1fr auto 1fr' }}
       templateRows={{ base: 'auto auto', md: '1fr' }}
       alignItems='center'
-      gap={4}
-      padding={10}
+      gap={{ base: 3, md: 4 }}
+      paddingX={{ base: 4, md: 10 }}
+      paddingY={{ base: 5, md: 10 }}
       minH='100px'
     >
       <GridItem
@@ -44,20 +45,36 @@ export const Header = () => {
         display='flex'
         justifyContent='center'
       >
-        <HStack gap={0}>
-          <IconButton
-            variant={'ghost'}
-            rounded='full'
-            color={{ base: 'gray.500', _hover: 'gray.700' }}
-          >
-            <LuBookText />
-          </IconButton>
+        <HStack gap={0} maxW='100%'>
+          <Link href={'/learn'} aria-label='Learn Formula 1'>
+            <IconButton
+              as={'span'}
+              variant={'ghost'}
+              rounded='full'
+              size={{ base: 'sm', md: 'md' }}
+              color={{ base: 'gray.500', _hover: 'gray.700' }}
+              aria-label='Learn Formula 1'
+            >
+              <LuBookText />
+            </IconButton>
+          </Link>
           <LocaleSwitch />
 
-          <Center paddingX={3}>
-            <Link rel='noopener noreferrer' href={'/public'}>
-              <Image asChild filter='none' alt={'...'} _dark={{ filter: 'invert(1)' }}>
-                <NextImage width={250} src={Logo} alt='...' />
+          <Center paddingX={{ base: 1, md: 3 }} flexShrink={1} minW={0}>
+            <Link rel='noopener noreferrer' href={'/'}>
+              <Image
+                asChild
+                filter='none'
+                alt={'...'}
+                width={{ base: '140px', sm: '190px', md: '250px' }}
+                _dark={{ filter: 'invert(1)' }}
+              >
+                <NextImage
+                  width={250}
+                  src={Logo}
+                  alt='...'
+                  style={{ width: '100%', height: 'auto' }}
+                />
               </Image>
             </Link>
           </Center>

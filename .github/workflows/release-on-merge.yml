@@ -1,0 +1,69 @@
+name: release-on-merge
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [master]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine bump from branch name
+        id: bump
+        run: |
+          branch="${{ github.event.pull_request.head.ref }}"
+          prefix="${branch%%/*}"
+          prefix="${prefix%%(*}"
+          prefix="$(echo "$prefix" | tr '[:upper:]' '[:lower:]')"
+          case "$prefix" in
+            feat|feature)
+              echo "type=minor" >> "$GITHUB_OUTPUT" ;;
+            fix|hotfix|bugfix|refactor|perf|revert|chore|build|ci|docs|style|test)
+              echo "type=patch" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "type=none" >> "$GITHUB_OUTPUT" ;;
+          esac
+          echo "Branch '$branch' -> prefix '$prefix'"
+
+      - name: Compute next version
+        id: version
+        if: steps.bump.outputs.type != 'none'
+        run: |
+          latest="$(git tag -l 'v*.*.*' --sort=-v:refname | head -n1)"
+          if [ -z "$latest" ]; then
+            latest="v$(node -p "require('./package.json').version")"
+          fi
+          ver="${latest#v}"
+          major="${ver%%.*}"
+          rest="${ver#*.}"
+          minor="${rest%%.*}"
+          patch="${rest#*.}"
+          case "${{ steps.bump.outputs.type }}" in
+            minor) minor=$((minor + 1)); patch=0 ;;
+            patch) patch=$((patch + 1)) ;;
+          esac
+          echo "tag=v${major}.${minor}.${patch}" >> "$GITHUB_OUTPUT"
+          echo "Next tag: v${major}.${minor}.${patch}"
+
+      - name: Create tag and release
+        if: steps.bump.outputs.type != 'none'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --target "${{ github.event.pull_request.merge_commit_sha }}" \
+            --title "${{ steps.version.outputs.tag }}" \
+            --generate-notes

@@ -253,8 +253,304 @@
   },
   "footer": {
     "madeWith": "Hecho con ❤️ por @srteerra",
-    "disclaimer": "Este sitio no está afiliado con F1, Formula 1, ni con sus equipos o pilotos.",
+    "disclaimer": "Este sitio no está afiliado con FIA, Formula 1, ni con sus equipos o pilotos.",
     "license": "Código abierto · Licencia GPL-3.0"
+  },
+  "announcement": {
+    "title": "Novedades",
+    "viewRelease": "Ver notas de la versión",
+    "community": "Comparte tus ideas",
+    "close": "Cerrar"
+  },
+  "learn": {
+    "hero": {
+      "badge": "Guía para principiantes",
+      "title": "La Fórmula 1, explicada para principiantes",
+      "subtitle": "Todo lo que necesitas para empezar a ver las carreras y entender de verdad qué está pasando: el campeonato, el fin de semana de carrera, las paradas en boxes, los neumáticos y el lenguaje que usan los aficionados.",
+      "intro": "La Fórmula 1 (F1) es la máxima categoría del automovilismo internacional de monoplazas. 11 equipos y 22 pilotos recorren el mundo durante una temporada, compitiendo en circuitos que van desde calles de ciudad hasta autódromos construidos para ello."
+    },
+    "toc": {
+      "title": "En esta página"
+    },
+    "championship": {
+      "title": "Cómo funciona el campeonato",
+      "body": "Una temporada va aproximadamente de marzo a diciembre y se compone de muchas carreras llamadas Grandes Premios. Los puntos conseguidos en cada carrera se suman a lo largo del año para dos títulos distintos.",
+      "drivers": {
+        "title": "Campeonato de Pilotos",
+        "body": "Se otorga al piloto individual con más puntos al final de la temporada. Es el título que corona al Campeón del Mundo."
+      },
+      "constructors": {
+        "title": "Campeonato de Constructores",
+        "body": "Se otorga al equipo. Los dos coches de un equipo suman puntos y esos puntos se combinan, así que el dinero y el prestigio dependen de esta clasificación."
+      }
+    },
+    "weekend": {
+      "title": "El fin de semana de carrera",
+      "intro": "Un Gran Premio es mucho más que la carrera del domingo. Un fin de semana típico se reparte en tres días:",
+      "practice": {
+        "title": "Entrenamientos libres",
+        "body": "Las sesiones de Entrenamientos Libres (FP1–FP3) permiten a los equipos probar la puesta a punto y a los pilotos aprender el circuito. No reparten puntos."
+      },
+      "qualifying": {
+        "title": "Clasificación",
+        "body": "Una tanda contrarreloj dividida en tres partes (Q1, Q2, Q3) que decide el orden de salida: la 'parrilla'. La vuelta más rápida logra la pole position, el primer puesto de la parrilla."
+      },
+      "sprint": {
+        "title": "Sprint (algunos fines de semana)",
+        "body": "Una carrera corta y a tope que se disputa en fines de semana seleccionados. Tiene su propia clasificación más breve y reparte algunos puntos."
+      },
+      "race": {
+        "title": "El Gran Premio",
+        "body": "El evento principal del domingo. Los pilotos salen desde sus posiciones de clasificación y disputan un número fijo de vueltas. Gana el primero en cruzar la meta."
+      }
+    },
+    "raceLength": {
+      "title": "¿Cuánto dura una carrera?",
+      "body": "Un Gran Premio cubre el número de vueltas necesario para superar los 305 km (unas 190 millas); Mónaco es la famosa excepción, con unos 260 km. Las carreras también tienen un tiempo máximo de unas dos horas de marcha (tres horas en total contando interrupciones). En la práctica eso significa entre 50 y 70 vueltas según el circuito."
+    },
+    "rules": {
+      "title": "Reglas básicas y puntuación",
+      "points": {
+        "title": "Puntos",
+        "body": "Los diez primeros clasificados suman puntos según esta escala:"
+      },
+      "fastestLap": "En las temporadas en que se otorga, un punto extra puede ir al piloto que marque la vuelta rápida de la carrera, siempre que termine entre los diez primeros.",
+      "flags": {
+        "title": "Banderas",
+        "intro": "Los comisarios agitan banderas de colores para comunicarse con los pilotos. Pasa el cursor o toca cada una para ver qué significa:",
+        "items": {
+          "green": { "name": "Verde", "meaning": "Pista despejada: se reanuda la carrera o la sesión con normalidad." },
+          "yellow": { "name": "Amarilla", "meaning": "Peligro adelante. Reduce la velocidad y no se permite adelantar." },
+          "doubleYellow": { "name": "Doble amarilla", "meaning": "Mayor peligro; reduce mucho la velocidad y prepárate para detenerte." },
+          "blue": { "name": "Azul", "meaning": "Un coche más rápido viene detrás: deja que los líderes te doblen." },
+          "red": { "name": "Roja", "meaning": "Sesión detenida. Todos los coches vuelven despacio a boxes." },
+          "yellowRed": { "name": "Rayas amarillas y rojas", "meaning": "Superficie resbaladiza adelante: aceite, agua o grava en pista." },
+          "white": { "name": "Blanca", "meaning": "Hay un vehículo lento en la pista adelante." },
+          "black": { "name": "Negra", "meaning": "Un piloto queda descalificado y debe volver a boxes." },
+          "chequered": { "name": "A cuadros", "meaning": "La sesión o la carrera ha terminado." }
+        }
+      },
+      "penalties": {
+        "title": "Sanciones",
+        "body": "Saltarse las reglas — exceso de velocidad en el pit lane, provocar una colisión, salirse repetidamente de los límites de la pista — puede acarrear sanciones de tiempo, pérdida de posiciones en parrilla o, en casos graves, la descalificación."
+      }
+    },
+    "raceControl": {
+      "title": "Dirección de carrera: neutralizar la carrera",
+      "intro": "Cuando hay peligro en pista, la dirección de carrera reduce la velocidad de todos en lugar de detener la carrera de golpe:",
+      "safetyCar": {
+        "title": "Coche de seguridad (SC)",
+        "body": "Sale un coche real que lidera al pelotón a velocidad reducida, agrupando a todos. No se puede adelantar hasta que entra y se reanuda la carrera."
+      },
+      "vsc": {
+        "title": "Coche de seguridad virtual (VSC)",
+        "body": "No hay coche físico: cada piloto debe respetar un delta — un tiempo objetivo más lento — durante toda la vuelta. Se usa para incidentes menores que no requieren un coche de seguridad completo."
+      },
+      "intervals": {
+        "title": "Intervalos",
+        "body": "Las diferencias de tiempo entre coches, mostradas en segundos en las pantallas de tiempos. Mirar el intervalo indica si un perseguidor se acerca o se aleja."
+      }
+    },
+    "pitstops": {
+      "title": "Las paradas en boxes",
+      "body": "Durante la carrera, los coches paran en el pit lane para que el equipo cambie los neumáticos y haga pequeños ajustes. Un equipo de boxes moderno, de unas veinte personas, puede cambiar las cuatro ruedas en unos dos o tres segundos. Parar es prácticamente obligatorio en carreras en seco, porque el reglamento exige usar al menos dos compuestos de neumático distintos.",
+      "why": "Aquí vive la estrategia: cuándo paras y qué neumáticos montas puede ganar o perder una carrera."
+    },
+    "tires": {
+      "title": "Compuestos de neumáticos",
+      "intro": "Los neumáticos están en el corazón de la estrategia de F1. El proveedor trae neumáticos lisos ('slick') para seco en distintos compuestos, además de dos tipos para lluvia. El caucho más blando agarra mejor pero se desgasta más rápido; el más duro dura más pero ofrece menos agarre.",
+      "headers": {
+        "compound": "Compuesto",
+        "color": "Color",
+        "grip": "Agarre",
+        "durability": "Durabilidad",
+        "life": "Vida media",
+        "use": "Ideal para"
+      },
+      "items": {
+        "soft": {
+          "name": "Blando",
+          "color": "Rojo",
+          "grip": "El más alto",
+          "durability": "La más baja",
+          "life": "≈ 10–15 vueltas",
+          "use": "Clasificación y tandas cortas y agresivas"
+        },
+        "medium": {
+          "name": "Medio",
+          "color": "Amarillo",
+          "grip": "Equilibrado",
+          "durability": "Equilibrada",
+          "life": "≈ 20–30 vueltas",
+          "use": "Un término medio entre velocidad y duración"
+        },
+        "hard": {
+          "name": "Duro",
+          "color": "Blanco",
+          "grip": "El más bajo",
+          "durability": "La más alta",
+          "life": "≈ 30–40+ vueltas",
+          "use": "Tandas largas y circuitos de mucho desgaste"
+        },
+        "intermediate": {
+          "name": "Intermedio",
+          "color": "Verde",
+          "grip": "Medio",
+          "durability": "Según condiciones",
+          "life": "Varía según las condiciones",
+          "use": "Pista húmeda o lluvia ligera"
+        },
+        "wet": {
+          "name": "Lluvia",
+          "color": "Azul",
+          "grip": "Solo en mojado",
+          "durability": "Según condiciones",
+          "life": "Varía según las condiciones",
+          "use": "Lluvia fuerte y agua acumulada"
+        }
+      }
+    },
+    "tech": {
+      "title": "El coche de 2026: aero activa y modo de adelantamiento",
+      "intro": "Para 2026 el reglamento cambió de forma drástica y el DRS desapareció. Dos herramientas nuevas ocupan su lugar:",
+      "activeAero": {
+        "title": "Aerodinámica activa",
+        "body": "Los alerones delantero y trasero ahora se mueven automáticamente entre un modo de mucha carga aerodinámica para las curvas y un modo de baja resistencia en las rectas, haciendo los coches más rápidos y mucho más eficientes."
+      },
+      "overtake": {
+        "title": "Manual Override (modo de adelantamiento)",
+        "body": "Un impulso extra de energía eléctrica, al estilo 'push-to-pass', que un piloto perseguidor puede activar para atacar al coche de delante: el reemplazo moderno y eléctrico del DRS."
+      }
+    },
+    "teams": {
+      "title": "Los equipos y cómo se forman",
+      "body": "La F1 la disputan constructores: equipos que diseñan y fabrican sus propios coches. Cada equipo inscribe dos coches, así que el tamaño de la parrilla es, sencillamente, el número de equipos multiplicado por dos.",
+      "season2026": {
+        "title": "Una parrilla más grande para 2026",
+        "body": "2026 marca una nueva era: la parrilla crece a once equipos y veintidós pilotos. Cadillac se une como constructor totalmente nuevo, mientras que Audi toma el relevo del equipo antes conocido como Sauber."
+      },
+      "roster": {
+        "title": "Quién forma un equipo",
+        "body": "Además de los dos pilotos titulares, un equipo cuenta con un jefe de equipo que lo dirige, ingenieros de carrera que guían a cada piloto, estrategas, mecánicos, aerodinamicistas y un equipo de boxes; a menudo cientos de personas en la fábrica."
+      },
+      "reserve": {
+        "title": "Pilotos reserva",
+        "body": "Los equipos también mantienen pilotos reserva (o de pruebas) listos para sustituir a un titular que no pueda competir."
+      },
+      "grid": {
+        "title": "La parrilla de 2026",
+        "note": "Las alineaciones de pilotos aún pueden cambiar antes del inicio de la temporada.",
+        "driversLabel": "Pilotos",
+        "items": {
+          "mclaren": { "name": "McLaren", "drivers": "Lando Norris · Oscar Piastri" },
+          "ferrari": { "name": "Ferrari", "drivers": "Charles Leclerc · Lewis Hamilton" },
+          "redbull": { "name": "Red Bull Racing", "drivers": "Max Verstappen · Isack Hadjar" },
+          "mercedes": { "name": "Mercedes", "drivers": "George Russell · Kimi Antonelli" },
+          "aston": { "name": "Aston Martin", "drivers": "Fernando Alonso · Lance Stroll" },
+          "alpine": { "name": "Alpine", "drivers": "Pierre Gasly · Franco Colapinto" },
+          "williams": { "name": "Williams", "drivers": "Alex Albon · Carlos Sainz" },
+          "racingbulls": { "name": "Racing Bulls", "drivers": "Arvid Lindblad · Liam Lawson" },
+          "haas": { "name": "Haas", "drivers": "Esteban Ocon · Oliver Bearman" },
+          "audi": { "name": "Audi", "drivers": "Nico Hülkenberg · Gabriel Bortoleto" },
+          "cadillac": { "name": "Cadillac", "drivers": "Sergio Pérez · Valtteri Bottas" }
+        }
+      }
+    },
+    "glossary": {
+      "title": "Habla el idioma",
+      "intro": "Algunos términos que escucharás una y otra vez:",
+      "terms": {
+        "pole": {
+          "term": "Pole position",
+          "def": "Primer puesto de la parrilla de salida, logrado con la vuelta más rápida en clasificación."
+        },
+        "podium": {
+          "term": "Podio",
+          "def": "Los tres primeros clasificados, que se celebran sobre una plataforma elevada tras la carrera."
+        },
+        "dnf": {
+          "term": "DNF",
+          "def": "'Did Not Finish' (no terminó) — un coche que se retiró antes del final, normalmente por un accidente o avería."
+        },
+        "dns": {
+          "term": "DNS",
+          "def": "'Did Not Start' (no tomó la salida) — un piloto que clasificó pero no pudo arrancar la carrera."
+        },
+        "boxBox": {
+          "term": "Box, box",
+          "def": "La orden por radio que indica al piloto que entre a boxes ('box' viene del alemán Boxenstopp)."
+        },
+        "stint": {
+          "term": "Stint (tanda)",
+          "def": "Una tanda continua con un mismo juego de neumáticos, entre la salida (o una parada) y la siguiente parada."
+        },
+        "outInLap": {
+          "term": "Out-lap / In-lap",
+          "def": "La vuelta de salida de boxes con neumáticos nuevos (out-lap) y la vuelta de regreso a boxes (in-lap)."
+        },
+        "formationLap": {
+          "term": "Vuelta de formación",
+          "def": "La vuelta previa a la salida, para calentar neumáticos y frenos antes de colocarse en la parrilla."
+        },
+        "undercut": {
+          "term": "Undercut",
+          "def": "Parar antes que un rival para montar neumáticos nuevos, ganar tiempo y adelantarlo."
+        },
+        "overcut": {
+          "term": "Overcut",
+          "def": "Lo contrario del undercut: alargar la tanda con neumáticos usados mientras el rival para, esperando que la pista libre te permita superarlo."
+        },
+        "pitWindow": {
+          "term": "Ventana de boxes",
+          "def": "El rango de vueltas en el que tiene sentido estratégico que un piloto haga su parada."
+        },
+        "slipstream": {
+          "term": "Rebufo (tow)",
+          "def": "Ir muy pegado a la estela de otro coche para reducir la resistencia del aire y ganar velocidad en las rectas."
+        },
+        "dirtyAir": {
+          "term": "Aire sucio",
+          "def": "El aire turbulento tras un coche que reduce el agarre del que va detrás y dificulta adelantar."
+        },
+        "backmarker": {
+          "term": "Rezagado (backmarker)",
+          "def": "Un coche lento al fondo de la parrilla, a menudo a punto de ser doblado por los líderes."
+        },
+        "lockUp": {
+          "term": "Bloqueo (lock-up)",
+          "def": "Cuando una rueda deja de girar al frenar fuerte, generando una zona plana en el neumático y normalmente abriéndose de la curva."
+        },
+        "graining": {
+          "term": "Graining",
+          "def": "Un tipo de desgaste superficial del neumático que resta agarre hasta que la goma se 'limpia'."
+        },
+        "marbles": {
+          "term": "Marbles",
+          "def": "Trozos de goma desgastada que se acumulan fuera de la trazada; pisarlos es resbaladizo."
+        },
+        "delta": {
+          "term": "Delta",
+          "def": "Un tiempo objetivo de vuelta que los pilotos deben respetar, por ejemplo bajo un coche de seguridad virtual."
+        },
+        "parcFerme": {
+          "term": "Parc fermé",
+          "def": "Régimen bajo el cual los equipos ya no pueden cambiar la puesta a punto del coche, normalmente desde la clasificación hasta la carrera."
+        },
+        "paddock": {
+          "term": "Paddock",
+          "def": "La zona restringida tras los boxes donde los equipos instalan sus garajes y motorhomes."
+        },
+        "grandChelem": {
+          "term": "Grand Chelem",
+          "def": "Una hazaña poco común: pole, victoria, vuelta rápida y liderar todas las vueltas en una misma carrera."
+        }
+      }
+    },
+    "cta": {
+      "title": "Un Pomodoro con estilo F1",
+      "body": "Pit My Doro es un temporizador Pomodoro inspirado en la Fórmula 1. Enfócate en sesiones de trabajo, utiliza el compuesto de neumático que más se adapte a tu ritmo y gestiona tus tareas.",
+      "button": "Ir a Pomodoro"
+    }
   },
   "meta": {
     "title": "Pit My Doro – Temporizador Pomodoro estilo F1",
@@ -280,6 +576,10 @@
     "pomodoro": {
       "title": "Pit My Doro – Temporizador Pomodoro estilo F1",
       "description": "Usa PitMyDoro para concentrarte con un temporizador Pomodoro dinámico inspirado en la Fórmula 1."
+    },
+    "learn": {
+      "title": "Aprende Fórmula 1 – Guía para principiantes | Pit My Doro",
+      "description": "¿Nuevo en la Fórmula 1? Aprende lo básico en minutos: cómo funcionan el campeonato y el fin de semana de carrera, la duración, las reglas, las paradas en boxes, los compuestos de neumáticos y los términos de F1 que todo aficionado debería conocer."
     }
   }
 }
