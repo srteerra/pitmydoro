@@ -7,3 +7,27 @@ body {
 body {
   font-family: 'Poppins Regular', sans-serif;
 }
+
+@media (min-width: 1921px) {
+  :root {
+    zoom: 1.15;
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    zoom: 1.35;
+  }
+}
+
+@media (min-width: 3200px) {
+  :root {
+    zoom: 1.6;
+  }
+}
+
+@media (min-width: 3840px) {
+  :root {
+    zoom: 1.9;
+  }
+}
