@@ -3,11 +3,15 @@ import { TiCogOutline } from 'react-icons/ti';
 import React, { useState } from 'react';
 import { IconType } from 'react-icons';
 import { GiFullMotorcycleHelmet } from 'react-icons/gi';
+import { LuInfo } from 'react-icons/lu';
 import { General } from '@/components/Pomodoro/Settings/General';
 import { Scuderia } from '@/components/Pomodoro/Settings/Scuderia';
 import { Support } from '@/components/Pomodoro/Settings/Support';
+import { Tooltip } from '@/components/ui/tooltip';
 import { useTranslations } from 'use-intl';
 import './styles.css';
+import useSettingsStore from '@/stores/Settings.store';
+import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 enum Tab {
   GENERAL = 'general',
@@ -21,7 +25,7 @@ interface LinkItemProps {
   id: Tab;
 }
 
-const NavItem = ({ icon, isActive, children, ...rest }: any) => {
+const NavItem = ({ icon, isActive, disabled, tooltip, children, ...rest }: any) => {
   return (
     <Box style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
@@ -30,26 +34,32 @@ const NavItem = ({ icon, isActive, children, ...rest }: any) => {
         p='4'
         borderRadius='lg'
         role='group'
-        cursor='pointer'
+        cursor={disabled ? 'not-allowed' : 'pointer'}
+        opacity={disabled ? 0.4 : 1}
         bgColor={isActive ? 'primary.default/10' : 'transparent'}
         transition='0.3s'
-        _hover={{
-          bg: 'primary.dark',
-          opacity: 0.9,
-        }}
+        _hover={disabled ? {} : { bg: 'primary.dark', opacity: 0.9 }}
         {...rest}
       >
         {icon && (
-          <Icon
-            mr='4'
-            fontSize='22px'
-            _groupHover={{
-              color: 'white',
-            }}
-            as={icon}
-          />
+          <Icon mr='4' fontSize='22px' _groupHover={disabled ? {} : { color: 'white' }} as={icon} />
         )}
         {children}
+        {disabled && tooltip && (
+          <Tooltip content={tooltip} showArrow positioning={{ placement: 'right' }}>
+            <Box
+              as='span'
+              display='inline-flex'
+              alignItems='center'
+              ml='2'
+              cursor='help'
+              opacity={0.7}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Icon as={LuInfo} fontSize='16px' />
+            </Box>
+          </Tooltip>
+        )}
       </Flex>
     </Box>
   );
@@ -57,6 +67,7 @@ const NavItem = ({ icon, isActive, children, ...rest }: any) => {
 
 export const Settings = () => {
   const [activeTab, setActiveTab] = useState<string | Tab>(Tab.GENERAL);
+  const mode = useSettingsStore((state) => state.mode);
   const t = useTranslations('settings');
 
   const LinkItems: Array<LinkItemProps> = [
@@ -79,7 +90,11 @@ export const Settings = () => {
         >
           <Tabs.List>
             {LinkItems.map((link, idx) => (
-              <Tabs.Trigger key={idx} value={link.id}>
+              <Tabs.Trigger
+                key={idx}
+                value={link.id}
+                disabled={link.id === Tab.SCUDERIA && mode === PomodoroMode.MINIMAL}
+              >
                 {link.name}
               </Tabs.Trigger>
             ))}
@@ -87,16 +102,22 @@ export const Settings = () => {
         </Tabs.Root>
 
         <Box display={{ base: 'none', md: 'initial' }}>
-          {LinkItems.map((link) => (
-            <NavItem
-              key={link.name}
-              onClick={() => setActiveTab(link.id)}
-              isActive={activeTab === link.id}
-              icon={link.icon}
-            >
-              {link.name}
-            </NavItem>
-          ))}
+          {LinkItems.map((link) => {
+            const disabled = link.id === Tab.SCUDERIA && mode === PomodoroMode.MINIMAL;
+
+            return (
+              <NavItem
+                key={link.name}
+                onClick={disabled ? undefined : () => setActiveTab(link.id)}
+                isActive={activeTab === link.id}
+                icon={link.icon}
+                disabled={disabled}
+                tooltip={disabled ? t('scuderiaDisabled') : undefined}
+              >
+                {link.name}
+              </NavItem>
+            );
+          })}
         </Box>
       </GridItem>
 
