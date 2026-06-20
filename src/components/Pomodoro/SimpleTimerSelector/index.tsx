@@ -4,7 +4,7 @@ import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { MAX_DURATION } from '@/constants/DefaultSettings';
 import { useAlert } from '@/hooks/useAlert';
 import { useTranslations } from 'use-intl';
-import { useCallback, useEffect, useState } from 'react';
+import { CSSProperties, useCallback, useEffect, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
 import { useDebounce } from '@/hooks/useDebounce';
 
@@ -31,12 +31,18 @@ const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) =>
           display='inline'
           cursor='text'
           fontSize='18px'
-          style={{
-            borderBottom: `1.5px dashed ${accent}99`,
-            paddingBottom: '1px',
-            transition: 'border-color 0.2s',
-            ...(ctx.editing && { borderBottom: `1.5px solid ${accent}` }),
-          }}
+          style={
+            {
+              borderBottom: `1.5px dashed ${accent}99`,
+              paddingBottom: '1px',
+              transition: 'border-color 0.2s',
+              '--edit-accent': accent,
+              ...(ctx.editing && {
+                borderBottom: `1.5px solid ${accent}`,
+                animation: 'editBorderBlink 1.4s ease-in-out infinite',
+              }),
+            } as CSSProperties
+          }
         >
           <Editable.Preview
             color={{ base: 'gray.800', _dark: 'white' }}
@@ -85,6 +91,7 @@ export const SimpleTimerSelector = () => {
   const { handleChangeMinimalSessionDuration, handleChangeBreakDuration } = useSettings();
   const { toastError } = useAlert();
   const t = useTranslations('settings.sections.timers');
+  const st = useTranslations('pomodoro.simpleTimer');
 
   const [localSession, setLocalSession] = useState(minimalSessionDuration);
   const [localBreaks, setLocalBreaks] = useState(breaksDuration);
@@ -135,21 +142,38 @@ export const SimpleTimerSelector = () => {
       marginTop={'30px'}
       style={{ display: 'block' }}
     >
-      Sesión de{' '}
-      <DurationEditable value={localSession} onChange={handleSessionChange} accent='#e05c5c' />{' '}
-      mins, descanso corto de{' '}
-      <DurationEditable
-        value={localBreaks[SessionStatusEnum.SHORT_BREAK]}
-        onChange={(val) => handleBreakChange(SessionStatusEnum.SHORT_BREAK, val)}
-        accent='#5c9ee0'
-      />{' '}
-      mins y descanso largo de{' '}
-      <DurationEditable
-        value={localBreaks[SessionStatusEnum.LONG_BREAK]}
-        onChange={(val) => handleBreakChange(SessionStatusEnum.LONG_BREAK, val)}
-        accent='#5cc9a0'
-      />{' '}
-      mins.
+      {st.rich('description', {
+        session: () => (
+          <>
+            <DurationEditable
+              value={localSession}
+              onChange={handleSessionChange}
+              accent='#e05c5c'
+            />{' '}
+            {st('minutes', { count: localSession })}
+          </>
+        ),
+        shortBreak: () => (
+          <>
+            <DurationEditable
+              value={localBreaks[SessionStatusEnum.SHORT_BREAK]}
+              onChange={(val) => handleBreakChange(SessionStatusEnum.SHORT_BREAK, val)}
+              accent='#5c9ee0'
+            />{' '}
+            {st('minutes', { count: localBreaks[SessionStatusEnum.SHORT_BREAK] })}
+          </>
+        ),
+        longBreak: () => (
+          <>
+            <DurationEditable
+              value={localBreaks[SessionStatusEnum.LONG_BREAK]}
+              onChange={(val) => handleBreakChange(SessionStatusEnum.LONG_BREAK, val)}
+              accent='#5cc9a0'
+            />{' '}
+            {st('minutes', { count: localBreaks[SessionStatusEnum.LONG_BREAK] })}
+          </>
+        ),
+      })}
     </Box>
   );
 };
