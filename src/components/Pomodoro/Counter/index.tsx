@@ -264,7 +264,8 @@ export const Counter = () => {
                   onOpen();
                 }}
                 variant='ghost'
-                size='md'
+                size='lg'
+                style={{ scale: 1.1 }}
                 rounded='full'
                 aria-label='Reset'
               >
@@ -327,7 +328,8 @@ export const Counter = () => {
           <IconButton
             onClick={handleSettingsClick}
             variant='ghost'
-            size='md'
+            size='lg'
+            style={{ scale: 1.1 }}
             rounded='full'
             aria-label='Settings'
           >

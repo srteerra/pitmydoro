@@ -8,6 +8,16 @@ body {
   font-family: 'Poppins Regular', sans-serif;
 }
 
+@keyframes editBorderBlink {
+  0%,
+  100% {
+    border-bottom-color: var(--edit-accent);
+  }
+  50% {
+    border-bottom-color: color-mix(in srgb, var(--edit-accent) 20%, transparent);
+  }
+}
+
 @media (min-width: 1921px) {
   :root {
     zoom: 1.15;
