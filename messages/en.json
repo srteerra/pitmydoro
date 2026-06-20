@@ -101,6 +101,10 @@
     "boxDescription": "Time to break",
     "pausedTitle": "Paused",
     "interruptAccept": "Are you sure you want to interrupt the session?",
+    "simpleTimer": {
+      "description": "Session of <session></session>, short break of <shortBreak></shortBreak> and long break of <longBreak></longBreak>.",
+      "minutes": "{count, plural, one {min} other {mins}}"
+    },
     "tasks": {
       "title": "Your Tasks",
       "addTask": "Add Task",
@@ -128,6 +132,7 @@
     "lightMode": "Light Mode",
     "general": "General",
     "scuderia": "Scuderia",
+    "scuderiaDisabled": "You're in simple mode. Switch it off to access the scuderias.",
     "help": "Help & Support",
     "initialHint": "\uD83D\uDCA1 Customize your times and choose your favorite team to change the app theme.",
     "settingsSaved": "Settings saved successfully",

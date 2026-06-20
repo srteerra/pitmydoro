@@ -102,6 +102,10 @@
     "boxDescription": "Hora de tomar un descanso.",
     "pausedTitle": "En pausa",
     "interruptAccept": "¿Deseas interrumpir la sesión actual?",
+    "simpleTimer": {
+      "description": "Sesión de <session></session>, descanso corto de <shortBreak></shortBreak> y descanso largo de <longBreak></longBreak>.",
+      "minutes": "{count, plural, one {min} other {mins}}"
+    },
     "tasks": {
       "title": "Tus Tareas",
       "addTask": "Agregar tarea",
@@ -129,6 +133,7 @@
     "lightMode": "Modo claro",
     "general": "General",
     "scuderia": "Escudería",
+    "scuderiaDisabled": "Estás en modo simple. Desactívalo para acceder a las escuderías.",
     "help": "Ayuda y soporte",
     "initialHint": "\uD83D\uDCA1 Personaliza tus tiempos y escoge tu escudería favorita para cambiar el tema de la aplicación.",
     "settingsSaved": "Cambios guardados exitosamente",
