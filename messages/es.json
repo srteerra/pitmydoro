@@ -261,6 +261,12 @@
     "disclaimer": "Este sitio no está afiliado con FIA, Formula 1, ni con sus equipos o pilotos.",
     "license": "Código abierto · Licencia GPL-3.0"
   },
+  "header": {
+    "learn": "Aprende más",
+    "language": "Cambiar idioma",
+    "theme": "Modo oscuro / claro",
+    "minimalMode": "Cambiar modo vista"
+  },
   "announcement": {
     "title": "Novedades",
     "viewRelease": "Ver notas de la versión",
