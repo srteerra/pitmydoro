@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentType, createContext, ReactNode, useCallback, useContext, useState } from 'react';
+import { ComponentType, createContext, ReactNode, useCallback, useContext, useEffect, useState, } from 'react';
 import { Button, CloseButton, Dialog } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
 
@@ -40,6 +40,18 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     }, 200);
   }, [options]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   function resolveBody(): ReactNode {
     const content = options?.component;
     if (!content) return null;
@@ -70,7 +82,16 @@ export function DialogProvider({ children }: { children: ReactNode }) {
               borderRadius={'3xl'}
               backgroundColor={{ base: 'gray.50', _dark: 'dark.200' }}
             >
-              <Dialog.CloseTrigger />
+              <Dialog.CloseTrigger asChild>
+                <CloseButton
+                  onClick={closeDialog}
+                  size='sm'
+                  position='absolute'
+                  top='3'
+                  right='3'
+                  zIndex='1'
+                />
+              </Dialog.CloseTrigger>
               <Dialog.Header>
                 {options?.title && <Dialog.Title>{options.title}</Dialog.Title>}
               </Dialog.Header>
@@ -87,12 +108,6 @@ export function DialogProvider({ children }: { children: ReactNode }) {
                   </>
                 )}
               </Dialog.Footer>
-
-              {options?.onSubmit && (
-                <Dialog.CloseTrigger asChild>
-                  <CloseButton onClick={() => setIsOpen(false)} size='sm' />
-                </Dialog.CloseTrigger>
-              )}
             </Dialog.Content>
           </Dialog.Positioner>
         </Portal>
