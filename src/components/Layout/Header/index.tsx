@@ -1,5 +1,7 @@
+'use client';
+
 import { ToggleThemeMode } from '@/components/Layout/Toggles/ThemeMode';
-import { Center, Grid, GridItem, HStack, IconButton, Image } from '@chakra-ui/react';
+import { Box, Center, Grid, GridItem, HStack, IconButton, Image } from '@chakra-ui/react';
 import React from 'react';
 import NextImage from 'next/image';
 import Logo from '../../../../public/images/pitmydoro.webp';
@@ -9,8 +11,12 @@ import { AuthModal } from '@/components/Auth/AuthModal';
 import GitHubStars from '@/components/GithubStars';
 import { LuBookText } from 'react-icons/lu';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
+import { Tooltip } from '@/components/ui/tooltip';
+import { useTranslations } from 'use-intl';
 
 export const Header = () => {
+  const t = useTranslations('header');
+
   return (
     <Grid
       templateColumns={{ base: '1fr', md: '1fr auto 1fr' }}
@@ -46,18 +52,23 @@ export const Header = () => {
         justifyContent='center'
       >
         <HStack gap={0} maxW='100%'>
-          <Link href={'/learn'} aria-label='Learn Formula 1'>
-            <IconButton
-              as={'span'}
-              variant={'ghost'}
-              rounded='full'
-              size={{ base: 'sm', md: 'md' }}
-              color={{ base: 'gray.500', _hover: 'gray.700' }}
-              aria-label='Learn Formula 1'
-            >
-              <LuBookText />
-            </IconButton>
-          </Link>
+          <Tooltip openDelay={100} closeDelay={100} content={t('learn')}>
+            <Box as='span' display='inline-flex'>
+              <Link href={'/learn'} aria-label='Learn Formula 1'>
+                <IconButton
+                  as={'span'}
+                  variant={'ghost'}
+                  rounded='full'
+                  size={{ base: 'sm', md: 'md' }}
+                  color={{ base: 'gray.500', _hover: 'gray.700' }}
+                  aria-label='Learn Formula 1'
+                >
+                  <LuBookText />
+                </IconButton>
+              </Link>
+            </Box>
+          </Tooltip>
+
           <LocaleSwitch />
 
           <Center paddingX={{ base: 1, md: 3 }} flexShrink={1} minW={0}>
@@ -79,8 +90,17 @@ export const Header = () => {
             </Link>
           </Center>
 
-          <ToggleThemeMode />
-          <TogglePomodoroMode />
+          <Tooltip openDelay={100} closeDelay={100} content={t('theme')}>
+            <Box as='span' display='inline-flex'>
+              <ToggleThemeMode />
+            </Box>
+          </Tooltip>
+
+          <Tooltip openDelay={100} closeDelay={100} content={t('minimalMode')}>
+            <Box as='span' display='inline-flex'>
+              <TogglePomodoroMode />
+            </Box>
+          </Tooltip>
         </HStack>
       </GridItem>
     </Grid>
