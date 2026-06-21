@@ -132,7 +132,7 @@ export const SimpleTimerSelector = () => {
 
   return (
     <Box
-      fontSize='13px'
+      fontSize='16px'
       fontWeight={500}
       color='gray.500'
       lineHeight='2'
@@ -140,7 +140,8 @@ export const SimpleTimerSelector = () => {
       userSelect='none'
       marginBottom={'40px'}
       marginTop={'30px'}
-      style={{ display: 'block' }}
+      display='block'
+      animation='fadeSlideUp 0.55s ease-out'
     >
       {st.rich('description', {
         session: () => (
