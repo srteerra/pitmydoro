@@ -1,7 +1,7 @@
 import { Box, Flex, NumberInput, Text, VStack } from '@chakra-ui/react';
 import { TireTypeEnum } from '@/enums/TireType.enum';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
 import { useTranslations } from 'use-intl';
 import useSettingsStore from '@/stores/Settings.store';
@@ -87,8 +87,8 @@ export const Timers = () => {
     <VStack gap={8} marginY={'20px'}>
       <Flex
         w='full'
-        px={10}
-        gap={3}
+        px={{ base: 0, md: 10 }}
+        gap={{ base: 4, md: 3 }}
         justifyContent={{ base: 'center', md: 'space-between' }}
         flexWrap={'wrap'}
       >
@@ -124,7 +124,13 @@ export const Timers = () => {
         ))}
       </Flex>
 
-      <Flex w='full' px={10} gap={10} justifyContent='center'>
+      <Flex
+        w='full'
+        px={{ base: 0, md: 10 }}
+        gap={{ base: 8, md: 10 }}
+        justifyContent='center'
+        flexWrap='wrap'
+      >
         <VStack>
           <Box
             cursor={'pointer'}
