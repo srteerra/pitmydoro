@@ -118,8 +118,10 @@ export function DialogProvider({ children }: { children: ReactNode }) {
 
 export function useDialog(): DialogContextValue {
   const ctx = useContext(DialogContext);
+
   if (!ctx) {
     throw new Error('useDialog must be used inside <DialogProvider>');
   }
+
   return ctx;
 }
