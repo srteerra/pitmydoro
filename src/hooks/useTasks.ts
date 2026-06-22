@@ -6,6 +6,8 @@ import { taskService } from '@/services/task.service';
 import { Timestamp } from 'firebase/firestore';
 import _ from 'lodash';
 import useSettingsStore from '@/stores/Settings.store';
+import { usePomodoroStore } from '@/stores/Pomodoro.store';
+import { flushElapsedTime, rebindRunningPomodoroTask } from '@/utils/accountElapsed.utils';
 
 export function useTasks() {
   const { user } = useAuth();
@@ -76,6 +78,10 @@ export function useTasks() {
   };
 
   const check = async (id: string, isComplete?: boolean) => {
+    if (isComplete) {
+      await flushElapsedTime(user?.uid);
+    }
+
     const updates = { completedAt: isComplete ? Timestamp.now() : null };
     updateTask(id, updates);
 
@@ -92,7 +98,14 @@ export function useTasks() {
       .value();
 
     if (isComplete && autoStartNextTask && freshIncompleteTasks.length > 0) {
-      setCurrentTask(freshIncompleteTasks[0]);
+      const nextTask = freshIncompleteTasks[0];
+      const runningTaskId = usePomodoroStore.getState().currentPomodoro?.task?.id;
+
+      setCurrentTask(nextTask);
+
+      if (runningTaskId === id) {
+        await rebindRunningPomodoroTask(nextTask, user?.uid);
+      }
     }
 
     if (autoOrderTasks) {

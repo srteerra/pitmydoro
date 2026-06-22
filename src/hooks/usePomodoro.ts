@@ -17,6 +17,7 @@ import { useAlert } from '@/hooks/useAlert';
 import { TireTypeEnum } from '@/enums/TireType.enum';
 import { useTranslations } from 'use-intl';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
+import { flushElapsedTime } from '@/utils/accountElapsed.utils';
 
 export const usePomodoro = () => {
   const { user } = useAuth();
@@ -97,32 +98,7 @@ export const usePomodoro = () => {
   };
 
   const flushElapsed = async () => {
-    const { currentPomodoro: pomo, accountedAt } = usePomodoroStore.getState();
-
-    if (!pomo?.task || accountedAt == null) return;
-
-    const now = Date.now();
-    const elapsedMs = now - accountedAt;
-    setAccountedAt(now);
-
-    if (elapsedMs <= 0) return;
-
-    const taskId = pomo.task.id;
-
-    if (pomo.status === 'paused') {
-      if (pomo.type === SessionStatusEnum.IN_SESSION) {
-        await applyStats(taskId, { pausedTime: elapsedMs });
-      }
-      return;
-    }
-
-    const elapsedMinutes = elapsedMs / 60_000;
-
-    if (pomo.type === SessionStatusEnum.IN_SESSION) {
-      await applyStats(taskId, { workTime: elapsedMinutes });
-    } else {
-      await applyStats(taskId, { breakTime: elapsedMinutes });
-    }
+    await flushElapsedTime(user?.uid);
   };
 
   const updateEstimatedFinish = (totalRemainingMs: number) => {
