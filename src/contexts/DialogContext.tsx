@@ -1,6 +1,14 @@
 'use client';
 
-import { ComponentType, createContext, ReactNode, useCallback, useContext, useEffect, useState, } from 'react';
+import {
+  ComponentType,
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { Button, CloseButton, Dialog } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
 

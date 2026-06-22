@@ -1,4 +1,14 @@
-import { Badge, Box, Flex, HStack, Image, RadioCard, Skeleton, Text, VStack, } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Flex,
+  HStack,
+  Image,
+  RadioCard,
+  Skeleton,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { Team } from '@/interfaces/Teams.interface';
 import React, { useMemo, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
