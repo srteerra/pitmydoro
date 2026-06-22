@@ -75,7 +75,7 @@ export const Scuderia = () => {
         >
           <VStack align='stretch'>
             {filteredTeams.map((team: Team) => (
-              <Skeleton key={team.id} height='150px' loading={!team}>
+              <Skeleton key={team.id} minH='150px' loading={!team}>
                 <RadioCard.Item
                   key={team.id}
                   value={team.id}
@@ -109,9 +109,10 @@ export const Scuderia = () => {
                   <RadioCard.ItemControl cursor='pointer'>
                     <Flex
                       w={'full'}
-                      paddingX={'20px'}
-                      paddingY={'10px'}
-                      justifyContent={'space-between'}
+                      paddingX={{ base: '14px', md: '20px' }}
+                      paddingY={{ base: '18px', md: '10px' }}
+                      gap={{ base: 5, md: 0 }}
+                      justifyContent={{ base: 'center', md: 'space-between' }}
                       alignItems='center'
                       flexWrap={'wrap'}
                     >
@@ -133,7 +134,9 @@ export const Scuderia = () => {
                           </Text>
                         </Flex>
 
-                        <ColorPreview colors={team.colors} />
+                        <Box display={{ base: 'none', md: 'block' }}>
+                          <ColorPreview colors={team.colors} />
+                        </Box>
                       </Box>
 
                       <Image asChild alt={'team-car'}>

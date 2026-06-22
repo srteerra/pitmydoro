@@ -1,12 +1,14 @@
 'use client';
 
 import { setUserLocale } from '@/services/locale.service';
-import { IconButton, Image, Menu, Text } from '@chakra-ui/react';
+import { Box, IconButton, Image, Menu, Text } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
 import { IoEarth } from 'react-icons/io5';
 import { Locale } from 'moment';
+import { Tooltip } from '@/components/ui/tooltip';
 import { useTransition } from 'react';
 import useSettingsStore from '@/stores/Settings.store';
+import { useTranslations } from 'use-intl';
 
 interface Props {
   portalDisabled?: boolean;
@@ -14,6 +16,7 @@ interface Props {
 
 export function LocaleSwitch({ portalDisabled = false }: Props) {
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations('header');
   const setLocale = useSettingsStore((state) => state.setLocale);
 
   const onChange = (value: string | Locale) => {
@@ -26,17 +29,21 @@ export function LocaleSwitch({ portalDisabled = false }: Props) {
 
   return (
     <Menu.Root>
-      <Menu.Trigger asChild>
-        <IconButton
-          data-pw-id={'locale-switcher'}
-          variant={'ghost'}
-          rounded='full'
-          color={{ base: 'gray.500', _hover: 'gray.700' }}
-          disabled={isPending}
-        >
-          <IoEarth />
-        </IconButton>
-      </Menu.Trigger>
+      <Tooltip openDelay={100} closeDelay={100} content={t('language')}>
+        <Box as='span' display='inline-flex'>
+          <Menu.Trigger asChild>
+            <IconButton
+              data-pw-id={'locale-switcher'}
+              variant={'ghost'}
+              rounded='full'
+              color={{ base: 'gray.500', _hover: 'gray.700' }}
+              disabled={isPending}
+            >
+              <IoEarth />
+            </IconButton>
+          </Menu.Trigger>
+        </Box>
+      </Tooltip>
       <Portal disabled={portalDisabled}>
         <Menu.Positioner>
           <Menu.Content data-pw-id={'locale-content'}>

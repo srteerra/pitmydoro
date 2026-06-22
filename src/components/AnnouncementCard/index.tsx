@@ -127,7 +127,7 @@ export const AnnouncementCard = () => {
       position='fixed'
       bottom={{ base: 4, md: 6 }}
       right={{ base: 4, md: 6 }}
-      zIndex={1400}
+      zIndex={1000}
       maxW={{ base: 'calc(100vw - 2rem)', md: '320px' }}
       w='full'
       p={4}

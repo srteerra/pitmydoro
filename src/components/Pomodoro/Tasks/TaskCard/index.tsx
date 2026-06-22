@@ -200,6 +200,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 fontWeight={'bold'}
                 variant={'flushed'}
                 ref={ref}
+                maxLength={80}
                 placeholder={t('taskTitlePlaceholder')}
                 data-pw-id='task-title-input'
               />
@@ -208,18 +209,21 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 onChange={(e) => setTaskDescription(e.target.value)}
                 variant='flushed'
                 w={'full'}
+                maxLength={250}
                 placeholder={t('taskDescriptionPlaceholder')}
                 data-pw-id='task-description-input'
               />
             </Box>
           ) : (
-            <Box>
-              <Flex gap={2} alignItems='center'>
+            <Box flex={1} minW={0}>
+              <Flex gap={2} alignItems='center' minW={0}>
                 {draggableIcon}
-                <Flex flexDir='column'>
+                <Flex flexDir='column' minW={0}>
                   <Text
                     textDecoration={task.completedAt ? 'line-through' : ''}
                     textTransform={'capitalize'}
+                    overflowWrap={'anywhere'}
+                    lineClamp='2'
                   >
                     <Text as={'span'} color={'gray.400'}>
                       #{task.order}
@@ -231,6 +235,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                     textTransform={'capitalize'}
                     color={'gray.400'}
                     fontSize={14}
+                    overflowWrap={'anywhere'}
                     lineClamp='3'
                   >
                     {task.description}
@@ -241,7 +246,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
           )}
 
           {!isCurrentEditing && (
-            <Flex alignItems='center' gap={2}>
+            <Flex alignItems='center' gap={2} flexShrink={0}>
               <Text minW={'40px'}>
                 {taskCompletedPomodoros} / {taskPomodoros}
               </Text>

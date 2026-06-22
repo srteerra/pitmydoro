@@ -94,8 +94,8 @@ export const useSettings = () => {
   };
 
   const handleVolumeChange = async (value: number) => {
-    if (user) await userService.updatePreferences(user.uid, { volume: value });
     setVolume(value);
+    if (user) await userService.updatePreferences(user.uid, { volume: value });
   };
 
   const handleChangeBreakDuration = async (type: SessionStatusEnum, duration: number) => {

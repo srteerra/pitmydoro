@@ -260,6 +260,12 @@
     "disclaimer": "This site is not affiliated with F1, Formula 1, or any of its teams or drivers.",
     "license": "Open source · GPL-3.0 License"
   },
+  "header": {
+    "learn": "Learn more",
+    "language": "Change language",
+    "theme": "Dark / Light mode",
+    "minimalMode": "Switch view mode"
+  },
   "announcement": {
     "title": "What's new",
     "viewRelease": "View full release notes",

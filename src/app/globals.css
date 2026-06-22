@@ -18,6 +18,32 @@ body {
   }
 }
 
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+  80% {
+    transform: translateY(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
 @media (min-width: 1921px) {
   :root {
     zoom: 1.15;

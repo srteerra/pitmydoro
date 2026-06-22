@@ -4,13 +4,22 @@ import { SwitchInput } from '@/components/Form/SwitchInput';
 import { SliderInput } from '@/components/Form/SliderInput';
 import { useTranslations } from 'use-intl';
 import { useSettings } from '@/hooks/useSettings';
+import { useDebounce } from '@/hooks/useDebounce';
 import useSettingsStore from '@/stores/Settings.store';
 
 export const Sounds = () => {
   const { handleSwitchSounds, handleVolumeChange } = useSettings();
   const enableSounds = useSettingsStore((state) => state.enableSounds);
   const volume = useSettingsStore((state) => state.volume);
+  const setVolume = useSettingsStore((state) => state.setVolume);
   const t = useTranslations('settings.sections.sounds');
+
+  const debouncedSaveVolume = useDebounce(handleVolumeChange, 1500);
+
+  const onVolumeChange = (value: number) => {
+    setVolume(value);
+    debouncedSaveVolume(value);
+  };
 
   return (
     <VStack gap={8} marginY={'20px'} width={'100%'}>
@@ -25,7 +34,7 @@ export const Sounds = () => {
         title={t('volume.title')}
         description={t('volume.description')}
         value={volume}
-        onChange={handleVolumeChange}
+        onChange={onVolumeChange}
         disabled={!enableSounds}
       />
     </VStack>

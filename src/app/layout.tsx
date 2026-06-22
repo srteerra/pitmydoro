@@ -44,18 +44,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <NextIntlClientProvider>
           <ChakraUIProvider>
-            <DialogProvider>
-              <DrawerProvider>
-                <AuthProvider>
+            <AuthProvider>
+              <DialogProvider>
+                <DrawerProvider>
                   <ColorModeProvider enableSystem={false}>
                     <Toaster />
                     <ScrollToTop />
                     {children}
                     <AnnouncementCard />
                   </ColorModeProvider>
-                </AuthProvider>
-              </DrawerProvider>
-            </DialogProvider>
+                </DrawerProvider>
+              </DialogProvider>
+            </AuthProvider>
           </ChakraUIProvider>
         </NextIntlClientProvider>
       </body>
