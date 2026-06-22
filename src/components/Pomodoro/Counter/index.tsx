@@ -241,9 +241,9 @@ export const Counter = () => {
   return (
     <React.Fragment>
       <HStack
-        w='100'
+        w='full'
         marginY='20px'
-        padding='0 20px'
+        padding={{ base: '0 4px', md: '0 20px' }}
         gap={1}
         display='flex'
         justifyContent='space-between'
@@ -352,7 +352,13 @@ export const Counter = () => {
       </RippleButton>
 
       <Center>
-        <Flex gap={3} color={{ base: 'gray.500', _dark: 'gray.400' }}>
+        <Flex
+          gap={3}
+          flexWrap='wrap'
+          justifyContent='center'
+          textAlign='center'
+          color={{ base: 'gray.500', _dark: 'gray.400' }}
+        >
           <Text fontSize='sm'>
             {!tasks?.length && (
               <Text as={'span'} marginRight={2}>
