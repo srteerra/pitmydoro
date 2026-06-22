@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button, CloseButton, Dialog, Portal } from '@chakra-ui/react';
+import { Box, Button, CloseButton, Dialog, Portal } from '@chakra-ui/react';
 import { MdLogin } from 'react-icons/md';
 import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
@@ -100,8 +100,17 @@ export const AuthModal = () => {
       onExitComplete={() => setAuthMode('login')}
     >
       <Dialog.Trigger asChild>
-        <Button borderRadius={'full'} onClick={() => setShowModal(true)}>
-          <MdLogin /> {t('join')}
+        <Button
+          borderRadius={'full'}
+          onClick={() => setShowModal(true)}
+          paddingX={{ base: 0, lg: 4 }}
+          minW={{ base: 10, lg: 'auto' }}
+          width={{ base: 10, lg: 'auto' }}
+        >
+          <MdLogin />
+          <Box as='span' display={{ base: 'none', lg: 'inline' }}>
+            {t('join')}
+          </Box>
         </Button>
       </Dialog.Trigger>
       <Portal>
