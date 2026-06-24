@@ -7,11 +7,9 @@ import { Metadata } from 'next';
 import Head from 'next/head';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { keywords } from '@/constants/Keywords';
-import { Toaster } from '@/components/ui/toaster';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { DrawerProvider } from '@/contexts/DrawerContext';
-import { ScrollToTop } from '@/components/ScrollToTop';
-import { AnnouncementCard } from '@/components/AnnouncementCard';
+import { OverlaySync } from '@/components/StreamOverlay/OverlaySync';
 
 export const metadata: Metadata = {
   title: 'Pit My Doro',
@@ -48,10 +46,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <DialogProvider>
                 <DrawerProvider>
                   <ColorModeProvider enableSystem={false}>
-                    <Toaster />
-                    <ScrollToTop />
+                    <OverlaySync />
                     {children}
-                    <AnnouncementCard />
                   </ColorModeProvider>
                 </DrawerProvider>
               </DialogProvider>

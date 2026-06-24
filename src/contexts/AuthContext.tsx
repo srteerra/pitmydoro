@@ -1,19 +1,20 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import {
-  User,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut,
   GoogleAuthProvider,
-  signInWithPopup,
+  onAuthStateChanged,
   sendEmailVerification,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  User,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import { userService } from '@/services/user.service';
 import useUserStore from '@/stores/User.store';
+import { useOverlayStore } from '@/stores/Overlay.store';
 import { useTasks } from '@/hooks/useTasks';
 import { useSettings } from '@/hooks/useSettings';
 
@@ -44,13 +45,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(user);
 
       if (user) {
-        const exists = await userService.exists(user.uid);
+        let userData = await userService.getUserData(user.uid);
 
-        if (!exists) {
+        if (!userData) {
           await userService.create(user);
+          userData = await userService.getUserData(user.uid);
         }
 
-        await Promise.all([loadTasks(user.uid), loadConfig(user.uid), fetchProfile(user.uid)]);
+        loadConfig(userData?.preferences);
+        useOverlayStore.getState().applySettings(userData?.overlay ?? null);
+
+        await Promise.all([loadTasks(user.uid), fetchProfile(user.uid)]);
       }
 
       setLoading(false);
@@ -68,20 +73,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password).then(async (userCredential) => {
-      if (!userCredential?.user?.uid) return;
-      const uid = userCredential.user.uid;
-      await Promise.all([loadTasks(uid), loadConfig(uid), fetchProfile(uid)]);
-    });
+    await signInWithEmailAndPassword(auth, email, password);
   };
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider).then(async (userCredential) => {
-      if (!userCredential?.user?.uid) return;
-      const uid = userCredential.user.uid;
-      await Promise.all([loadTasks(uid), loadConfig(uid), fetchProfile(uid)]);
-    });
+    await signInWithPopup(auth, provider);
   };
 
   const logout = async () => {
@@ -90,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await wipeTasks();
       await wipeConfig();
       clearProfile();
+      useOverlayStore.getState().clear();
     });
   };
 

@@ -8,7 +8,7 @@ import { useTranslations } from 'use-intl';
 import { userService } from '@/services/user.service';
 import { useAuth } from '@/contexts/AuthContext';
 import { DefaultSettings } from '@/constants/DefaultSettings';
-import { PomodoroMode } from '@/interfaces/Settings.interface';
+import { PomodoroMode, Settings } from '@/interfaces/Settings.interface';
 
 export const useSettings = () => {
   const { toastSuccess, toastError } = useAlert();
@@ -156,10 +156,9 @@ export const useSettings = () => {
     await userService.updatePreferences(userId, DefaultSettings);
   };
 
-  const loadConfig = async (userId: string) => {
-    const userData = await userService.getUserData(userId);
-    if (!userData?.preferences) return;
-    setSettings({ ...DefaultSettings, ...userData.preferences });
+  const loadConfig = (preferences?: Partial<Settings> | null) => {
+    if (!preferences) return;
+    setSettings({ ...DefaultSettings, ...preferences });
   };
 
   const wipeConfig = async () => {

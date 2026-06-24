@@ -266,6 +266,70 @@
     "theme": "Dark / Light mode",
     "minimalMode": "Switch view mode"
   },
+  "streamOverlay": {
+    "inDevelopment": "In Development",
+    "status": {
+      "session": "Working...",
+      "shortBreak": "In Short Break",
+      "longBreak": "In Long Break"
+    },
+    "config": {
+      "previewLabel": "PREVIEW",
+      "sync": {
+        "title": "Streamer sync",
+        "on": "Your timer is syncing to the overlay",
+        "off": "Turn on to sync your timer",
+        "stateOn": "On",
+        "stateOff": "Off"
+      },
+      "spriteSize": "Sprite size",
+      "timerSize": "Timer size",
+      "taskSize": "Task size",
+      "elements": {
+        "title": "Elements",
+        "timer": "Timer",
+        "car": "Car",
+        "task": "Task",
+        "flag": "Flag"
+      },
+      "labelLanguage": "Label language",
+      "verticalAlign": {
+        "title": "Vertical align",
+        "top": "Top",
+        "center": "Center",
+        "bottom": "Bottom"
+      },
+      "timerColor": {
+        "title": "Timer color",
+        "auto": "Auto",
+        "white": "White",
+        "black": "Black"
+      },
+      "fontStyle": {
+        "title": "Font style",
+        "neutral": "Neutral",
+        "pixel": "Pixel"
+      },
+      "url": {
+        "title": "OBS Browser Source URL",
+        "copy": "Copy URL",
+        "copied": "Copied!",
+        "open": "Open",
+        "ready": "Add this URL as a Browser Source in OBS. Your token is private — only share it with your own OBS. Run the timer on the main page and the overlay follows automatically.",
+        "disabled": "Turn on Streamer sync to generate your private overlay URL."
+      }
+    },
+    "guide": {
+      "title": "How to set it up in OBS",
+      "steps": {
+        "install": "Install OBS Studio if you don't have it yet.",
+        "source": "In your scene, add a new \"Browser\" source.",
+        "paste": "Copy the overlay URL above and paste it into the source's URL field.",
+        "size": "Set the size to match your canvas (e.g. 1920 × 1080). The background is already transparent.",
+        "sync": "Turn on Streamer sync and start your timer — the overlay updates live."
+      }
+    }
+  },
   "announcement": {
     "title": "What's new",
     "viewRelease": "View full release notes",

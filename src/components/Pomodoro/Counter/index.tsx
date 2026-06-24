@@ -45,6 +45,7 @@ export const Counter = () => {
     complete,
     reset,
     flushElapsed,
+    getCurrentDuration,
   } = usePomodoro();
   const status = useSessionStore((state) => state.status);
   const tasks = useTaskStore((state) => state.tasks);
@@ -59,6 +60,8 @@ export const Counter = () => {
   const setDateClock = useSessionStore((state) => state.setDateClock);
   const { currentPomodoro, isActive, isEndingSoon, estTimeFinish, setIsEndingSoon } =
     usePomodoroStore();
+  const setOverlayTiming = usePomodoroStore((state) => state.setOverlayTiming);
+  const lastTotalRef = useRef(0);
 
   const backButtonColor =
     theme === 'dark'
@@ -102,6 +105,12 @@ export const Counter = () => {
   const handleTick = ({ total }: { total: number }) => {
     const isRunning = countdownRef.current?.isStarted() && !countdownRef.current?.isPaused();
     if (!isRunning) return;
+
+    lastTotalRef.current = total;
+    const currentEndsAt = usePomodoroStore.getState().overlayEndsAt;
+    if (currentEndsAt === null || Math.abs(Date.now() + total - currentEndsAt) > 1500) {
+      setOverlayTiming({ endsAt: Date.now() + total, remainingMs: total });
+    }
 
     document.title = `${formatMs(total)} - ${pomodoroT(status === SessionStatusEnum.IN_SESSION ? 'sessionLabel' : status === SessionStatusEnum.SHORT_BREAK ? 'shortBreakLabel' : 'longBreakLabel')}`;
 
@@ -163,6 +172,12 @@ export const Counter = () => {
     countdownRef.current?.start();
     playSound();
 
+    const frozenRemaining = usePomodoroStore.getState().overlayRemainingMs;
+    const baseMs = currentPomodoro
+      ? frozenRemaining || lastTotalRef.current || getCurrentDuration()
+      : getCurrentDuration();
+    setOverlayTiming({ endsAt: Date.now() + baseMs, remainingMs: baseMs });
+
     if (currentPomodoro) {
       await resume();
     } else {
@@ -177,6 +192,11 @@ export const Counter = () => {
   const handlePauseClick = async () => {
     countdownRef.current?.pause();
     resumeSound();
+
+    const endsAt = usePomodoroStore.getState().overlayEndsAt;
+    const frozen = endsAt ? Math.max(endsAt - Date.now(), 0) : lastTotalRef.current;
+    setOverlayTiming({ endsAt: null, remainingMs: frozen });
+
     await pause();
   };
 
@@ -216,6 +236,21 @@ export const Counter = () => {
   useEffect(() => {
     handleIntervalComplete();
   }, [tiresSettings, selectedTire, status, handleIntervalComplete]);
+
+  useEffect(() => {
+    if (isActive || currentPomodoro) return;
+    setOverlayTiming({ endsAt: null, remainingMs: getCurrentDuration() });
+  }, [
+    isActive,
+    currentPomodoro,
+    status,
+    selectedTire,
+    tiresSettings,
+    breaksDuration,
+    mode,
+    minimalSessionDuration,
+    setOverlayTiming,
+  ]);
 
   useEffect(() => {
     if (!isActive && countdownRef.current?.isStarted() && !countdownRef.current?.isPaused()) {

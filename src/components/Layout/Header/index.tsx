@@ -9,7 +9,7 @@ import { LocaleSwitch } from '@/components/Layout/Toggles/LocaleSwitch';
 import Link from 'next/link';
 import { AuthModal } from '@/components/Auth/AuthModal';
 import GitHubStars from '@/components/GithubStars';
-import { LuBookText, LuMenu } from 'react-icons/lu';
+import { LuBookText, LuMegaphone, LuMenu, LuMonitorPlay } from 'react-icons/lu';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useTranslations } from 'use-intl';
@@ -118,6 +118,23 @@ export const Header = () => {
               </Box>
             </Tooltip>
 
+            <Tooltip openDelay={100} closeDelay={100} content='Stream Overlay'>
+              <Box as='span' display='inline-flex'>
+                <Link href={'/stream-overlay'} aria-label='Stream overlay for OBS'>
+                  <IconButton
+                    as={'span'}
+                    variant={'ghost'}
+                    rounded='full'
+                    size={{ base: 'sm', md: 'md' }}
+                    color={{ base: 'gray.500', _hover: 'gray.700' }}
+                    aria-label='Stream overlay for OBS'
+                  >
+                    <LuMonitorPlay />
+                  </IconButton>
+                </Link>
+              </Box>
+            </Tooltip>
+
             <LocaleSwitch />
 
             <Center paddingX={{ base: 1, md: 3 }} flexShrink={1} minW={0}>
@@ -142,6 +159,23 @@ export const Header = () => {
             <Tooltip openDelay={100} closeDelay={100} content={t('theme')}>
               <Box as='span' display='inline-flex'>
                 <ToggleThemeMode />
+              </Box>
+            </Tooltip>
+
+            <Tooltip openDelay={100} closeDelay={100} content='Community'>
+              <Box as='span' display='inline-flex'>
+                <Link href={'/community'} aria-label='Community'>
+                  <IconButton
+                    as={'span'}
+                    variant={'ghost'}
+                    rounded='full'
+                    size={{ base: 'sm', md: 'md' }}
+                    color={{ base: 'gray.500', _hover: 'gray.700' }}
+                    aria-label='Community'
+                  >
+                    <LuMegaphone />
+                  </IconButton>
+                </Link>
               </Box>
             </Tooltip>
 

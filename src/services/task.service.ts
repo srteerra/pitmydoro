@@ -5,6 +5,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  increment,
   orderBy,
   query,
   setDoc,
@@ -37,6 +38,7 @@ export const taskService = {
     const newTaskDoc = await setDoc(doc(db, `users/${userId}/tasks`, taskData.id), {
       ...taskDataWithoutOrder,
       userId,
+      archive: taskDataWithoutOrder.archive ?? false,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
       isSync: true,
@@ -82,41 +84,20 @@ export const taskService = {
 
   async updateTaskStats(userId: string, taskId: string, stats: TaskStatsDelta) {
     const taskRef = doc(db, 'users', userId, 'tasks', taskId);
-    const snap = await getDoc(taskRef);
-    const data = snap.data() || {};
-
-    const currentStats = data.stats || {};
-    const currentTotalPomodoros = data.totalPomodoros || 0;
 
     const updates: Record<string, unknown> = {
       updatedAt: Timestamp.now(),
       'stats.lastSessionAt': Timestamp.now(),
     };
 
-    if (stats.workTime !== undefined) {
-      updates['stats.totalWorkTime'] = (currentStats.totalWorkTime || 0) + stats.workTime;
-    }
-
-    if (stats.breakTime !== undefined) {
-      updates['stats.totalBreakTime'] = (currentStats.totalBreakTime || 0) + stats.breakTime;
-    }
-
-    if (stats.pomodoros !== undefined) {
-      updates.totalPomodoros = currentTotalPomodoros + stats.pomodoros;
-    }
-
-    if (stats.pausedTime !== undefined) {
-      updates['stats.totalPausedTime'] = (currentStats.totalPausedTime || 0) + stats.pausedTime;
-    }
-
-    if (stats.pauses !== undefined) {
-      updates['stats.totalPauses'] = (currentStats.totalPauses || 0) + stats.pauses;
-    }
-
-    if (stats.interruptions !== undefined) {
-      updates['stats.totalInterruptions'] =
-        (currentStats.totalInterruptions || 0) + stats.interruptions;
-    }
+    if (stats.workTime !== undefined) updates['stats.totalWorkTime'] = increment(stats.workTime);
+    if (stats.breakTime !== undefined) updates['stats.totalBreakTime'] = increment(stats.breakTime);
+    if (stats.pomodoros !== undefined) updates.totalPomodoros = increment(stats.pomodoros);
+    if (stats.pausedTime !== undefined)
+      updates['stats.totalPausedTime'] = increment(stats.pausedTime);
+    if (stats.pauses !== undefined) updates['stats.totalPauses'] = increment(stats.pauses);
+    if (stats.interruptions !== undefined)
+      updates['stats.totalInterruptions'] = increment(stats.interruptions);
 
     await updateDoc(taskRef, updates);
   },
@@ -159,11 +140,13 @@ export const taskService = {
   },
 
   async getTasks(userId: string): Promise<Task[]> {
-    const q = query(collection(db, 'users', userId, 'tasks'), orderBy('createdAt', 'asc'));
+    const q = query(
+      collection(db, 'users', userId, 'tasks'),
+      where('archive', '==', false),
+      orderBy('createdAt', 'asc')
+    );
     const snapshot = await getDocs(q);
-    const tasks = snapshot.docs
-      .map((doc) => ({ ...doc.data(), id: doc.id }))
-      .filter((t: any) => !t.archive) as Task[];
+    const tasks = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as Task[];
 
     const savedActiveOrder = await this.getActiveTasksOrder(userId);
 
