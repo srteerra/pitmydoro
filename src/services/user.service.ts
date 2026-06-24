@@ -1,20 +1,21 @@
 import {
+  collection,
   doc,
   getDoc,
-  updateDoc,
-  writeBatch,
-  serverTimestamp,
-  collection,
-  query,
-  where,
   getDocs,
   limit,
+  query,
+  serverTimestamp,
   Timestamp,
+  updateDoc,
+  where,
+  writeBatch,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import type { User } from 'firebase/auth';
 import { DefaultSettings } from '@/constants/DefaultSettings';
 import { Settings } from '@/interfaces/Settings.interface';
+import { OverlaySettings } from '@/interfaces/Overlay.interface';
 
 const STORAGE_SETTINGS_KEY = 'pitmydoro_settings';
 
@@ -124,6 +125,19 @@ export const userService = {
 
     updates.updatedAt = serverTimestamp();
 
+    await updateDoc(doc(db, 'users', userId), updates);
+  },
+
+  async getOverlaySettings(userId: string): Promise<OverlaySettings | null> {
+    const userDoc = await getDoc(doc(db, 'users', userId));
+    const data = userDoc.data() as { overlay?: OverlaySettings } | undefined;
+    return data?.overlay ?? null;
+  },
+
+  async updateOverlaySettings(userId: string, settings: Partial<OverlaySettings>) {
+    const updates: Record<string, any> = { updatedAt: serverTimestamp() };
+    if (settings.token !== undefined) updates['overlay.token'] = settings.token;
+    if (settings.enabled !== undefined) updates['overlay.enabled'] = settings.enabled;
     await updateDoc(doc(db, 'users', userId), updates);
   },
 };
