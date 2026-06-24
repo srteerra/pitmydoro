@@ -1,19 +1,20 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import {
-  User,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut,
   GoogleAuthProvider,
-  signInWithPopup,
+  onAuthStateChanged,
   sendEmailVerification,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  User,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import { userService } from '@/services/user.service';
 import useUserStore from '@/stores/User.store';
+import { useOverlayStore } from '@/stores/Overlay.store';
 import { useTasks } from '@/hooks/useTasks';
 import { useSettings } from '@/hooks/useSettings';
 
@@ -50,7 +51,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           await userService.create(user);
         }
 
-        await Promise.all([loadTasks(user.uid), loadConfig(user.uid), fetchProfile(user.uid)]);
+        await Promise.all([
+          loadTasks(user.uid),
+          loadConfig(user.uid),
+          fetchProfile(user.uid),
+          useOverlayStore.getState().load(user.uid),
+        ]);
       }
 
       setLoading(false);
@@ -71,7 +77,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signInWithEmailAndPassword(auth, email, password).then(async (userCredential) => {
       if (!userCredential?.user?.uid) return;
       const uid = userCredential.user.uid;
-      await Promise.all([loadTasks(uid), loadConfig(uid), fetchProfile(uid)]);
+      await Promise.all([
+        loadTasks(uid),
+        loadConfig(uid),
+        fetchProfile(uid),
+        useOverlayStore.getState().load(uid),
+      ]);
     });
   };
 
@@ -80,7 +91,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signInWithPopup(auth, provider).then(async (userCredential) => {
       if (!userCredential?.user?.uid) return;
       const uid = userCredential.user.uid;
-      await Promise.all([loadTasks(uid), loadConfig(uid), fetchProfile(uid)]);
+      await Promise.all([
+        loadTasks(uid),
+        loadConfig(uid),
+        fetchProfile(uid),
+        useOverlayStore.getState().load(uid),
+      ]);
     });
   };
 
@@ -90,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await wipeTasks();
       await wipeConfig();
       clearProfile();
+      useOverlayStore.getState().clear();
     });
   };
 
