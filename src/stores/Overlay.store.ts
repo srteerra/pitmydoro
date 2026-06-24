@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { userService } from '@/services/user.service';
 import { overlayService } from '@/services/overlay.service';
 import { DEFAULT_OVERLAY_CONFIG } from '@/utils/overlay/overlayConfig';
-import { OverlayConfig } from '@/interfaces/Overlay.interface';
+import { OverlayConfig, OverlaySettings } from '@/interfaces/Overlay.interface';
 
 const createToken = (): string => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
@@ -13,7 +13,7 @@ interface OverlayStore {
   token: string;
   enabled: boolean;
   loaded: boolean;
-  load: (userId: string) => Promise<void>;
+  applySettings: (settings?: OverlaySettings | null) => void;
   ensure: (userId: string, config?: OverlayConfig) => Promise<string>;
   setEnabled: (userId: string, enabled: boolean) => Promise<void>;
   clear: () => void;
@@ -24,10 +24,8 @@ export const useOverlayStore = create<OverlayStore>((set, get) => ({
   enabled: false,
   loaded: false,
 
-  load: async (userId) => {
-    const settings = await userService.getOverlaySettings(userId);
-    set({ token: settings?.token ?? '', enabled: settings?.enabled ?? false, loaded: true });
-  },
+  applySettings: (settings) =>
+    set({ token: settings?.token ?? '', enabled: settings?.enabled ?? false, loaded: true }),
 
   ensure: async (userId, config = DEFAULT_OVERLAY_CONFIG) => {
     const existing = get().token;
