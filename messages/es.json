@@ -267,6 +267,70 @@
     "theme": "Modo oscuro / claro",
     "minimalMode": "Cambiar modo vista"
   },
+  "streamOverlay": {
+    "inDevelopment": "En desarrollo",
+    "status": {
+      "session": "Trabajando...",
+      "shortBreak": "En Descanso Corto",
+      "longBreak": "En Descanso Largo"
+    },
+    "config": {
+      "previewLabel": "VISTA PREVIA",
+      "sync": {
+        "title": "Sincronización con stream",
+        "on": "Tu timer se está sincronizando con el overlay",
+        "off": "Actívalo para sincronizar tu timer",
+        "stateOn": "On",
+        "stateOff": "Off"
+      },
+      "spriteSize": "Tamaño del coche",
+      "timerSize": "Tamaño del timer",
+      "taskSize": "Tamaño de la tarea",
+      "elements": {
+        "title": "Elementos",
+        "timer": "Timer",
+        "car": "Coche",
+        "task": "Tarea",
+        "flag": "Bandera"
+      },
+      "labelLanguage": "Idioma de las etiquetas",
+      "verticalAlign": {
+        "title": "Alineación vertical",
+        "top": "Arriba",
+        "center": "Centro",
+        "bottom": "Abajo"
+      },
+      "timerColor": {
+        "title": "Color del timer",
+        "auto": "Auto",
+        "white": "Blanco",
+        "black": "Negro"
+      },
+      "fontStyle": {
+        "title": "Estilo de fuente",
+        "neutral": "Neutral",
+        "pixel": "Pixel"
+      },
+      "url": {
+        "title": "URL para Browser Source de OBS",
+        "copy": "Copiar URL",
+        "copied": "¡Copiado!",
+        "open": "Abrir",
+        "ready": "Agrega esta URL como Browser Source en OBS. Tu token es privado — compártelo solo con tu propio OBS. Inicia el timer en la página principal y el overlay lo seguirá automáticamente.",
+        "disabled": "Activa la sincronización para generar tu URL privada del overlay."
+      }
+    },
+    "guide": {
+      "title": "Cómo configurarlo en OBS",
+      "steps": {
+        "install": "Instala OBS Studio si aún no lo tienes.",
+        "source": "En tu escena, agrega una nueva fuente \"Navegador\" (Browser).",
+        "paste": "Copia la URL del overlay de arriba y pégala en el campo URL de la fuente.",
+        "size": "Ajusta el tamaño al de tu lienzo (ej. 1920 × 1080). El fondo ya es transparente.",
+        "sync": "Activa Streamer sync e inicia tu timer — el overlay se actualiza en vivo."
+      }
+    }
+  },
   "announcement": {
     "title": "Novedades",
     "viewRelease": "Ver notas de la versión",
