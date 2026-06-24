@@ -35,6 +35,7 @@ interface UserProfile {
 interface UserData {
   email: string;
   preferences: Settings;
+  overlay?: OverlaySettings;
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
