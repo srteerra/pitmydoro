@@ -45,6 +45,7 @@ export const Counter = () => {
     complete,
     reset,
     flushElapsed,
+    flushCheckpoint,
     getCurrentDuration,
   } = usePomodoro();
   const status = useSessionStore((state) => state.status);
@@ -120,7 +121,9 @@ export const Counter = () => {
       if (isDesktop()) {
         if (Notification.permission === 'granted' && enableNotifications) {
           new Notification(pomodoroT('boxTitle'), {
-            body: pomodoroT('boxDescription'),
+            body: pomodoroT(
+              status === SessionStatusEnum.IN_SESSION ? 'boxDescription' : 'boxDescriptionFocus'
+            ),
             icon: '/f1-icon.webp',
           });
         }
@@ -260,7 +263,7 @@ export const Counter = () => {
 
   useEffect(() => {
     const handleHide = () => {
-      if (document.visibilityState === 'hidden') flushElapsed();
+      if (document.visibilityState === 'hidden') flushCheckpoint();
     };
     const handlePageHide = () => flushElapsed();
 
@@ -271,7 +274,7 @@ export const Counter = () => {
       document.removeEventListener('visibilitychange', handleHide);
       window.removeEventListener('pagehide', handlePageHide);
     };
-  }, [flushElapsed]);
+  }, [flushElapsed, flushCheckpoint]);
 
   return (
     <React.Fragment>

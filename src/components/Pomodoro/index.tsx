@@ -1,4 +1,4 @@
-import { Box, Center, VStack, Image, Loader } from '@chakra-ui/react';
+import { Box, Center, Image, Loader, VStack } from '@chakra-ui/react';
 import { TimerSelector } from '@/components/Pomodoro/TimerSelector';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { Counter } from '@/components/Pomodoro/Counter';
@@ -8,6 +8,8 @@ import tinycolor from 'tinycolor2';
 import { Tasks } from '@/components/Pomodoro/Tasks';
 import { SpriteAnimation } from '@/components/SpriteAnimation';
 import { FlagSwitcher } from '@/components/Pomodoro/components/FlagSwitcher';
+import { Settings, Tab } from '@/components/Pomodoro/Settings';
+import { useDialog } from '@/contexts/DialogContext';
 import { useTranslations } from 'use-intl';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
@@ -23,7 +25,17 @@ export const Pomodoro = () => {
   const setStatus = useSessionStore((state) => state.setStatus);
   const selectedTire = useSessionStore((state) => state.selectedTire);
   const t = useTranslations('pomodoro');
+  const settingsT = useTranslations('settings');
   const { changeCompoundTime } = usePomodoro();
+  const { openDialog } = useDialog();
+
+  const handleScuderiaClick = () => {
+    openDialog({
+      title: settingsT('title'),
+      component: <Settings initialTab={Tab.SCUDERIA} />,
+      size: 'xl',
+    });
+  };
 
   const darkenColor = tinycolor(currentScuderia?.colors?.background?.[sessionStatus])
     .darken(80)
@@ -103,13 +115,24 @@ export const Pomodoro = () => {
           </Box>
 
           {currentScuderia && (
-            <SpriteAnimation
-              src={currentScuderia?.spriteURL as string}
-              frameHeight={80}
-              frameWidth={270}
-              totalFrames={6}
-              paused={!isActive}
-            />
+            <Box
+              position='relative'
+              zIndex='2'
+              cursor='pointer'
+              onClick={handleScuderiaClick}
+              role='button'
+              aria-label={settingsT('scuderia')}
+              transition='transform 0.2s'
+              _hover={{ transform: 'scale(1.05)' }}
+            >
+              <SpriteAnimation
+                src={currentScuderia?.spriteURL as string}
+                frameHeight={80}
+                frameWidth={270}
+                totalFrames={6}
+                paused={!isActive}
+              />
+            </Box>
           )}
         </Center>
       )}

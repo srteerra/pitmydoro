@@ -4,7 +4,7 @@ import { HiDotsVertical } from 'react-icons/hi';
 import { MdModeEdit, MdOutlineCheck, MdOutlineRestoreFromTrash } from 'react-icons/md';
 import { IoIosStats } from 'react-icons/io';
 import { TiTimes } from 'react-icons/ti';
-import { FaCheck, FaLock } from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
 import { Box, Card, Flex, IconButton, Input, NumberInput, Text, Textarea } from '@chakra-ui/react';
 import { useTranslations } from 'use-intl';
@@ -14,7 +14,6 @@ import { useTasks } from '@/hooks/useTasks';
 import { useDrawer } from '@/contexts/DrawerContext';
 import { StatsDialog } from '@/components/Tasks/StatsDialog';
 import { BiStats } from 'react-icons/bi';
-import useUserStore from '@/stores/User.store';
 import { useTheme } from 'next-themes';
 
 interface Props {
@@ -41,7 +40,6 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const editingTask = useTaskStore((state) => state.editingTask);
   const setEditingTask = useTaskStore((state) => state.setEditingTask);
   const currentTask = useTaskStore((state) => state.currentTask);
-  const profile = useUserStore((state) => state.profile);
 
   const isCurrentEditing = React.useMemo(() => {
     return editingTask === task.id;
@@ -49,8 +47,6 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
 
   const handleOpenStats = (e: React.MouseEvent) => {
     e.stopPropagation();
-
-    if (!profile?.uid) return;
 
     setMenuOpen(false);
     openDrawer({
@@ -276,14 +272,13 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 {menuOpen && (
                   <MenuContent>
                     <MenuItem
-                      disabled={!profile?.uid}
                       onClick={handleOpenStats}
                       value='stats'
                       cursor='pointer'
                       data-pw-id='task-menu-stats'
                     >
-                      {!profile?.uid ? <FaLock /> : <IoIosStats />}
-                      {!profile?.uid ? statsT('unlockStats') : statsT('seeStats')}
+                      <IoIosStats />
+                      {statsT('seeStats')}
                     </MenuItem>
 
                     <MenuItem
