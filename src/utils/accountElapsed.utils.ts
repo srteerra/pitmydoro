@@ -4,16 +4,27 @@ import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { taskService } from '@/services/task.service';
 import { Task, TaskStatsDelta } from '@/interfaces/Task.interface';
 
-export const flushElapsedTime = async (userId?: string | null) => {
+const MIN_CHECKPOINT_INTERVAL_MS = 60_000;
+
+interface FlushOptions {
+  minElapsedMs?: number;
+}
+
+export const flushElapsedTime = async (userId?: string | null, options: FlushOptions = {}) => {
   const { currentPomodoro: pomo, accountedAt, setAccountedAt } = usePomodoroStore.getState();
 
   if (!pomo?.task || accountedAt == null) return;
 
   const now = Date.now();
   const elapsedMs = now - accountedAt;
-  setAccountedAt(now);
 
   if (elapsedMs <= 0) return;
+  if (elapsedMs < (options.minElapsedMs ?? 0)) return;
+
+  const elapsedSeconds = Math.floor(elapsedMs / 1000);
+  if (elapsedSeconds <= 0) return;
+
+  setAccountedAt(now - (elapsedMs % 1000));
 
   const taskId = pomo.task.id;
 
@@ -24,19 +35,20 @@ export const flushElapsedTime = async (userId?: string | null) => {
 
   if (pomo.status === 'paused') {
     if (pomo.type === SessionStatusEnum.IN_SESSION) {
-      await apply({ pausedTime: elapsedMs });
+      await apply({ pausedTime: elapsedSeconds });
     }
     return;
   }
 
-  const elapsedMinutes = elapsedMs / 60_000;
-
   if (pomo.type === SessionStatusEnum.IN_SESSION) {
-    await apply({ workTime: elapsedMinutes });
+    await apply({ workTime: elapsedSeconds });
   } else {
-    await apply({ breakTime: elapsedMinutes });
+    await apply({ breakTime: elapsedSeconds });
   }
 };
+
+export const flushElapsedCheckpoint = (userId?: string | null) =>
+  flushElapsedTime(userId, { minElapsedMs: MIN_CHECKPOINT_INTERVAL_MS });
 
 export const rebindRunningPomodoroTask = async (newTask: Task | null, userId?: string | null) => {
   const { currentPomodoro: pomo, setCurrentPomodoro, setAccountedAt } = usePomodoroStore.getState();
