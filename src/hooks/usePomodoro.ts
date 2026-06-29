@@ -17,7 +17,7 @@ import { useAlert } from '@/hooks/useAlert';
 import { TireTypeEnum } from '@/enums/TireType.enum';
 import { useTranslations } from 'use-intl';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
-import { flushElapsedTime } from '@/utils/accountElapsed.utils';
+import { flushElapsedCheckpoint, flushElapsedTime } from '@/utils/accountElapsed.utils';
 
 export const usePomodoro = () => {
   const { user } = useAuth();
@@ -99,6 +99,10 @@ export const usePomodoro = () => {
 
   const flushElapsed = async () => {
     await flushElapsedTime(user?.uid);
+  };
+
+  const flushCheckpoint = async () => {
+    await flushElapsedCheckpoint(user?.uid);
   };
 
   const updateEstimatedFinish = (totalRemainingMs: number) => {
@@ -386,6 +390,7 @@ export const usePomodoro = () => {
     reset,
     switchTask,
     flushElapsed,
+    flushCheckpoint,
     setIsEndingSoon,
     updateEstimatedFinish,
     getCurrentDuration,
