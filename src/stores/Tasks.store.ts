@@ -19,6 +19,7 @@ const mergeStats = (task: Task, delta: TaskStatsDelta): Task => {
     ...task,
     totalPomodoros: task.totalPomodoros + (delta.pomodoros ?? 0),
     stats: {
+      ...stats,
       totalWorkTime: stats.totalWorkTime + (delta.workTime ?? 0),
       totalBreakTime: stats.totalBreakTime + (delta.breakTime ?? 0),
       totalPausedTime: stats.totalPausedTime + (delta.pausedTime ?? 0),
