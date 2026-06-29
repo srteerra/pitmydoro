@@ -1,4 +1,15 @@
-import { Alert, Avatar, Box, DataList, Flex, Grid, GridItem, Separator, Status, Text, } from '@chakra-ui/react';
+import {
+  Alert,
+  Avatar,
+  Box,
+  DataList,
+  Flex,
+  Grid,
+  GridItem,
+  Separator,
+  Status,
+  Text,
+} from '@chakra-ui/react';
 import { Task } from '@/interfaces/Task.interface';
 import React, { useMemo } from 'react';
 import { formatSeconds } from '@/utils/formatSeconds.utils';
