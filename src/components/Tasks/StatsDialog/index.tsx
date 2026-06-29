@@ -1,43 +1,23 @@
-import { Avatar, Box, DataList, Flex, Separator, Status } from '@chakra-ui/react';
-import { InfoTip } from '@/components/ui/toggle-tip';
+import { Alert, Avatar, Box, DataList, Flex, Grid, GridItem, Separator, Status, Text, } from '@chakra-ui/react';
 import { Task } from '@/interfaces/Task.interface';
-import React, { JSX, useMemo } from 'react';
-import { formatMs } from '@/utils/formatMs.utils';
-import { toMillis } from '@/utils/timestamp.utils';
+import React, { useMemo } from 'react';
+import { formatSeconds } from '@/utils/formatSeconds.utils';
+import { hasDecimalStat, statSeconds } from '@/utils/statSeconds.utils';
+import { cardColors } from '@/utils/cardColors.utils';
+import { timestampUtils } from '@/utils/timestamp.utils';
 import moment from 'moment/min/moment-with-locales';
-import { formatMinutes } from '@/utils/formatMinutes.utils';
 import { BarSegment, useChart } from '@chakra-ui/charts';
 import useSettingsStore from '@/stores/Settings.store';
 import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
-import {
-  CgCheckO,
-  CgCloseO,
-  CgCoffee,
-  CgPlayPauseO,
-  CgProfile,
-  CgStopwatch,
-  CgTime,
-} from 'react-icons/cg';
+import { CgCheckO, CgCoffee, CgProfile, CgStopwatch, CgTime } from 'react-icons/cg';
 import useUserStore from '@/stores/User.store';
 import { useLocale, useTranslations } from 'use-intl';
+import { StatsList } from '@/components/Tasks/StatsDialog/StatsList';
 
 interface Props {
   task: Task;
 }
-
-interface StatItem {
-  label: string;
-  value: number | string;
-  info?: string;
-  icon?: JSX.Element;
-  valueIcon?: JSX.Element;
-}
-
-const formatDate = (timestamp: unknown) => {
-  const ms = toMillis(timestamp);
-  return ms ? moment(ms).format('DD/MM/YYYY hh:mm A') : '—';
-};
 
 export const StatsDialog = ({ task }: Props) => {
   const { theme } = useTheme();
@@ -49,57 +29,108 @@ export const StatsDialog = ({ task }: Props) => {
 
   moment.locale(locale);
 
-  const hasData =
-    (task?.stats?.totalWorkTime || 0) > 0 ||
-    (task?.stats?.totalBreakTime || 0) > 0 ||
-    (task?.stats?.totalPausedTime || 0) > 0;
+  const taskStats = task?.stats;
+  const isCorrupted = hasDecimalStat(taskStats);
+  const workSeconds = statSeconds(taskStats?.totalWorkTime) ?? 0;
+  const breakSeconds = statSeconds(taskStats?.totalBreakTime) ?? 0;
+  const pausedSeconds = statSeconds(taskStats?.totalPausedTime) ?? 0;
+
+  const hasData = workSeconds > 0 || breakSeconds > 0 || pausedSeconds > 0;
+
+  const sessionColor = tinycolor(currentScuderia.colors.background.session)
+    .darken(theme === 'dark' ? 15 : 10)
+    .toString();
+
+  const breakColor = tinycolor(currentScuderia.colors.background.shortBreak)
+    .darken(theme === 'dark' ? 15 : 10)
+    .toString();
+
+  const pausesColor = tinycolor(currentScuderia.colors.background.longBreak)
+    .darken(theme === 'dark' ? 15 : 10)
+    .toString();
 
   const chart = useChart({
     sort: { by: 'value', direction: 'desc' },
     data: [
       {
         name: pomodoroT('sessionLabel'),
-        value: (task?.stats?.totalWorkTime || 0) * 60_000,
-        color: tinycolor(currentScuderia.colors.background.session)
-          .darken(theme === 'dark' ? 15 : 10)
-          .toString(),
+        value: workSeconds,
+        color: sessionColor,
       },
       {
         name: pomodoroT('shortBreakLabel'),
-        value: (task?.stats?.totalBreakTime || 0) * 60_000,
-        color: tinycolor(currentScuderia.colors.background.shortBreak)
-          .darken(theme === 'dark' ? 15 : 10)
-          .toString(),
+        value: breakSeconds,
+        color: breakColor,
       },
       {
         name: pomodoroT('pausesLabel'),
-        value: task?.stats?.totalPausedTime || 0,
-        color: tinycolor(currentScuderia.colors.background.longBreak)
-          .darken(theme === 'dark' ? 15 : 10)
-          .toString(),
+        value: pausedSeconds,
+        color: pausesColor,
       },
     ],
   });
 
+  const isDark = theme === 'dark';
+
+  const durationCards = [
+    {
+      label: statsT('totalWorKTime'),
+      value: formatSeconds(taskStats?.totalWorkTime, 'duration'),
+      icon: <CgTime />,
+      color: tinycolor(sessionColor).lighten(12).desaturate(30).toString(),
+      colSpan: 2,
+      testId: 'stat-work-time',
+    },
+    {
+      label: statsT('totalBreakTime'),
+      value: formatSeconds(taskStats?.totalBreakTime, 'duration'),
+      icon: <CgCoffee />,
+      color: tinycolor(breakColor).lighten(12).desaturate(30).toString(),
+      colSpan: 1,
+      testId: 'stat-break-time',
+    },
+    {
+      label: statsT('totalPausedTime'),
+      value: formatSeconds(taskStats?.totalPausedTime, 'duration'),
+      icon: <CgStopwatch />,
+      color: tinycolor(pausesColor).lighten(12).desaturate(30).toString(),
+      colSpan: 1,
+      testId: 'stat-paused-time',
+    },
+  ];
+
+  const otherCards = [
+    {
+      label: statsT('totalPauses'),
+      value: taskStats?.totalPauses || 0,
+      testId: 'stat-pauses',
+    },
+    {
+      label: statsT('totalInterruptions'),
+      value: taskStats?.totalInterruptions || 0,
+      testId: 'stat-interruptions',
+    },
+  ];
+
   const stats = useMemo(() => {
-    if (!task) return { general: [], durations: [], other: [] };
+    if (!task) return { general: [] };
 
     return {
       general: [
         {
           label: statsT('lastSession'),
-          value: formatDate(task.stats?.lastSessionAt),
+          value: timestampUtils.formatDate(task.stats?.lastSessionAt),
           icon: <CgTime />,
         },
         {
           label: statsT('createdAt'),
-          value: formatDate(task.createdAt),
+          value: timestampUtils.formatDate(task.createdAt),
           icon: <CgTime />,
         },
         {
           label: statsT('isCompleted'),
           value: task?.completedAt
-            ? moment(toMillis(task.completedAt)).fromNow()
+            ? moment(timestampUtils.toMillis(task.completedAt)).fromNow()
             : statsT('notCompleted'),
           icon: <CgCheckO />,
           valueIcon: (
@@ -109,54 +140,8 @@ export const StatsDialog = ({ task }: Props) => {
           ),
         },
       ],
-      durations: [
-        {
-          label: statsT('totalWorKTime'),
-          value: formatMinutes(task.stats?.totalWorkTime || 0),
-          icon: <CgTime />,
-        },
-        {
-          label: statsT('totalBreakTime'),
-          value: formatMinutes(task.stats?.totalBreakTime || 0),
-          icon: <CgCoffee />,
-        },
-        {
-          label: statsT('totalPausedTime'),
-          value: formatMs(task.stats?.totalPausedTime || 0, 'human'),
-          icon: <CgStopwatch />,
-        },
-      ],
-      other: [
-        {
-          label: statsT('totalPauses'),
-          value: task.stats?.totalPauses || 0,
-          icon: <CgPlayPauseO />,
-        },
-        {
-          label: statsT('totalInterruptions'),
-          value: task.stats?.totalInterruptions || 0,
-          icon: <CgCloseO />,
-        },
-      ],
     };
   }, [task, statsT]);
-
-  const StatsList = ({ items }: { items: StatItem[] }) => (
-    <DataList.Root orientation='horizontal'>
-      {items.map((item) => (
-        <DataList.Item key={item.label}>
-          <DataList.ItemLabel opacity={0.7} gap={2}>
-            {item.icon} {item.label}
-          </DataList.ItemLabel>
-          <DataList.ItemValue display='flex' gap={3} alignItems='center'>
-            {item.valueIcon && item.valueIcon}
-            {item.value}
-            {item.info && <InfoTip>{item.info}</InfoTip>}
-          </DataList.ItemValue>
-        </DataList.Item>
-      ))}
-    </DataList.Root>
-  );
 
   return (
     <Flex flexDirection={'column'} h={'full'}>
@@ -180,9 +165,72 @@ export const StatsDialog = ({ task }: Props) => {
 
         <StatsList items={stats.general} />
         <Separator />
-        <StatsList items={stats.durations} />
+
+        {isCorrupted && (
+          <Alert.Root status='warning' data-pw-id='stats-corrupted-warning'>
+            <Alert.Indicator />
+            <Alert.Content>
+              <Alert.Title>{statsT('corruptedWarning')}</Alert.Title>
+            </Alert.Content>
+          </Alert.Root>
+        )}
+
+        <Grid templateColumns='repeat(2, 1fr)' gap={3}>
+          {durationCards.map((card) => {
+            const { bg, fg } = cardColors(card.color, isDark);
+
+            return (
+              <GridItem key={card.label} colSpan={card.colSpan}>
+                <Flex direction='column' gap={2} p={4} h='full' borderRadius='xl' bg={bg}>
+                  <Flex align='center' gap={2} color={fg} opacity={0.85}>
+                    <Box fontSize='lg' display='flex'>
+                      {card.icon}
+                    </Box>
+                    <Text
+                      fontSize='xs'
+                      fontWeight='medium'
+                      textTransform='uppercase'
+                      letterSpacing='wider'
+                    >
+                      {card.label}
+                    </Text>
+                  </Flex>
+                  <Text fontSize='2xl' fontWeight='bold' color={fg} data-pw-id={card.testId}>
+                    {card.value}
+                  </Text>
+                </Flex>
+              </GridItem>
+            );
+          })}
+        </Grid>
         <Separator />
-        <StatsList items={stats.other} />
+        <Grid templateColumns='repeat(2, 1fr)' gap={3}>
+          {otherCards.map((card) => (
+            <GridItem key={card.label}>
+              <Flex direction='column' gap={1} p={4} h='full' borderRadius='xl' bg={'gray/5'}>
+                <Text
+                  fontSize='3xl'
+                  fontWeight='bold'
+                  lineHeight='1'
+                  color={'gray'}
+                  data-pw-id={card.testId}
+                >
+                  {card.value}
+                </Text>
+                <Text
+                  fontSize='xs'
+                  fontWeight='medium'
+                  textTransform='uppercase'
+                  letterSpacing='wider'
+                  opacity={0.7}
+                  color={'gray'}
+                >
+                  {card.label}
+                </Text>
+              </Flex>
+            </GridItem>
+          ))}
+        </Grid>
       </Flex>
 
       {hasData && (
