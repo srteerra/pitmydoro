@@ -17,7 +17,7 @@ export const formatSeconds = (
   if (format === 'clock') {
     const mm = m.toString().padStart(2, '0');
     const ss = s.toString().padStart(2, '0');
-    return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+    return h > 0 ? `${h.toString().padStart(2, '0')}:${mm}:${ss}` : `${mm}:${ss}`;
   }
 
   const parts: string[] = [];
