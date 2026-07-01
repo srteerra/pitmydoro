@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentType, createContext, ReactNode, useCallback, useContext, useState } from 'react';
+import { ComponentType, createContext, ReactNode, useCallback, useContext, useEffect, useState, } from 'react';
 import { Button, CloseButton, Drawer, DrawerContent, Text } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
 
@@ -46,6 +46,38 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
     }, 200);
   }, [options]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const { body } = document;
+    const scrollY = window.scrollY;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+    };
+
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.left = '0';
+    body.style.right = '0';
+    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.width = prev.width;
+      body.style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, [isOpen]);
+
   function resolveBody(): ReactNode {
     const content = options?.component;
     if (!content) return null;
@@ -69,11 +101,12 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
         size={options?.size ?? 'md'}
         onInteractOutside={closeDrawer}
         closeOnInteractOutside={options?.closeOnInteractOutside ?? true}
+        preventScroll={false}
       >
         <Portal>
           <Drawer.Backdrop />
           <Drawer.Positioner padding={options?.offset ?? 0}>
-            <Drawer.Content rounded='md'>
+            <Drawer.Content rounded='md' maxH='100dvh' display='flex' flexDirection='column'>
               <Drawer.Header display={'flex'} flexDirection={'column'} alignItems={'start'}>
                 {options?.topTitle && (
                   <Text opacity={0.6} display={'flex'} alignItems={'center'} gap={2}>
@@ -83,7 +116,9 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
                 {options?.title && <Drawer.Title>{options.title}</Drawer.Title>}
                 {options?.subTitle && <Text opacity={0.7}>{options.subTitle}</Text>}
               </Drawer.Header>
-              <Drawer.Body>{resolveBody()}</Drawer.Body>
+              <Drawer.Body flex='1' minH={0} overflowY='auto' overscrollBehavior='contain'>
+                {resolveBody()}
+              </Drawer.Body>
               {options?.onSubmit && (
                 <Drawer.Footer>
                   <Button variant='outline'>Cancel</Button>
