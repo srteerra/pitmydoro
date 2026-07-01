@@ -18,10 +18,16 @@ export const startPomodoroEntry = (taskId: string, timer: number) => {
     workTime: 0,
     pausedTime: 0,
     pauses: 0,
-    interruptions: 0,
     sprites: { [spriteId]: 0 },
     activeSprite: spriteId,
   });
+};
+
+export const getDominantSprite = (sprites: Record<string, number>): string | undefined => {
+  const entries = Object.entries(sprites);
+  if (entries.length === 0) return undefined;
+
+  return entries.sort((a, b) => b[1] - a[1])[0][0];
 };
 
 export const creditPomodoroWork = (seconds: number) => {
@@ -52,13 +58,6 @@ export const incrementPomodoroPause = () => {
   setCurrentPomodoroEntry({ ...entry, pauses: entry.pauses + 1 });
 };
 
-export const incrementPomodoroInterruption = () => {
-  const { currentPomodoroEntry: entry, setCurrentPomodoroEntry } = usePomodoroStore.getState();
-  if (!entry) return;
-
-  setCurrentPomodoroEntry({ ...entry, interruptions: entry.interruptions + 1 });
-};
-
 export const rebindSprite = (spriteId: string) => {
   const { currentPomodoroEntry: entry, setCurrentPomodoroEntry } = usePomodoroStore.getState();
   if (!entry || entry.activeSprite === spriteId) return;
@@ -76,9 +75,6 @@ export const finalizePomodoroEntry = (completed: boolean): PomodoroRecord | null
 
   setCurrentPomodoroEntry(null);
 
-  const dominantSprite =
-    Object.entries(entry.sprites).sort((a, b) => b[1] - a[1])[0]?.[0] ?? entry.activeSprite;
-
   return {
     index: entry.index,
     startedAt: entry.startedAt,
@@ -86,10 +82,8 @@ export const finalizePomodoroEntry = (completed: boolean): PomodoroRecord | null
     workTime: entry.workTime,
     pausedTime: entry.pausedTime,
     pauses: entry.pauses,
-    interruptions: entry.interruptions,
     timer: entry.timer,
     sprites: entry.sprites,
-    dominantSprite,
     completed,
   };
 };

@@ -21,8 +21,8 @@ export const formatSeconds = (
   }
 
   const parts: string[] = [];
-  if (h > 0) parts.push(`${h}hrs`);
-  if (m > 0) parts.push(`${m}mins`);
+  if (h > 0) parts.push(`${h}hr${h === 1 ? '' : 's'}`);
+  if (m > 0) parts.push(`${m}min${m === 1 ? '' : 's'}`);
   if (s > 0 || parts.length === 0) parts.push(`${s}s`);
   return parts.join(' ');
 };

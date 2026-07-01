@@ -2,6 +2,7 @@ import { usePomodoroStore } from '@/stores/Pomodoro.store';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { taskService } from '@/services/task.service';
+import { statsService } from '@/services/stats.service';
 import { Task, TaskStatsDelta } from '@/interfaces/Task.interface';
 import { Pomodoro } from '@/interfaces/Pomodoro.interface';
 import { creditPomodoroPause, creditPomodoroWork } from '@/utils/pomodoroEntry.utils';
@@ -52,7 +53,10 @@ export const flushElapsedTime = async (userId?: string | null, options: FlushOpt
 
   const apply = async (delta: TaskStatsDelta) => {
     useTaskStore.getState().applyTaskStats(taskId, delta);
-    if (userId) await taskService.updateTaskStats(userId, taskId, delta);
+    if (userId) {
+      await taskService.updateTaskStats(userId, taskId, delta);
+      await statsService.incrementDailyStats(userId, delta);
+    }
   };
 
   if (bucket === 'paused') {
