@@ -1,12 +1,20 @@
-import Swal from 'sweetalert2';
+import Swal, { SweetAlertIcon } from 'sweetalert2';
 import { useToken } from '@chakra-ui/react';
 import './styles.css';
-import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
 import { toaster } from '@/components/ui/toaster';
 import { useTranslations } from 'use-intl';
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+type AlertType = 'danger' | 'warning' | 'success' | 'question';
+
+const STATUS_ACCENT: Record<AlertType, { base: string; dark: string; icon: SweetAlertIcon }> = {
+  danger: { base: '#da8787', dark: '#b96060', icon: 'error' },
+  warning: { base: '#d9b471', dark: '#b69258', icon: 'warning' },
+  success: { base: '#6db98c', dark: '#53a473', icon: 'success' },
+  question: { base: '#6b84b4', dark: '#4e6ca1', icon: 'question' },
+};
 
 interface ToastOptions {
   title: string;
@@ -22,15 +30,12 @@ interface ToastOptions {
 
 export const useAlert = () => {
   const { theme } = useTheme();
-  const [primaryColor] = useToken('colors', ['primary.default']);
-  const [dangerColor] = useToken('colors', ['danger']);
-  const [warningColor] = useToken('colors', ['warning']);
   const [light] = useToken('colors', ['light.0']);
   const [dark] = useToken('colors', ['dark.200']);
   const [darkContrast] = useToken('colors', ['dark.200']);
   const t = useTranslations('alerts');
 
-  const darkenColor = tinycolor(primaryColor).darken(10).toString();
+  const isDark = theme === 'dark';
 
   const createToast = ({
     title,
@@ -111,20 +116,34 @@ export const useAlert = () => {
 
   const confirmAlert = (
     title: string,
-    text: string = '',
-    confirmButtonText: string = t('acceptText'),
-    denyButtonText: string = t('cancelText')
+    options: {
+      text?: string;
+      confirmButtonText?: string;
+      denyButtonText?: string;
+      type?: AlertType;
+    } = {}
   ) => {
+    const {
+      text = '',
+      confirmButtonText = t('acceptText'),
+      denyButtonText = t('cancelText'),
+      type = 'warning',
+    } = options;
+
+    const accent = STATUS_ACCENT[type];
+    const accentColor = isDark ? accent.dark : accent.base;
+    const neutralColor = isDark ? '#404040' : '#8A8A8A';
+
     return new Promise((resolve) =>
       Swal.fire({
         title,
         text,
         showDenyButton: true,
-        confirmButtonColor: darkenColor,
-        denyButtonColor: dangerColor,
-        background: theme === 'dark' ? darkContrast : light,
-        iconColor: warningColor,
-        color: theme === 'dark' ? light : dark,
+        confirmButtonColor: accentColor,
+        denyButtonColor: neutralColor,
+        background: isDark ? darkContrast : light,
+        iconColor: accentColor,
+        color: isDark ? light : dark,
         customClass: {
           title: 'swal2-custom-title',
           popup: 'swal2-custom-rounded',
@@ -134,7 +153,7 @@ export const useAlert = () => {
         },
         confirmButtonText,
         denyButtonText,
-        icon: 'warning',
+        icon: accent.icon,
       }).then((result) => resolve(result.isConfirmed))
     );
   };
