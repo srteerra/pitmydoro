@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <DrawerProvider>
                   <ColorModeProvider enableSystem={false}>
                     <OverlaySync />
-                    {children}
+                    <div className='app-zoom'>{children}</div>
                   </ColorModeProvider>
                 </DrawerProvider>
               </DialogProvider>
