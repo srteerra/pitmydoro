@@ -29,7 +29,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const [taskTitle, setTaskTitle] = React.useState<string>(task.title);
   const [taskDescription, setTaskDescription] = React.useState<string>(task.description);
   const { theme } = useTheme();
-  const { confirmAlert, toastSuccess } = useAlert();
+  const { confirmAlert, toastSuccess, toastWarning } = useAlert();
   const statsT = useTranslations('stats');
   const t = useTranslations('pomodoro.tasks');
   const [taskPomodoros, setTaskPomodoros] = React.useState<number>(task.estimatedPomodoros);
@@ -50,12 +50,10 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
 
     setMenuOpen(false);
     openDrawer({
-      title: task.title,
       topTitle: {
         label: statsT('title'),
         icon: <BiStats />,
       },
-      subTitle: task.description,
       component: <StatsDialog task={task} />,
       offset: 4,
     });
@@ -114,7 +112,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   };
 
   const handleOnTaskDelete = async () => {
-    if (await confirmAlert(t('deleteTaskConfirmTitle'))) {
+    if (await confirmAlert(t('deleteTaskConfirmTitle'), { type: 'danger' })) {
       await deleteTask(task.id);
       toastSuccess(t('successDeleteTask'));
     }
@@ -308,14 +306,14 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
 
                     <MenuItem
                       value='delete'
-                      color='fg.error'
+                      color='danger.fg'
                       cursor='pointer'
                       onClick={(e) => {
                         e.stopPropagation();
                         handleMenuClose();
                         handleOnTaskDelete();
                       }}
-                      _hover={{ bg: 'bg.error', color: 'fg.error' }}
+                      _hover={{ bg: 'danger.subtle', color: 'danger.fg' }}
                       data-pw-id='task-menu-delete'
                     >
                       <MdOutlineRestoreFromTrash />
@@ -338,7 +336,14 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 width='80px'
                 disabled={!!task.completedAt}
                 defaultValue={String(taskCompletedPomodoros)}
-                onValueChange={(e) => setTaskCompletedPomodoros(Number(e.value))}
+                onValueChange={(e) => {
+                  const value = Number(e.value);
+                  const recorded = task.totalPomodoros || 0;
+                  if (value !== recorded && taskCompletedPomodoros === recorded) {
+                    toastWarning(t('manualPomodorosWarning'));
+                  }
+                  setTaskCompletedPomodoros(value);
+                }}
                 min={0}
                 max={task.estimatedPomodoros}
               >
@@ -369,11 +374,11 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
               <IconButton
                 onClick={() => handleOnTaskSubmit(false)}
                 transition={'all 0.3s'}
-                _hover={{ opacity: 0.7 }}
                 rounded={'lg'}
                 flex={{ base: '1', sm: '0' }}
-                bgColor={'red.400'}
-                color='white'
+                bgColor='danger.subtle'
+                color='danger.fg'
+                _hover={{ bgColor: 'danger.muted' }}
                 data-pw-id='task-cancel-button'
               >
                 <TiTimes />
@@ -382,11 +387,11 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 disabled={!taskTitle}
                 onClick={() => handleOnTaskSubmit(true)}
                 transition={'all 0.3s'}
-                _hover={{ opacity: 0.7 }}
                 rounded={'lg'}
                 flex={{ base: '1', sm: '0' }}
-                bgColor={'green.400'}
-                color='white'
+                bgColor='success.subtle'
+                color='success.fg'
+                _hover={{ bgColor: 'success.muted' }}
                 data-pw-id='task-save-button'
               >
                 <FaCheck />

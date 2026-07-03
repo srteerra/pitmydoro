@@ -11,3 +11,21 @@ export interface Pomodoro {
   status: 'running' | 'paused';
   currentPauseStart?: Timestamp;
 }
+
+export interface CarryMs {
+  work: number;
+  paused: number;
+  break: number;
+}
+
+export interface PomodoroEntryDraft {
+  taskId: string;
+  index: number;
+  startedAt: number;
+  timer: number;
+  workTime: number;
+  pausedTime: number;
+  pauses: number;
+  sprites: Record<string, number>;
+  activeSprite: string;
+}

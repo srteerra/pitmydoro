@@ -4,7 +4,6 @@ import { Box, Center, Flex, HStack, IconButton, Text, useDisclosure } from '@cha
 import { GrPowerReset } from 'react-icons/gr';
 import { RippleButton } from '@/components/Pomodoro/components/RippleButton';
 import moment from 'moment';
-import { Settings } from '@/components/Pomodoro/Settings';
 import useSessionStore from '@/stores/Session.store';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import useSettingsStore from '@/stores/Settings.store';
@@ -21,9 +20,10 @@ import { jua } from '@/assets/fonts/Jua';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';
 import { usePomodoroStore } from '@/stores/Pomodoro.store';
-import { formatMs } from '@/utils/formatMs.utils';
+import { formatSeconds } from '@/utils/formatSeconds.utils';
 import { TiCogOutline } from 'react-icons/ti';
-import { useDialog } from '@/contexts/DialogContext';
+import { isDesktopDevice } from '@/utils/device.utils';
+import { useSettingsDialog } from '@/hooks/useSettingsDialog';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 export const Counter = () => {
@@ -31,7 +31,7 @@ export const Counter = () => {
   const { theme } = useTheme();
   const { confirmAlert, toastWithAction } = useAlert();
   const { resetAllTasks, undoResetAllTasks } = useTasks();
-  const { openDialog } = useDialog();
+  const { openSettings } = useSettingsDialog();
   const { open, onOpen, onClose } = useDisclosure();
   const { playSound, resumeSound, radioSound } = useSounds();
   const pomodoroT = useTranslations('pomodoro');
@@ -89,20 +89,6 @@ export const Counter = () => {
     .brighten(theme === 'dark' ? 0 : -5)
     .toString();
 
-  const isDesktop = () => {
-    return !/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
-  };
-
-  const handleSettingsClick = () => {
-    openDialog({
-      title: settingsT('title'),
-      component: <Settings />,
-      size: 'xl',
-    });
-  };
-
   const handleTick = ({ total }: { total: number }) => {
     const isRunning = countdownRef.current?.isStarted() && !countdownRef.current?.isPaused();
     if (!isRunning) return;
@@ -113,12 +99,12 @@ export const Counter = () => {
       setOverlayTiming({ endsAt: Date.now() + total, remainingMs: total });
     }
 
-    document.title = `${formatMs(total)} - ${pomodoroT(status === SessionStatusEnum.IN_SESSION ? 'sessionLabel' : status === SessionStatusEnum.SHORT_BREAK ? 'shortBreakLabel' : 'longBreakLabel')}`;
+    document.title = `${formatSeconds(Math.floor(total / 1000), 'clock')} - ${pomodoroT(status === SessionStatusEnum.IN_SESSION ? 'sessionLabel' : status === SessionStatusEnum.SHORT_BREAK ? 'shortBreakLabel' : 'longBreakLabel')}`;
 
     if (total <= 4000 && !isEndingSoon) {
       setIsEndingSoon(true);
       radioSound();
-      if (isDesktop()) {
+      if (isDesktopDevice()) {
         if (Notification.permission === 'granted' && enableNotifications) {
           new Notification(pomodoroT('boxTitle'), {
             body: pomodoroT(
@@ -141,7 +127,7 @@ export const Counter = () => {
   const handleIntervalComplete = useCallback(() => {
     countdownRef.current?.pause();
 
-    reset();
+    reset(null, false, true);
 
     if (status === SessionStatusEnum.IN_SESSION) {
       const sessionMinutes =
@@ -208,14 +194,14 @@ export const Counter = () => {
   };
 
   const handleResetClick = async () => {
-    if (await confirmAlert(pomodoroT('acceptReset'))) {
+    if (await confirmAlert(pomodoroT('acceptReset'), { type: 'danger' })) {
       handleResetTimer();
       onClose();
     }
   };
 
   const handleResetAllClick = async () => {
-    if (await confirmAlert(pomodoroT('acceptResetAll'))) {
+    if (await confirmAlert(pomodoroT('acceptResetAll'), { type: 'danger' })) {
       handleResetTimer();
       resetAllTasks();
       toastWithAction({
@@ -237,6 +223,8 @@ export const Counter = () => {
   };
 
   useEffect(() => {
+    const { isActive: running, currentPomodoro: pomo } = usePomodoroStore.getState();
+    if (running || pomo) return;
     handleIntervalComplete();
   }, [tiresSettings, selectedTire, status, handleIntervalComplete]);
 
@@ -323,8 +311,8 @@ export const Counter = () => {
               <MenuItem
                 data-pw-id={'reset-all-menu-item'}
                 onClick={handleResetAllClick}
-                color='fg.error'
-                _hover={{ backgroundColor: 'fg.error/10' }}
+                color='danger.fg'
+                _hover={{ backgroundColor: 'danger.fg/10' }}
                 value='resetAll'
                 cursor='pointer'
               >
@@ -364,12 +352,12 @@ export const Counter = () => {
 
         <Box flex={1} display='flex' justifyContent='flex-start'>
           <IconButton
-            onClick={handleSettingsClick}
+            onClick={() => openSettings()}
             variant='ghost'
             size='lg'
             style={{ scale: 1.1 }}
             rounded='full'
-            aria-label='Settings'
+            aria-label={settingsT('title')}
           >
             <TiCogOutline />
           </IconButton>

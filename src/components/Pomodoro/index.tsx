@@ -8,8 +8,8 @@ import tinycolor from 'tinycolor2';
 import { Tasks } from '@/components/Pomodoro/Tasks';
 import { SpriteAnimation } from '@/components/SpriteAnimation';
 import { FlagSwitcher } from '@/components/Pomodoro/components/FlagSwitcher';
-import { Settings, Tab } from '@/components/Pomodoro/Settings';
-import { useDialog } from '@/contexts/DialogContext';
+import { Tab } from '@/components/Pomodoro/Settings';
+import { useSettingsDialog } from '@/hooks/useSettingsDialog';
 import { useTranslations } from 'use-intl';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
@@ -26,15 +26,12 @@ export const Pomodoro = () => {
   const selectedTire = useSessionStore((state) => state.selectedTire);
   const t = useTranslations('pomodoro');
   const settingsT = useTranslations('settings');
-  const { changeCompoundTime } = usePomodoro();
-  const { openDialog } = useDialog();
+  const { changeCompoundTime, confirmInterruptIfRunning } = usePomodoro();
+  const { openSettings } = useSettingsDialog();
 
-  const handleScuderiaClick = () => {
-    openDialog({
-      title: settingsT('title'),
-      component: <Settings initialTab={Tab.SCUDERIA} />,
-      size: 'xl',
-    });
+  const handleStatusChange = async (value: SessionStatusEnum) => {
+    if (!(await confirmInterruptIfRunning())) return;
+    setStatus(value);
   };
 
   const darkenColor = tinycolor(currentScuderia?.colors?.background?.[sessionStatus])
@@ -119,7 +116,7 @@ export const Pomodoro = () => {
               position='relative'
               zIndex='2'
               cursor='pointer'
-              onClick={handleScuderiaClick}
+              onClick={() => openSettings(Tab.SCUDERIA)}
               role='button'
               aria-label={settingsT('scuderia')}
               transition='transform 0.2s'
@@ -151,7 +148,7 @@ export const Pomodoro = () => {
             cursor={'pointer'}
             value={sessionStatus}
             activeBgColor={darkenColor}
-            onValueChange={(e) => setStatus(e.value as SessionStatusEnum)}
+            onValueChange={(e) => handleStatusChange(e.value as SessionStatusEnum)}
             backgroundColor={'transparent'}
             shadow={'none'}
             border={'none'}

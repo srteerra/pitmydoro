@@ -2,10 +2,14 @@ import { usePomodoroStore } from '@/stores/Pomodoro.store';
 import { useTaskStore } from '@/stores/Tasks.store';
 import useSettingsStore from '@/stores/Settings.store';
 import { PomodoroRecord } from '@/interfaces/Task.interface';
+import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 const activeSpriteId = () => useSettingsStore.getState().currentScuderia?.id ?? 'unknown';
 
+const isF1Mode = () => useSettingsStore.getState().mode === PomodoroMode.F1;
+
 export const startPomodoroEntry = (taskId: string, timer: number) => {
+  const f1 = isF1Mode();
   const spriteId = activeSpriteId();
   const task = useTaskStore.getState().tasks.find((t) => t.id === taskId);
   const index = (task?.stats?.pomodoros?.length ?? 0) + 1;
@@ -18,8 +22,8 @@ export const startPomodoroEntry = (taskId: string, timer: number) => {
     workTime: 0,
     pausedTime: 0,
     pauses: 0,
-    sprites: { [spriteId]: 0 },
-    activeSprite: spriteId,
+    sprites: f1 ? { [spriteId]: 0 } : {},
+    activeSprite: f1 ? spriteId : '',
   });
 };
 
@@ -37,10 +41,12 @@ export const creditPomodoroWork = (seconds: number) => {
   setCurrentPomodoroEntry({
     ...entry,
     workTime: entry.workTime + seconds,
-    sprites: {
-      ...entry.sprites,
-      [entry.activeSprite]: (entry.sprites[entry.activeSprite] ?? 0) + seconds,
-    },
+    sprites: entry.activeSprite
+      ? {
+          ...entry.sprites,
+          [entry.activeSprite]: (entry.sprites[entry.activeSprite] ?? 0) + seconds,
+        }
+      : entry.sprites,
   });
 };
 
@@ -60,7 +66,7 @@ export const incrementPomodoroPause = () => {
 
 export const rebindSprite = (spriteId: string) => {
   const { currentPomodoroEntry: entry, setCurrentPomodoroEntry } = usePomodoroStore.getState();
-  if (!entry || entry.activeSprite === spriteId) return;
+  if (!entry || !entry.activeSprite || entry.activeSprite === spriteId) return;
 
   setCurrentPomodoroEntry({
     ...entry,
@@ -82,7 +88,6 @@ export const finalizePomodoroEntry = (completed: boolean): PomodoroRecord | null
     workTime: entry.workTime,
     pausedTime: entry.pausedTime,
     pauses: entry.pauses,
-    timer: entry.timer,
     sprites: entry.sprites,
     completed,
   };
