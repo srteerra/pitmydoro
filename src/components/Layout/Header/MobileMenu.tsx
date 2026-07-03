@@ -8,14 +8,29 @@ import { ToggleThemeMode } from '@/components/Layout/Toggles/ThemeMode';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
 import GitHubStars from '@/components/GithubStars';
 import { useTranslations } from 'use-intl';
+import { useRouter } from 'next/navigation';
+import { useTimerGuard } from '@/hooks/useTimerGuard';
 
 export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
   const t = useTranslations('header');
+  const router = useRouter();
+  const { confirmInterruptIfRunning } = useTimerGuard();
+
+  const handleNav = async (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    if (!(await confirmInterruptIfRunning())) return;
+    onClose();
+    router.push(href);
+  };
 
   return (
     <Flex direction='column' height='full' justifyContent='space-between' gap={6}>
       <VStack align='stretch' gap={5}>
-        <NextLink href='/learn' aria-label='Learn Formula 1' onClick={onClose}>
+        <NextLink
+          href='/learn'
+          aria-label='Learn Formula 1'
+          onClick={(e) => handleNav(e, '/learn')}
+        >
           <HStack
             gap={2}
             fontWeight='medium'
