@@ -1,6 +1,13 @@
 'use client';
 
-import { createToaster, Portal, Spinner, Stack, Toast, Toaster as ChakraToaster, } from '@chakra-ui/react';
+import {
+  createToaster,
+  Portal,
+  Spinner,
+  Stack,
+  Toast,
+  Toaster as ChakraToaster,
+} from '@chakra-ui/react';
 
 export const toaster = createToaster({
   placement: 'bottom-end',
