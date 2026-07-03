@@ -60,14 +60,24 @@
     "userMenu": {
       "profile": "Profile",
       "myAccount": "My account",
+      "reports": "Reports",
       "logOut": "Log out"
     }
+  },
+  "reports": {
+    "title": "Reports",
+    "description": "Your focus totals for the selected period.",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "year": "Year",
+    "comingSoon": "More coming soon"
   },
   "stats": {
     "seeStats": "See Stats",
     "unlockStats": "Log in to unlock stats",
     "title": "Task Stats",
-    "userFrom": "User",
+    "userFrom": "Created By",
     "lastSession": "Last Session",
     "createdAt": "Created At",
     "isCompleted": "Completed",
@@ -79,7 +89,14 @@
     "totalPauses": "Pauses",
     "totalInterruptions": "Interruptions",
     "totalEstimatedPomodoros": "Estimated Pomodoros",
-    "corruptedWarning": "This task contains incompatible or corrupted values. Please create an identical task or report this error."
+    "corruptedWarning": "This task contains incompatible or corrupted values. Please create an identical task or report this error.",
+    "pomodorosChartTitle": "Per pomodoro",
+    "pomodorosActivity": "Pomodoros activity",
+    "seeMore": "See more",
+    "seeLess": "See less",
+    "workTimeInfo": "Total focused time on this task.",
+    "pausedTimeInfo": "Total time the timer was paused during sessions.",
+    "interruptionsInfo": "Sessions ended before finishing."
   },
   "pomodoro": {
     "resetTimer": "Reset Timer",
@@ -124,7 +141,8 @@
       "successDeleteTask": "Task deleted successfully",
       "deleteTaskConfirmTitle": "Are you sure you want to archive this task?",
       "deleteTaskConfirmMessage": "This action cannot be undone.",
-      "tasksHint": "💡 Start adding tasks to organize your work session..."
+      "tasksHint": "💡 Start adding tasks to organize your work session...",
+      "manualPomodorosWarning": "This only adjusts the task counter. Your reports and focus time count only real completed sessions."
     }
   },
   "settings": {

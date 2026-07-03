@@ -61,14 +61,24 @@
     "userMenu": {
       "profile": "Perfil",
       "myAccount": "Mi cuenta",
+      "reports": "Reportes",
       "logOut": "Cerrar sesión"
     }
+  },
+  "reports": {
+    "title": "Reportes",
+    "description": "Tus totales de enfoque para el periodo seleccionado.",
+    "day": "Día",
+    "week": "Semana",
+    "month": "Mes",
+    "year": "Año",
+    "comingSoon": "Próximamente más"
   },
   "stats": {
     "seeStats": "Ver estadísticas",
     "unlockStats": "Inicia sesión para ver estadísticas",
     "title": "Estadísticas la tarea",
-    "userFrom": "Usuario",
+    "userFrom": "Creada por",
     "lastSession": "Última sesión",
     "createdAt": "Creada el",
     "isCompleted": "Completada",
@@ -80,7 +90,14 @@
     "totalPauses": "Pausas",
     "totalInterruptions": "Interrupciones",
     "totalEstimatedPomodoros": "Pomodoros estimados",
-    "corruptedWarning": "Esta tarea contiene valores incompatibles o corruptos, favor de crear otra tarea idéntica o reportar este error."
+    "corruptedWarning": "Esta tarea contiene valores incompatibles o corruptos, favor de crear otra tarea idéntica o reportar este error.",
+    "pomodorosChartTitle": "Por pomodoro",
+    "pomodorosActivity": "Actividad en pomodoros",
+    "seeMore": "Ver más",
+    "seeLess": "Ver menos",
+    "workTimeInfo": "Tiempo total de concentración en esta tarea.",
+    "pausedTimeInfo": "Tiempo total en pausa durante sesión.",
+    "interruptionsInfo": "Sesiones detenidas antes de terminar."
   },
   "pomodoro": {
     "resetTimer": "Reiniciar tiempo",
@@ -125,7 +142,8 @@
       "successDeleteTask": "Tarea eliminada con éxito",
       "deleteTaskConfirmTitle": "¿Estás seguro de que deseas archivar esta tarea?",
       "deleteTaskConfirmMessage": "Esta acción no se puede deshacer.",
-      "tasksHint": "💡 Comienza a añadir tareas para organizar tu sesión de trabajo..."
+      "tasksHint": "💡 Comienza a añadir tareas para organizar tu sesión de trabajo...",
+      "manualPomodorosWarning": "Esto solo ajusta el contador de la tarea. Tus reportes y tiempo de enfoque cuentan solo sesiones reales completadas."
     }
   },
   "settings": {
