@@ -86,15 +86,6 @@ export default function ChakraUIProvider(props: { children: React.ReactNode }) {
               900: { value: '#194947' },
               950: { value: '#082a29' },
             },
-            danger: {
-              value: '#ef4444',
-            },
-            warning: {
-              value: '#ca8a04',
-            },
-            success: {
-              value: '#10b981',
-            },
             primary: {
               default: { value: currentScuderia?.colors?.primary?.default ?? '#486192' },
               defaultDark: { value: currentScuderia?.colors?.primary?.dark ?? '#2E3A4D' },
@@ -137,6 +128,21 @@ export default function ChakraUIProvider(props: { children: React.ReactNode }) {
               subtle: { value: { base: '{colors.accent.50}', _dark: '{colors.accent.950}' } },
               emphasized: { value: { base: '{colors.accent.200}', _dark: '{colors.accent.800}' } },
               focusRing: { value: '{colors.accent.500}' },
+            },
+            success: {
+              fg: { value: { base: '#2F9E5E', _dark: '#7FC59B' } },
+              subtle: { value: { base: '#E7F7EE', _dark: '#1C2A22' } },
+              muted: { value: { base: '#D3EFDF', _dark: '#26382D' } },
+            },
+            warning: {
+              fg: { value: { base: '#C08A24', _dark: '#E0B36B' } },
+              subtle: { value: { base: '#FFF6E5', _dark: '#2A2417' } },
+              muted: { value: { base: '#FBEACB', _dark: '#3A311F' } },
+            },
+            danger: {
+              fg: { value: { base: '#d75151', _dark: '#E39A9A' } },
+              subtle: { value: { base: '#FDECEC', _dark: '#2C1C1C' } },
+              muted: { value: { base: '#F8D7D7', _dark: '#3C2828' } },
             },
           },
         },

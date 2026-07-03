@@ -98,6 +98,11 @@ export const taskService = {
     if (stats.pauses !== undefined) updates['stats.totalPauses'] = increment(stats.pauses);
     if (stats.interruptions !== undefined)
       updates['stats.totalInterruptions'] = increment(stats.interruptions);
+    if (stats.shortBreaks !== undefined)
+      updates['stats.totalShortBreaks'] = increment(stats.shortBreaks);
+    if (stats.longBreaks !== undefined)
+      updates['stats.totalLongBreaks'] = increment(stats.longBreaks);
+    if (stats.record !== undefined) updates['stats.pomodoros'] = arrayUnion(stats.record);
 
     await updateDoc(taskRef, updates);
   },

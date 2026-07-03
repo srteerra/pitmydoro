@@ -1,4 +1,4 @@
-export const toMillis = (timestamp: unknown): number => {
+const toMillis = (timestamp: unknown): number => {
   if (!timestamp) return 0;
 
   if (typeof timestamp === 'number') return timestamp;
@@ -14,4 +14,14 @@ export const toMillis = (timestamp: unknown): number => {
   }
 
   return 0;
+};
+
+const formatDate = (timestamp: unknown): string => {
+  const ms = toMillis(timestamp);
+  return ms ? new Date(ms).toLocaleString() : '—';
+};
+
+export const timestampUtils = {
+  toMillis,
+  formatDate,
 };

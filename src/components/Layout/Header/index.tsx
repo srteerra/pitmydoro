@@ -14,11 +14,13 @@ import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useTranslations } from 'use-intl';
 import { useDrawer } from '@/contexts/DrawerContext';
+import { useTimerGuard } from '@/hooks/useTimerGuard';
 import { MobileMenu } from './MobileMenu';
 
 export const Header = () => {
   const t = useTranslations('header');
   const { openDrawer } = useDrawer();
+  const { guardLink } = useTimerGuard();
 
   const handleOpenMenu = () => {
     openDrawer({
@@ -103,7 +105,11 @@ export const Header = () => {
           <HStack gap={0} maxW='100%'>
             <Tooltip openDelay={100} closeDelay={100} content={t('learn')}>
               <Box as='span' display='inline-flex'>
-                <Link href={'/learn'} aria-label='Learn Formula 1'>
+                <Link
+                  href={'/learn'}
+                  aria-label='Learn Formula 1'
+                  onClick={(e) => guardLink(e, '/learn')}
+                >
                   <IconButton
                     as={'span'}
                     variant={'ghost'}
@@ -120,7 +126,11 @@ export const Header = () => {
 
             <Tooltip openDelay={100} closeDelay={100} content='Stream Overlay'>
               <Box as='span' display='inline-flex'>
-                <Link href={'/stream-overlay'} aria-label='Stream overlay for OBS'>
+                <Link
+                  href={'/stream-overlay'}
+                  aria-label='Stream overlay for OBS'
+                  onClick={(e) => guardLink(e, '/stream-overlay')}
+                >
                   <IconButton
                     as={'span'}
                     variant={'ghost'}
@@ -164,7 +174,11 @@ export const Header = () => {
 
             <Tooltip openDelay={100} closeDelay={100} content='Community'>
               <Box as='span' display='inline-flex'>
-                <Link href={'/community'} aria-label='Community'>
+                <Link
+                  href={'/community'}
+                  aria-label='Community'
+                  onClick={(e) => guardLink(e, '/community')}
+                >
                   <IconButton
                     as={'span'}
                     variant={'ghost'}

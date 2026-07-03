@@ -13,10 +13,14 @@ import './styles.css';
 import useSettingsStore from '@/stores/Settings.store';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
 
-enum Tab {
+export enum Tab {
   GENERAL = 'general',
   SCUDERIA = 'scuderia',
   SUPPORT = 'support',
+}
+
+interface SettingsProps {
+  initialTab?: Tab;
 }
 
 interface LinkItemProps {
@@ -65,8 +69,8 @@ const NavItem = ({ icon, isActive, disabled, tooltip, children, ...rest }: any) 
   );
 };
 
-export const Settings = () => {
-  const [activeTab, setActiveTab] = useState<string | Tab>(Tab.GENERAL);
+export const Settings = ({ initialTab = Tab.GENERAL }: SettingsProps) => {
+  const [activeTab, setActiveTab] = useState<string | Tab>(initialTab);
   const mode = useSettingsStore((state) => state.mode);
   const t = useTranslations('settings');
 

@@ -1,4 +1,4 @@
-import { Box, Center, VStack, Image, Loader } from '@chakra-ui/react';
+import { Box, Center, Image, Loader, VStack } from '@chakra-ui/react';
 import { TimerSelector } from '@/components/Pomodoro/TimerSelector';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { Counter } from '@/components/Pomodoro/Counter';
@@ -8,6 +8,8 @@ import tinycolor from 'tinycolor2';
 import { Tasks } from '@/components/Pomodoro/Tasks';
 import { SpriteAnimation } from '@/components/SpriteAnimation';
 import { FlagSwitcher } from '@/components/Pomodoro/components/FlagSwitcher';
+import { Tab } from '@/components/Pomodoro/Settings';
+import { useSettingsDialog } from '@/hooks/useSettingsDialog';
 import { useTranslations } from 'use-intl';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
@@ -23,7 +25,14 @@ export const Pomodoro = () => {
   const setStatus = useSessionStore((state) => state.setStatus);
   const selectedTire = useSessionStore((state) => state.selectedTire);
   const t = useTranslations('pomodoro');
-  const { changeCompoundTime } = usePomodoro();
+  const settingsT = useTranslations('settings');
+  const { changeCompoundTime, confirmInterruptIfRunning } = usePomodoro();
+  const { openSettings } = useSettingsDialog();
+
+  const handleStatusChange = async (value: SessionStatusEnum) => {
+    if (!(await confirmInterruptIfRunning())) return;
+    setStatus(value);
+  };
 
   const darkenColor = tinycolor(currentScuderia?.colors?.background?.[sessionStatus])
     .darken(80)
@@ -103,13 +112,24 @@ export const Pomodoro = () => {
           </Box>
 
           {currentScuderia && (
-            <SpriteAnimation
-              src={currentScuderia?.spriteURL as string}
-              frameHeight={80}
-              frameWidth={270}
-              totalFrames={6}
-              paused={!isActive}
-            />
+            <Box
+              position='relative'
+              zIndex='2'
+              cursor='pointer'
+              onClick={() => openSettings(Tab.SCUDERIA)}
+              role='button'
+              aria-label={settingsT('scuderia')}
+              transition='transform 0.2s'
+              _hover={{ transform: 'scale(1.05)' }}
+            >
+              <SpriteAnimation
+                src={currentScuderia?.spriteURL as string}
+                frameHeight={80}
+                frameWidth={270}
+                totalFrames={6}
+                paused={!isActive}
+              />
+            </Box>
           )}
         </Center>
       )}
@@ -128,7 +148,7 @@ export const Pomodoro = () => {
             cursor={'pointer'}
             value={sessionStatus}
             activeBgColor={darkenColor}
-            onValueChange={(e) => setStatus(e.value as SessionStatusEnum)}
+            onValueChange={(e) => handleStatusChange(e.value as SessionStatusEnum)}
             backgroundColor={'transparent'}
             shadow={'none'}
             border={'none'}

@@ -1,6 +1,5 @@
 import { Task } from '@/interfaces/Task.interface';
-import { formatMinutes } from '@/utils/formatMinutes.utils';
-import { formatMs } from '@/utils/formatMs.utils';
+import { formatSeconds } from '@/utils/formatSeconds.utils';
 import Image from 'next/image';
 
 interface Props {
@@ -10,6 +9,8 @@ interface Props {
 }
 
 export const TaskShareCard = ({ task, photoURL }: Props) => {
+  const stats = task.stats;
+
   return (
     <div
       style={{
@@ -85,16 +86,20 @@ export const TaskShareCard = ({ task, photoURL }: Props) => {
             {
               icon: '⏱',
               label: 'Work time',
-              value: formatMinutes(task.stats?.totalWorkTime || 0),
+              value: formatSeconds(stats?.totalWorkTime, 'duration'),
             },
             {
               icon: '☕',
               label: 'Break time',
-              value: formatMinutes(task.stats?.totalBreakTime || 0),
+              value: formatSeconds(stats?.totalBreakTime, 'duration'),
             },
-            { icon: '⏸', label: 'Time paused', value: formatMs(task.stats?.totalPausedTime || 0) },
-            { icon: '🔁', label: 'Pauses', value: task.stats?.totalPauses || 0 },
-            { icon: '🚧', label: 'Interruptions', value: task.stats?.totalInterruptions || 0 },
+            {
+              icon: '⏸',
+              label: 'Time paused',
+              value: formatSeconds(stats?.totalPausedTime, 'duration'),
+            },
+            { icon: '🔁', label: 'Pauses', value: stats?.totalPauses || 0 },
+            { icon: '🚧', label: 'Interruptions', value: stats?.totalInterruptions || 0 },
           ].map((stat) => (
             <div
               key={stat.label}

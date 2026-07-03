@@ -61,14 +61,24 @@
     "userMenu": {
       "profile": "Perfil",
       "myAccount": "Mi cuenta",
+      "reports": "Reportes",
       "logOut": "Cerrar sesión"
     }
+  },
+  "reports": {
+    "title": "Reportes",
+    "description": "Tus totales de enfoque para el periodo seleccionado.",
+    "day": "Día",
+    "week": "Semana",
+    "month": "Mes",
+    "year": "Año",
+    "comingSoon": "Próximamente más"
   },
   "stats": {
     "seeStats": "Ver estadísticas",
     "unlockStats": "Inicia sesión para ver estadísticas",
     "title": "Estadísticas la tarea",
-    "userFrom": "Usuario",
+    "userFrom": "Creada por",
     "lastSession": "Última sesión",
     "createdAt": "Creada el",
     "isCompleted": "Completada",
@@ -79,7 +89,15 @@
     "totalPomodoros": "Pomodoros",
     "totalPauses": "Pausas",
     "totalInterruptions": "Interrupciones",
-    "totalEstimatedPomodoros": "Pomodoros estimados"
+    "totalEstimatedPomodoros": "Pomodoros estimados",
+    "corruptedWarning": "Esta tarea contiene valores incompatibles o corruptos, favor de crear otra tarea idéntica o reportar este error.",
+    "pomodorosChartTitle": "Por pomodoro",
+    "pomodorosActivity": "Actividad en pomodoros",
+    "seeMore": "Ver más",
+    "seeLess": "Ver menos",
+    "workTimeInfo": "Tiempo total de concentración en esta tarea.",
+    "pausedTimeInfo": "Tiempo total en pausa durante sesión.",
+    "interruptionsInfo": "Sesiones detenidas antes de terminar."
   },
   "pomodoro": {
     "resetTimer": "Reiniciar tiempo",
@@ -100,6 +118,7 @@
     "pausesLabel": "Pausas",
     "boxTitle": "Box, Box!",
     "boxDescription": "Hora de tomar un descanso.",
+    "boxDescriptionFocus": "Hora de volver a enfocarse.",
     "pausedTitle": "En pausa",
     "interruptAccept": "¿Deseas interrumpir la sesión actual?",
     "simpleTimer": {
@@ -123,7 +142,8 @@
       "successDeleteTask": "Tarea eliminada con éxito",
       "deleteTaskConfirmTitle": "¿Estás seguro de que deseas archivar esta tarea?",
       "deleteTaskConfirmMessage": "Esta acción no se puede deshacer.",
-      "tasksHint": "\uD83D\uDCA1 Comienza a añadir tareas para organizar tu sesión de trabajo..."
+      "tasksHint": "💡 Comienza a añadir tareas para organizar tu sesión de trabajo...",
+      "manualPomodorosWarning": "Esto solo ajusta el contador de la tarea. Tus reportes y tiempo de enfoque cuentan solo sesiones reales completadas."
     }
   },
   "settings": {
@@ -135,7 +155,7 @@
     "scuderia": "Escudería",
     "scuderiaDisabled": "Estás en modo simple. Desactívalo para acceder a las escuderías.",
     "help": "Ayuda y soporte",
-    "initialHint": "\uD83D\uDCA1 Personaliza tus tiempos y escoge tu escudería favorita para cambiar el tema de la aplicación.",
+    "initialHint": "💡 Personaliza tus tiempos y escoge tu escudería favorita para cambiar el tema de la aplicación.",
     "settingsSaved": "Cambios guardados exitosamente",
     "sections": {
       "timers": {
@@ -394,15 +414,42 @@
         "title": "Banderas",
         "intro": "Los comisarios agitan banderas de colores para comunicarse con los pilotos. Pasa el cursor o toca cada una para ver qué significa:",
         "items": {
-          "green": { "name": "Verde", "meaning": "Pista despejada: se reanuda la carrera o la sesión con normalidad." },
-          "yellow": { "name": "Amarilla", "meaning": "Peligro adelante. Reduce la velocidad y no se permite adelantar." },
-          "doubleYellow": { "name": "Doble amarilla", "meaning": "Mayor peligro; reduce mucho la velocidad y prepárate para detenerte." },
-          "blue": { "name": "Azul", "meaning": "Un coche más rápido viene detrás: deja que los líderes te doblen." },
-          "red": { "name": "Roja", "meaning": "Sesión detenida. Todos los coches vuelven despacio a boxes." },
-          "yellowRed": { "name": "Rayas amarillas y rojas", "meaning": "Superficie resbaladiza adelante: aceite, agua o grava en pista." },
-          "white": { "name": "Blanca", "meaning": "Hay un vehículo lento en la pista adelante." },
-          "black": { "name": "Negra", "meaning": "Un piloto queda descalificado y debe volver a boxes." },
-          "chequered": { "name": "A cuadros", "meaning": "La sesión o la carrera ha terminado." }
+          "green": {
+            "name": "Verde",
+            "meaning": "Pista despejada: se reanuda la carrera o la sesión con normalidad."
+          },
+          "yellow": {
+            "name": "Amarilla",
+            "meaning": "Peligro adelante. Reduce la velocidad y no se permite adelantar."
+          },
+          "doubleYellow": {
+            "name": "Doble amarilla",
+            "meaning": "Mayor peligro; reduce mucho la velocidad y prepárate para detenerte."
+          },
+          "blue": {
+            "name": "Azul",
+            "meaning": "Un coche más rápido viene detrás: deja que los líderes te doblen."
+          },
+          "red": {
+            "name": "Roja",
+            "meaning": "Sesión detenida. Todos los coches vuelven despacio a boxes."
+          },
+          "yellowRed": {
+            "name": "Rayas amarillas y rojas",
+            "meaning": "Superficie resbaladiza adelante: aceite, agua o grava en pista."
+          },
+          "white": {
+            "name": "Blanca",
+            "meaning": "Hay un vehículo lento en la pista adelante."
+          },
+          "black": {
+            "name": "Negra",
+            "meaning": "Un piloto queda descalificado y debe volver a boxes."
+          },
+          "chequered": {
+            "name": "A cuadros",
+            "meaning": "La sesión o la carrera ha terminado."
+          }
         }
       },
       "penalties": {
@@ -517,17 +564,50 @@
         "note": "Las alineaciones de pilotos aún pueden cambiar antes del inicio de la temporada.",
         "driversLabel": "Pilotos",
         "items": {
-          "mclaren": { "name": "McLaren", "drivers": "Lando Norris · Oscar Piastri" },
-          "ferrari": { "name": "Ferrari", "drivers": "Charles Leclerc · Lewis Hamilton" },
-          "redbull": { "name": "Red Bull Racing", "drivers": "Max Verstappen · Isack Hadjar" },
-          "mercedes": { "name": "Mercedes", "drivers": "George Russell · Kimi Antonelli" },
-          "aston": { "name": "Aston Martin", "drivers": "Fernando Alonso · Lance Stroll" },
-          "alpine": { "name": "Alpine", "drivers": "Pierre Gasly · Franco Colapinto" },
-          "williams": { "name": "Williams", "drivers": "Alex Albon · Carlos Sainz" },
-          "racingbulls": { "name": "Racing Bulls", "drivers": "Arvid Lindblad · Liam Lawson" },
-          "haas": { "name": "Haas", "drivers": "Esteban Ocon · Oliver Bearman" },
-          "audi": { "name": "Audi", "drivers": "Nico Hülkenberg · Gabriel Bortoleto" },
-          "cadillac": { "name": "Cadillac", "drivers": "Sergio Pérez · Valtteri Bottas" }
+          "mclaren": {
+            "name": "McLaren",
+            "drivers": "Lando Norris · Oscar Piastri"
+          },
+          "ferrari": {
+            "name": "Ferrari",
+            "drivers": "Charles Leclerc · Lewis Hamilton"
+          },
+          "redbull": {
+            "name": "Red Bull Racing",
+            "drivers": "Max Verstappen · Isack Hadjar"
+          },
+          "mercedes": {
+            "name": "Mercedes",
+            "drivers": "George Russell · Kimi Antonelli"
+          },
+          "aston": {
+            "name": "Aston Martin",
+            "drivers": "Fernando Alonso · Lance Stroll"
+          },
+          "alpine": {
+            "name": "Alpine",
+            "drivers": "Pierre Gasly · Franco Colapinto"
+          },
+          "williams": {
+            "name": "Williams",
+            "drivers": "Alex Albon · Carlos Sainz"
+          },
+          "racingbulls": {
+            "name": "Racing Bulls",
+            "drivers": "Arvid Lindblad · Liam Lawson"
+          },
+          "haas": {
+            "name": "Haas",
+            "drivers": "Esteban Ocon · Oliver Bearman"
+          },
+          "audi": {
+            "name": "Audi",
+            "drivers": "Nico Hülkenberg · Gabriel Bortoleto"
+          },
+          "cadillac": {
+            "name": "Cadillac",
+            "drivers": "Sergio Pérez · Valtteri Bottas"
+          }
         }
       }
     },
