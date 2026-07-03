@@ -88,8 +88,6 @@ export const AuthModal = () => {
     return errorMessages[err.code] || t('authError');
   };
 
-  console.log(user);
-
   if (user) {
     return <UserMenu user={user} onLogout={logout} />;
   }
