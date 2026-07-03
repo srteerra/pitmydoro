@@ -1,10 +1,10 @@
 import { DataList } from '@chakra-ui/react';
 import { InfoTip } from '@/components/ui/toggle-tip';
-import React, { JSX } from 'react';
+import React, { JSX, ReactNode } from 'react';
 
 interface StatItem {
   label: string;
-  value: number | string;
+  value: ReactNode;
   info?: string;
   icon?: JSX.Element;
   valueIcon?: JSX.Element;
