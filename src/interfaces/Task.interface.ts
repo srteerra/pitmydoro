@@ -1,11 +1,25 @@
 import { Timestamp } from 'firebase/firestore';
 
+export interface PomodoroRecord {
+  index: number;
+  startedAt: number;
+  endedAt: number;
+  workTime: number;
+  pausedTime: number;
+  pauses: number;
+  sprites: Record<string, number>;
+  completed: boolean;
+}
+
 export interface TaskStats {
   totalWorkTime: number;
   totalBreakTime: number;
   totalPausedTime: number;
   totalPauses: number;
   totalInterruptions: number;
+  totalShortBreaks?: number;
+  totalLongBreaks?: number;
+  pomodoros?: PomodoroRecord[];
   lastSessionAt: Timestamp;
 }
 
@@ -16,6 +30,9 @@ export interface TaskStatsDelta {
   pausedTime?: number;
   pauses?: number;
   interruptions?: number;
+  shortBreaks?: number;
+  longBreaks?: number;
+  record?: PomodoroRecord;
 }
 
 export interface Task {

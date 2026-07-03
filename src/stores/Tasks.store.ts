@@ -25,6 +25,9 @@ const mergeStats = (task: Task, delta: TaskStatsDelta): Task => {
       totalPausedTime: stats.totalPausedTime + (delta.pausedTime ?? 0),
       totalPauses: stats.totalPauses + (delta.pauses ?? 0),
       totalInterruptions: stats.totalInterruptions + (delta.interruptions ?? 0),
+      totalShortBreaks: (stats.totalShortBreaks ?? 0) + (delta.shortBreaks ?? 0),
+      totalLongBreaks: (stats.totalLongBreaks ?? 0) + (delta.longBreaks ?? 0),
+      pomodoros: delta.record ? [...(stats.pomodoros ?? []), delta.record] : stats.pomodoros,
       lastSessionAt: Timestamp.now(),
     },
   };
