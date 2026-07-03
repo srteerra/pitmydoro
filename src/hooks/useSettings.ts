@@ -9,6 +9,8 @@ import { userService } from '@/services/user.service';
 import { useAuth } from '@/contexts/AuthContext';
 import { DefaultSettings } from '@/constants/DefaultSettings';
 import { PomodoroMode, Settings } from '@/interfaces/Settings.interface';
+import { flushElapsedTime } from '@/utils/accountElapsed.utils';
+import { rebindSprite } from '@/utils/pomodoroEntry.utils';
 
 export const useSettings = () => {
   const { toastSuccess, toastError } = useAlert();
@@ -148,7 +150,11 @@ export const useSettings = () => {
   const changeScuderia = async (scuderia: Team | string) => {
     const newScuderia =
       typeof scuderia === 'string' ? SCUDERIAS.find((team: Team) => team.id == scuderia) : scuderia;
+
+    await flushElapsedTime(user?.uid);
     setCurrentScuderia(newScuderia as Team);
+    if (newScuderia) rebindSprite((newScuderia as Team).id);
+
     if (user) await userService.updatePreferences(user.uid, { currentScuderia: newScuderia });
   };
 
