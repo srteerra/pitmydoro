@@ -40,7 +40,7 @@ export const AuthModal = () => {
     setLoading(true);
 
     try {
-      await signUp(data.email, data.password);
+      await signUp(data.email, data.password, data.username);
       toastSuccess(t('registerComplete.title'), t('registerComplete.description'));
       setShowModal(false);
     } catch (err: any) {

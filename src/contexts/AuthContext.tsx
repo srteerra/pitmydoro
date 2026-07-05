@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
@@ -21,7 +21,7 @@ import { useSettings } from '@/hooks/useSettings';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, username?: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
@@ -39,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const { loadTasks, wipeTasks } = useTasks();
   const { loadConfig, wipeConfig } = useSettings();
+  const pendingUsername = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -48,7 +49,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         let userData = await userService.getUserData(user.uid);
 
         if (!userData) {
-          await userService.create(user);
+          await userService.create(user, pendingUsername.current);
+          pendingUsername.current = undefined;
           userData = await userService.getUserData(user.uid);
         }
 
@@ -64,7 +66,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, username?: string) => {
+    pendingUsername.current = username;
     const result = await createUserWithEmailAndPassword(auth, email, password);
 
     if (result.user) {
@@ -77,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
+    pendingUsername.current = undefined;
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
   };
