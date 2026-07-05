@@ -5,11 +5,11 @@ import {
   getDocs,
   limit,
   query,
+  runTransaction,
   serverTimestamp,
   Timestamp,
   updateDoc,
   where,
-  writeBatch,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import type { User } from 'firebase/auth';
@@ -40,59 +40,136 @@ interface UserData {
   updatedAt: Timestamp;
 }
 
-async function generateUniqueUsername(email: string): Promise<string> {
-  const base = email
+const USERNAME_MIN_LENGTH = 3;
+const USERNAME_MAX_LENGTH = 20;
+const USERNAME_PATTERN = /^[a-z0-9_]+$/;
+
+function normalizeUsername(raw: string): string {
+  return (raw || '').trim().toLowerCase();
+}
+
+function isValidUsername(username: string): boolean {
+  return (
+    username.length >= USERNAME_MIN_LENGTH &&
+    username.length <= USERNAME_MAX_LENGTH &&
+    USERNAME_PATTERN.test(username)
+  );
+}
+
+function usernameFromEmail(email: string | null): string {
+  const base = (email || 'user')
     .split('@')[0]
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, '');
+    .replace(/[^a-z0-9_]/g, '');
+  return base.length >= USERNAME_MIN_LENGTH ? base : `${base}user`.slice(0, USERNAME_MAX_LENGTH);
+}
 
-  let username = base;
-  let counter = 1;
+async function isUsernameTaken(username: string): Promise<boolean> {
+  const reservation = await getDoc(doc(db, 'usernames', username));
+  if (reservation.exists()) return true;
 
-  while (true) {
-    const q = query(collection(db, 'profiles'), where('username', '==', username), limit(1));
-    const snapshot = await getDocs(q);
-
-    if (snapshot.empty) {
-      return username;
-    }
-
-    username = `${base}${counter}`;
-    counter++;
-  }
+  const q = query(collection(db, 'profiles'), where('username', '==', username), limit(1));
+  const snapshot = await getDocs(q);
+  return !snapshot.empty;
 }
 
 export const userService = {
-  async create(user: User) {
-    const batch = writeBatch(db);
+  isValidUsername(raw: string): boolean {
+    return isValidUsername(normalizeUsername(raw));
+  },
 
+  async isUsernameAvailable(raw: string): Promise<boolean> {
+    const username = normalizeUsername(raw);
+    if (!isValidUsername(username)) return false;
+    return !(await isUsernameTaken(username));
+  },
+
+  async create(user: User, desiredUsername?: string) {
     const stored = localStorage.getItem(STORAGE_SETTINGS_KEY);
     const storedPreferences = stored ? JSON.parse(stored) : DefaultSettings;
 
-    const userRef = doc(db, 'users', user.uid);
-    batch.set(userRef, {
-      email: user.email,
-      preferences: storedPreferences,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
+    const requested = desiredUsername ? normalizeUsername(desiredUsername) : '';
+    const base =
+      requested && isValidUsername(requested) ? requested : usernameFromEmail(user.email);
+
+    let candidate = base;
+    let counter = 1;
+
+    for (let attempt = 0; attempt < 100; attempt++) {
+      if (await isUsernameTaken(candidate)) {
+        candidate = `${base}${counter++}`;
+        continue;
+      }
+
+      try {
+        await runTransaction(db, async (tx) => {
+          const usernameRef = doc(db, 'usernames', candidate);
+          const snapshot = await tx.get(usernameRef);
+          if (snapshot.exists()) throw new Error('USERNAME_TAKEN');
+
+          tx.set(usernameRef, {
+            uid: user.uid,
+            createdAt: serverTimestamp(),
+          });
+
+          tx.set(doc(db, 'users', user.uid), {
+            email: user.email,
+            preferences: storedPreferences,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          });
+
+          tx.set(doc(db, 'profiles', user.uid), {
+            username: candidate,
+            displayName: user.displayName || candidate,
+            bio: '',
+            photoURL: user.photoURL || '',
+            coverURL: '',
+            location: '',
+            favoriteTeam: null,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          });
+        });
+
+        return candidate;
+      } catch (err: any) {
+        if (err?.message === 'USERNAME_TAKEN') {
+          candidate = `${base}${counter++}`;
+          continue;
+        }
+        throw err;
+      }
+    }
+
+    throw new Error('USERNAME_UNAVAILABLE');
+  },
+
+  async changeUsername(userId: string, newUsername: string): Promise<string> {
+    const next = normalizeUsername(newUsername);
+    if (!isValidUsername(next)) throw new Error('USERNAME_INVALID');
+
+    await runTransaction(db, async (tx) => {
+      const nextRef = doc(db, 'usernames', next);
+      const nextSnap = await tx.get(nextRef);
+
+      if (nextSnap.exists()) {
+        if (nextSnap.data().uid === userId) return;
+        throw new Error('USERNAME_TAKEN');
+      }
+
+      const profileRef = doc(db, 'profiles', userId);
+      const current = (await tx.get(profileRef)).data()?.username as string | undefined;
+
+      tx.set(nextRef, { uid: userId, createdAt: serverTimestamp() });
+      tx.update(profileRef, { username: next, updatedAt: serverTimestamp() });
+
+      if (current && current !== next) {
+        tx.delete(doc(db, 'usernames', current));
+      }
     });
 
-    const username = await generateUniqueUsername(user.email || 'user');
-    const profileRef = doc(db, 'profiles', user.uid);
-
-    batch.set(profileRef, {
-      username: username,
-      displayName: user.displayName || username,
-      bio: '',
-      photoURL: user.photoURL || '',
-      coverURL: '',
-      location: '',
-      favoriteTeam: null,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-
-    await batch.commit();
+    return next;
   },
 
   async exists(userId: string): Promise<boolean> {
