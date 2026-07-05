@@ -39,7 +39,12 @@
       "username": {
         "label": "Username",
         "placeholder": "Enter your username",
-        "required": "Username is required"
+        "required": "Username is required",
+        "taken": "This username is already taken",
+        "invalid": "Use 3-20 lowercase letters, numbers or underscores",
+        "checking": "Checking availability...",
+        "available": "Username available",
+        "checkError": "Could not verify username, try again"
       },
       "email": {
         "label": "Email",

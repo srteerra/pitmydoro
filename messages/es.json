@@ -40,7 +40,12 @@
       "username": {
         "label": "Nombre de usuario",
         "placeholder": "Ingresa tu nombre de usuario",
-        "required": "El nombre de usuario es obligatorio"
+        "required": "El nombre de usuario es obligatorio",
+        "taken": "Este nombre de usuario ya está en uso",
+        "invalid": "Usa 3-20 letras minúsculas, números o guiones bajos",
+        "checking": "Comprobando disponibilidad...",
+        "available": "Nombre de usuario disponible",
+        "checkError": "No se pudo verificar el usuario, inténtalo de nuevo"
       },
       "email": {
         "label": "Correo electrónico",

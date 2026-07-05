@@ -1,14 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Button, HStack, IconButton, VStack, Text } from '@chakra-ui/react';
+import { Button, HStack, IconButton, Spinner, Text, VStack } from '@chakra-ui/react';
 import { BiLogoGoogle } from 'react-icons/bi';
+import { LuCheck } from 'react-icons/lu';
 import { InputController } from '@/components/Form/InputController';
 import { PasswordStrength } from '../PasswordStrength';
 import { calculatePasswordStrength } from '@/utils/passwordStrength.utils';
 import { useTranslations } from 'use-intl';
 import { DefaultSignUpFields } from '@/constants/DefaultFields';
+import { useUsernameAvailability } from '@/hooks/useUsernameAvailability';
 
 interface RegisterFormInputs {
   username?: string;
@@ -33,12 +35,27 @@ export const RegisterForm = ({
   error,
 }: Props) => {
   const t = useTranslations('auth');
-  const { control, handleSubmit, watch, formState } = useForm<RegisterFormInputs>({
-    mode: 'onChange',
-    defaultValues: DefaultSignUpFields,
-  });
+  const { control, handleSubmit, watch, formState, setError, clearErrors } =
+    useForm<RegisterFormInputs>({
+      mode: 'onChange',
+      defaultValues: DefaultSignUpFields,
+    });
 
   const password = watch('password');
+  const username = watch('username') ?? '';
+  const usernameStatus = useUsernameAvailability(username);
+
+  useEffect(() => {
+    if (usernameStatus === 'taken') {
+      setError('username', { type: 'validate', message: t('fields.username.taken') });
+    } else if (usernameStatus === 'invalid') {
+      setError('username', { type: 'validate', message: t('fields.username.invalid') });
+    } else if (usernameStatus === 'error') {
+      setError('username', { type: 'validate', message: t('fields.username.checkError') });
+    } else if (usernameStatus === 'available') {
+      clearErrors('username');
+    }
+  }, [usernameStatus, setError, clearErrors, t]);
 
   const validatePasswordMatch = (value: string) => {
     return value === password || t('passwordsDontMatch');
@@ -56,14 +73,30 @@ export const RegisterForm = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <VStack width={'full'} padding={7} gap={4}>
-        <InputController
-          label={t('fields.username.label')}
-          placeholder={t('fields.username.placeholder')}
-          control={control}
-          name={'username'}
-          rounded={'full'}
-          isRequired={t('fields.username.required')}
-        />
+        <VStack width={'full'} align={'stretch'} gap={1}>
+          <InputController
+            label={t('fields.username.label')}
+            placeholder={t('fields.username.placeholder')}
+            control={control}
+            name={'username'}
+            rounded={'full'}
+            isRequired={t('fields.username.required')}
+          />
+
+          {usernameStatus === 'checking' && (
+            <HStack gap={2} paddingX={4} color={'fg.muted'} fontSize={'sm'}>
+              <Spinner size={'xs'} />
+              <Text>{t('fields.username.checking')}</Text>
+            </HStack>
+          )}
+
+          {usernameStatus === 'available' && (
+            <HStack gap={2} paddingX={4} color={'green.500'} fontSize={'sm'}>
+              <LuCheck />
+              <Text>{t('fields.username.available')}</Text>
+            </HStack>
+          )}
+        </VStack>
 
         <InputController
           label={t('fields.email.label')}
@@ -106,7 +139,7 @@ export const RegisterForm = ({
 
         <Button
           type='submit'
-          disabled={loading || !formState.isValid}
+          disabled={loading || !formState.isValid || usernameStatus !== 'available'}
           width={'full'}
           rounded={'full'}
         >
