@@ -7,6 +7,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import { Button, CloseButton, Drawer, DrawerContent, Text } from '@chakra-ui/react';
@@ -40,6 +41,7 @@ const DrawerContext = createContext<DrawerContextValue | null>(null);
 export function DrawerProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState<DrawerOptions | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const openDrawer = useCallback((opts: DrawerOptions) => {
     setOptions(opts);
@@ -110,11 +112,18 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
         onInteractOutside={closeDrawer}
         closeOnInteractOutside={options?.closeOnInteractOutside ?? true}
         preventScroll={false}
+        initialFocusEl={() => contentRef.current}
       >
         <Portal>
           <Drawer.Backdrop />
           <Drawer.Positioner padding={options?.offset ?? 0}>
-            <Drawer.Content rounded='md' maxH='100dvh' display='flex' flexDirection='column'>
+            <Drawer.Content
+              ref={contentRef}
+              rounded='md'
+              maxH='100dvh'
+              display='flex'
+              flexDirection='column'
+            >
               <Drawer.Header display={'flex'} flexDirection={'column'} alignItems={'start'}>
                 {options?.topTitle && (
                   <Text opacity={0.6} display={'flex'} alignItems={'center'} gap={2}>
