@@ -270,8 +270,9 @@ export const StatsDialog = ({ task }: Props) => {
                     {card.info && <HelpTip content={card.info} placement='left' />}
                   </Flex>
                   <Text
-                    fontSize={{ base: 'xl', md: '2xl' }}
+                    fontSize={{ base: 'lg', md: 'xl' }}
                     fontWeight='bold'
+                    lineHeight='1.2'
                     color={fg}
                     data-pw-id={card.testId}
                   >
