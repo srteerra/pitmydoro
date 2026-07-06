@@ -9,4 +9,5 @@ export interface User {
   };
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  lastConnection?: Timestamp;
 }

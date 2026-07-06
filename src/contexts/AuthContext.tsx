@@ -58,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         useOverlayStore.getState().applySettings(userData?.overlay ?? null);
 
         await Promise.all([loadTasks(user.uid), fetchProfile(user.uid)]);
+        void userService.updateLastConnection(user.uid);
       }
 
       setLoading(false);

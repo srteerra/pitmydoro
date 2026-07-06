@@ -10,27 +10,18 @@ import {
   Timestamp,
   updateDoc,
   where,
+  writeBatch,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import type { User } from 'firebase/auth';
 import { DefaultSettings } from '@/constants/DefaultSettings';
 import { Settings } from '@/interfaces/Settings.interface';
 import { OverlaySettings } from '@/interfaces/Overlay.interface';
+import { UserProfile as BaseUserProfile } from '@/interfaces/UserProfile.interface';
 
 const STORAGE_SETTINGS_KEY = 'pitmydoro_settings';
 
-interface UserProfile {
-  username: string;
-  displayName: string;
-  bio: string;
-  photoURL: string;
-  coverURL: string;
-  location: string;
-  favoriteTeam: string;
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-  uid?: string;
-}
+type UserProfile = BaseUserProfile & { uid?: string };
 
 interface UserData {
   email: string;
@@ -38,6 +29,7 @@ interface UserData {
   overlay?: OverlaySettings;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  lastConnection?: Timestamp;
 }
 
 const USERNAME_MIN_LENGTH = 3;
@@ -117,6 +109,7 @@ export const userService = {
             preferences: storedPreferences,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
+            lastConnection: serverTimestamp(),
           });
 
           tx.set(doc(db, 'profiles', user.uid), {
@@ -129,6 +122,7 @@ export const userService = {
             favoriteTeam: null,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
+            lastConnection: serverTimestamp(),
           });
         });
 
@@ -180,6 +174,25 @@ export const userService = {
   async getProfile(userId: string): Promise<UserProfile | null> {
     const profileDoc = await getDoc(doc(db, 'profiles', userId));
     return profileDoc.exists() ? ({ ...profileDoc.data(), uid: userId } as UserProfile) : null;
+  },
+
+  async getProfileByUsername(rawUsername: string): Promise<UserProfile | null> {
+    const username = normalizeUsername(rawUsername);
+    if (!username) return null;
+
+    const q = query(collection(db, 'profiles'), where('username', '==', username), limit(1));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) return null;
+
+    const profileDoc = snapshot.docs[0];
+    return { ...profileDoc.data(), uid: profileDoc.id } as UserProfile;
+  },
+
+  async updateLastConnection(userId: string) {
+    const batch = writeBatch(db);
+    batch.update(doc(db, 'users', userId), { lastConnection: serverTimestamp() });
+    batch.update(doc(db, 'profiles', userId), { lastConnection: serverTimestamp() });
+    await batch.commit();
   },
 
   async getUserData(userId: string): Promise<UserData | null> {

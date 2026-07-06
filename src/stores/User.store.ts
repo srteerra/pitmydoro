@@ -1,5 +1,8 @@
 import { create } from 'zustand';
+import { Timestamp } from 'firebase/firestore';
 import { userService } from '@/services/user.service';
+import { Team } from '@/interfaces/Teams.interface';
+import { Socials } from '@/interfaces/Socials.interface';
 
 interface UserProfile {
   username: string;
@@ -8,7 +11,10 @@ interface UserProfile {
   photoURL: string;
   coverURL: string;
   location: string;
-  favoriteTeam: string;
+  favoriteTeam: Team | null;
+  favoriteFlag?: string;
+  socials?: Socials;
+  lastConnection?: Timestamp;
   uid?: string;
 }
 

@@ -1,4 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
+import { Team } from '@/interfaces/Teams.interface';
+import { Socials } from '@/interfaces/Socials.interface';
 
 export interface UserProfile {
   username: string;
@@ -7,7 +9,10 @@ export interface UserProfile {
   photoURL: string;
   coverURL: string;
   location: string;
-  favoriteTeam: string;
+  favoriteTeam: Team | null;
+  favoriteFlag?: string;
+  socials?: Socials;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  lastConnection?: Timestamp;
 }
