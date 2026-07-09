@@ -8,6 +8,7 @@ import { BiStats } from 'react-icons/bi';
 import useUserStore from '@/stores/User.store';
 import { useDrawer } from '@/contexts/DrawerContext';
 import { ReportsDialog } from '@/components/Tasks/ReportsDialog';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   user: User;
@@ -20,6 +21,7 @@ export const UserMenu = ({ user, onLogout }: Props) => {
   const reportsT = useTranslations('reports');
   const userAvatar = useUserStore((state) => state.profile?.photoURL);
   const { openDrawer } = useDrawer();
+  const router = useRouter();
   const getAnchorRect = () => ref.current!.getBoundingClientRect();
 
   const handleLogout = () => {
@@ -35,6 +37,10 @@ export const UserMenu = ({ user, onLogout }: Props) => {
       component: <ReportsDialog />,
       offset: 4,
     });
+  };
+
+  const handleProfile = () => {
+    router.push('/profile');
   };
 
   return (
@@ -54,7 +60,7 @@ export const UserMenu = ({ user, onLogout }: Props) => {
       <Portal>
         <Menu.Positioner>
           <Menu.Content>
-            <Menu.Item disabled cursor='pointer' value='account'>
+            <Menu.Item cursor='pointer' value='account' onClick={handleProfile}>
               {t('userMenu.profile')}
             </Menu.Item>
             <Menu.Item disabled cursor='pointer' value='settings'>
