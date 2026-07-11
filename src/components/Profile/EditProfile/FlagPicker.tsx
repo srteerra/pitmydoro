@@ -1,7 +1,17 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { Box, Button, Flex, Input, Popover, Portal, SimpleGrid, Text, VStack, } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Input,
+  Popover,
+  Portal,
+  SimpleGrid,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { LuFlag } from 'react-icons/lu';
 import { useLocale, useTranslations } from 'use-intl';
 import { Tooltip } from '@/components/ui/tooltip';
