@@ -154,6 +154,13 @@ export const useAlert = () => {
         confirmButtonText,
         denyButtonText,
         icon: accent.icon,
+        didOpen: () => {
+          const container = Swal.getContainer();
+          if (container) {
+            container.style.zIndex = '2000';
+            container.style.pointerEvents = 'auto';
+          }
+        },
       }).then((result) => resolve(result.isConfirmed))
     );
   };
