@@ -40,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { loadTasks, wipeTasks } = useTasks();
   const { loadConfig, wipeConfig } = useSettings();
   const pendingUsername = useRef<string | undefined>(undefined);
+  const creationInFlight = useRef<Map<string, Promise<unknown>>>(new Map());
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -49,7 +50,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         let userData = await userService.getUserData(user.uid);
 
         if (!userData) {
-          await userService.create(user, pendingUsername.current);
+          let creation = creationInFlight.current.get(user.uid);
+          if (!creation) {
+            creation = userService.create(user, pendingUsername.current);
+            creationInFlight.current.set(user.uid, creation);
+          }
+
+          try {
+            await creation;
+          } finally {
+            creationInFlight.current.delete(user.uid);
+          }
+
           pendingUsername.current = undefined;
           userData = await userService.getUserData(user.uid);
         }
