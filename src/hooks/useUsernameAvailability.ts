@@ -3,7 +3,11 @@ import { userService } from '@/services/user.service';
 
 export type UsernameStatus = 'idle' | 'invalid' | 'checking' | 'available' | 'taken' | 'error';
 
-export function useUsernameAvailability(username: string, delay = 450): UsernameStatus {
+export function useUsernameAvailability(
+  username: string,
+  check: (username: string) => Promise<boolean> = userService.isUsernameAvailable,
+  delay = 450
+): UsernameStatus {
   const [status, setStatus] = useState<UsernameStatus>('idle');
   const requestId = useRef(0);
 
@@ -25,7 +29,7 @@ export function useUsernameAvailability(username: string, delay = 450): Username
 
     const handler = setTimeout(async () => {
       try {
-        const available = await userService.isUsernameAvailable(value);
+        const available = await check(value);
         if (currentRequest !== requestId.current) return;
         setStatus(available ? 'available' : 'taken');
       } catch {
@@ -35,7 +39,7 @@ export function useUsernameAvailability(username: string, delay = 450): Username
     }, delay);
 
     return () => clearTimeout(handler);
-  }, [username, delay]);
+  }, [username, check, delay]);
 
   return status;
 }
