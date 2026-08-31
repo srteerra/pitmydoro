@@ -49,30 +49,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(user);
 
       if (user) {
-        let userData = await userService.getUserData(user.uid);
+        try {
+          const [existingUserData, existingProfile] = await Promise.all([
+            userService.getUserData(user.uid),
+            userService.getProfile(user.uid),
+          ]);
 
-        if (!userData) {
-          let creation = creationInFlight.current.get(user.uid);
-          if (!creation) {
-            creation = userService.create(user, pendingUsername.current);
-            creationInFlight.current.set(user.uid, creation);
+          let userData = existingUserData;
+
+          if (!userData || !existingProfile) {
+            let creation = creationInFlight.current.get(user.uid);
+            if (!creation) {
+              creation = userService.create(user, pendingUsername.current);
+              creationInFlight.current.set(user.uid, creation);
+            }
+
+            try {
+              await creation;
+            } finally {
+              creationInFlight.current.delete(user.uid);
+            }
+
+            pendingUsername.current = undefined;
+            userData = await userService.getUserData(user.uid);
           }
 
-          try {
-            await creation;
-          } finally {
-            creationInFlight.current.delete(user.uid);
-          }
+          loadConfig(userData?.preferences);
+          useOverlayStore.getState().applySettings(userData?.overlay ?? null);
 
-          pendingUsername.current = undefined;
-          userData = await userService.getUserData(user.uid);
+          await Promise.all([loadTasks(user.uid), fetchProfile(user.uid), loadNotes(user.uid)]);
+          void userService.updateLastConnection(user.uid).catch((error) => {
+            console.error('Failed to update last connection:', error);
+          });
+        } catch (error) {
+          console.error('Failed to bootstrap authenticated session:', error);
         }
-
-        loadConfig(userData?.preferences);
-        useOverlayStore.getState().applySettings(userData?.overlay ?? null);
-
-        await Promise.all([loadTasks(user.uid), fetchProfile(user.uid), loadNotes(user.uid)]);
-        void userService.updateLastConnection(user.uid);
       }
 
       setLoading(false);

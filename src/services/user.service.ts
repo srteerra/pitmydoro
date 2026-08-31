@@ -112,8 +112,11 @@ export const userService = {
     const stored = localStorage.getItem(STORAGE_SETTINGS_KEY);
     const storedPreferences = stored ? JSON.parse(stored) : DefaultSettings;
 
-    const existingProfile = await getDoc(doc(db, 'profiles', user.uid));
-    if (existingProfile.exists()) {
+    const [existingProfile, existingUser] = await Promise.all([
+      getDoc(doc(db, 'profiles', user.uid)),
+      getDoc(doc(db, 'users', user.uid)),
+    ]);
+    if (existingProfile.exists() && existingUser.exists()) {
       return existingProfile.data().username as string;
     }
 
@@ -133,13 +136,31 @@ export const userService = {
       try {
         const settled = await runTransaction(db, async (tx) => {
           const profileRef = doc(db, 'profiles', user.uid);
-          const profileSnap = await tx.get(profileRef);
+          const userRef = doc(db, 'users', user.uid);
+          const usernameRef = doc(db, 'usernames', candidate);
+
+          const [profileSnap, userSnap, snapshot] = await Promise.all([
+            tx.get(profileRef),
+            tx.get(userRef),
+            tx.get(usernameRef),
+          ]);
+
+          const seedUser = () => {
+            if (userSnap.exists()) return;
+            tx.set(userRef, {
+              email: user.email,
+              preferences: storedPreferences,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+              lastConnection: serverTimestamp(),
+            });
+          };
+
           if (profileSnap.exists()) {
+            seedUser();
             return profileSnap.data().username as string;
           }
 
-          const usernameRef = doc(db, 'usernames', candidate);
-          const snapshot = await tx.get(usernameRef);
           if (snapshot.exists() && snapshot.data().uid !== user.uid) {
             throw new Error('USERNAME_TAKEN');
           }
@@ -151,13 +172,7 @@ export const userService = {
             });
           }
 
-          tx.set(doc(db, 'users', user.uid), {
-            email: user.email,
-            preferences: storedPreferences,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-            lastConnection: serverTimestamp(),
-          });
+          seedUser();
 
           tx.set(profileRef, {
             username: candidate,
