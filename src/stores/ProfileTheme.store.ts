@@ -1,14 +1,14 @@
 import { create } from 'zustand';
-import { Team } from '@/interfaces/Teams.interface';
+import { ProfileTheme } from '@/interfaces/ProfileTheme.interface';
 
 interface ProfileThemeStore {
-  team: Team | null;
-  setTeam: (team: Team | null) => void;
+  theme: ProfileTheme | null;
+  setTheme: (theme: ProfileTheme | null) => void;
 }
 
 const useProfileThemeStore = create<ProfileThemeStore>((set) => ({
-  team: null,
-  setTeam: (team) => set({ team }),
+  theme: null,
+  setTheme: (theme) => set({ theme }),
 }));
 
 export default useProfileThemeStore;

@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
-  Avatar,
   Box,
   Button,
   Center,
@@ -10,22 +9,22 @@ import {
   Flex,
   Heading,
   HStack,
-  IconButton,
   Image,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { LuBadgeCheck, LuCalendar, LuMapPin, LuPlus, LuShare2 } from 'react-icons/lu';
+import { LuBadgeCheck, LuCalendar, LuMapPin } from 'react-icons/lu';
 import { FaDiscord, FaInstagram, FaTwitch, FaXTwitter } from 'react-icons/fa6';
 import moment from 'moment/min/moment-with-locales';
-import { useLocale, useTranslations } from 'use-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { timestampUtils } from '@/utils/timestamp.utils';
 import { UserProfile } from '@/interfaces/UserProfile.interface';
-import { SCUDERIAS } from '@/constants/Scuderias';
-import { useAlert } from '@/hooks/useAlert';
+import { bannerFromColor, DEFAULT_PROFILE_THEME, resolveTeam } from '@/utils/profileTheme.utils';
 import { LastConnection } from '@/components/Profile/LastConnection';
 import { EditProfile } from '@/components/Profile/EditProfile';
+import { ShareProfile } from '@/components/Profile/ShareProfile';
 import { ProfileStats } from '@/components/Profile/Stats';
+import { PixelAvatar } from '@/components/Profile/PixelAvatar';
 import { jersey15 } from '@/assets/fonts/Jersey';
 import { useDialog } from '@/contexts/DialogContext';
 import useProfileThemeStore from '@/stores/ProfileTheme.store';
@@ -58,25 +57,23 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
   const t = useTranslations('profile');
   const locale = useLocale();
   const { theme } = useTheme();
-  const { toastSuccess } = useAlert();
   const { openDialog } = useDialog();
-  const setTeam = useProfileThemeStore((state) => state.setTeam);
-  const [following, setFollowing] = useState(false);
+  const setTheme = useProfileThemeStore((state) => state.setTheme);
   moment.locale(locale);
 
-  const team = profile.favoriteTeam ?? SCUDERIAS[0];
+  const team = resolveTeam(profile.favoriteTeam);
+  const profileTheme = profile.profileTheme ?? DEFAULT_PROFILE_THEME;
 
-  const teamTone =
-    theme === 'dark'
+  const teamTone = team
+    ? theme === 'dark'
       ? tinycolor(team.colors.primary.default).darken(5).toString()
-      : tinycolor(team.colors.background.session).brighten(1).toString();
-  const teamToneText = tinycolor(teamTone).isDark() ? 'white' : 'gray.900';
-  const usernameToneText = tinycolor(team.colors.background.shortBreak).darken(55).toString();
+      : tinycolor(team.colors.background.session).brighten(1).toString()
+    : undefined;
+  const teamToneText = teamTone && tinycolor(teamTone).isDark() ? 'white' : 'gray.900';
+  const usernameToneText = tinycolor(profileTheme.accent).darken(55).toString();
 
   const createdAtMs = timestampUtils.toMillis(profile.createdAt);
   const memberSince = createdAtMs ? moment(createdAtMs).format('MMM YYYY') : null;
-
-  const avatarSrc = profile.photoURL || `https://ui-avatars.com/api/?name=${profile.username}`;
 
   const socialItems = [
     {
@@ -91,15 +88,8 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
   ].filter((social) => !!social.url);
 
   useEffect(() => {
-    setTeam(team ?? null);
-  }, [team, setTeam]);
-
-  const handleShare = async () => {
-    try {
-      await navigator.clipboard.writeText(`${window.location.origin}/profile/${profile.username}`);
-    } catch {}
-    toastSuccess(t('linkCopied'));
-  };
+    setTheme(profileTheme);
+  }, [profileTheme, setTheme]);
 
   const handleEditProfile = () => {
     openDialog({ title: t('editProfile'), component: EditProfile, size: 'lg' });
@@ -124,41 +114,25 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
           position='relative'
           w='full'
           h={{ base: '150px', sm: '200px', md: '240px' }}
-          backgroundImage={
-            profile.coverURL
-              ? `url(${profile.coverURL})`
-              : 'linear-gradient(120deg, #8b5cf6 0%, #ec4899 50%, #f43f5e 100%)'
-          }
-          bgSize='cover'
-          backgroundPosition='center'
+          backgroundColor={bannerFromColor(profile.profileBackground)}
         >
           <LastConnection value={profile.lastConnection} />
         </Box>
 
         <Box paddingX={{ base: 5, md: 8 }}>
           <Flex justify='space-between' align='flex-end' gap={4} wrap='wrap'>
-            <Avatar.Root
-              boxSize={{ base: '104px', sm: '128px', md: '148px' }}
-              mt={{ base: '-52px', sm: '-64px', md: '-74px' }}
-              borderWidth='4px'
-              borderColor='bg.panel'
-            >
-              <Avatar.Fallback name={profile.displayName || profile.username} fontSize='3xl' />
-              <Avatar.Image src={avatarSrc} alt={profile.username} />
-            </Avatar.Root>
+            <Box position='relative' zIndex={1} mt={{ base: '-60px', sm: '-74px', md: '-88px' }}>
+              <PixelAvatar
+                name={profile.displayName || profile.username}
+                color={profileTheme.primary}
+                size={{ base: 124, sm: 156, md: 184 }}
+              />
+            </Box>
 
             <HStack gap={2} pb={2} ml='auto'>
-              <IconButton
-                aria-label={t('shareProfile')}
-                onClick={handleShare}
-                variant='outline'
-                rounded='full'
-                size='md'
-              >
-                <LuShare2 />
-              </IconButton>
+              <ShareProfile username={profile.username} displayName={profile.displayName} />
 
-              {isOwn ? (
+              {isOwn && (
                 <Button
                   onClick={handleEditProfile}
                   variant='outline'
@@ -167,20 +141,6 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
                   px={6}
                 >
                   {t('editProfile')}
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => setFollowing((prev) => !prev)}
-                  rounded='full'
-                  size='md'
-                  px={6}
-                  variant={following ? 'outline' : 'solid'}
-                  bg={following ? undefined : 'fg'}
-                  color={following ? undefined : 'bg'}
-                  _hover={following ? undefined : { opacity: 0.9 }}
-                >
-                  {!following && <LuPlus />}
-                  {following ? t('followingButton') : t('follow')}
                 </Button>
               )}
             </HStack>
