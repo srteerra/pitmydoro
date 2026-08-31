@@ -3,7 +3,7 @@ import useSettingsStore from '@/stores/Settings.store';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { MAX_DURATION } from '@/constants/DefaultSettings';
 import { useAlert } from '@/hooks/useAlert';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { CSSProperties, useCallback, useEffect, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
 import { useDebounce } from '@/hooks/useDebounce';

@@ -8,7 +8,7 @@ import { Locale } from 'moment';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useTransition } from 'react';
 import useSettingsStore from '@/stores/Settings.store';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 interface Props {
   portalDisabled?: boolean;

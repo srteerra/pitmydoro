@@ -2,7 +2,7 @@ import { Box, Flex, Grid, GridItem, Spinner, Text } from '@chakra-ui/react';
 import { useEffect, useMemo, useState } from 'react';
 import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { CgCoffee, CgStopwatch, CgTime } from 'react-icons/cg';
 import { useAuth } from '@/contexts/AuthContext';
 import useSettingsStore from '@/stores/Settings.store';

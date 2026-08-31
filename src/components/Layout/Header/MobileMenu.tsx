@@ -7,14 +7,16 @@ import { LuBookText } from 'react-icons/lu';
 import { ToggleThemeMode } from '@/components/Layout/Toggles/ThemeMode';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
 import GitHubStars from '@/components/GithubStars';
-import { useTranslations } from 'use-intl';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTimerGuard } from '@/hooks/useTimerGuard';
 
 export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
   const t = useTranslations('header');
   const router = useRouter();
   const { confirmInterruptIfRunning } = useTimerGuard();
+  const pathname = usePathname();
+  const isPomodoroPage = pathname === '/';
 
   const handleNav = async (e: React.MouseEvent, href: string) => {
     e.preventDefault();
@@ -49,7 +51,7 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
         <GitHubStars />
 
         <HStack gap={2} justifyContent='center'>
-          <TogglePomodoroMode />
+          {isPomodoroPage && <TogglePomodoroMode />}
           <ToggleThemeMode />
         </HStack>
       </VStack>

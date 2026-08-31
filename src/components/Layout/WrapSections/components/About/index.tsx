@@ -2,7 +2,7 @@
 
 import { Box, Flex, Grid, GridItem, Image, Text } from '@chakra-ui/react';
 import React from 'react';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { TiDivider } from '@/components/Layout/WrapSections/components/Divider';
 import tinycolor from 'tinycolor2';
 import useSessionStore from '@/stores/Session.store';

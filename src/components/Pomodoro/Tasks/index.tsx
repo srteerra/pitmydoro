@@ -5,7 +5,7 @@ import { ZoneButton } from '../components/ZoneButton';
 import { LuCirclePlus } from 'react-icons/lu';
 import { SortableList } from '@/components/SortableList';
 import { TaskCard } from '@/components/Pomodoro/Tasks/TaskCard';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { useTasks } from '@/hooks/useTasks';
 import { useTaskStore } from '@/stores/Tasks.store';
 import _ from 'lodash';

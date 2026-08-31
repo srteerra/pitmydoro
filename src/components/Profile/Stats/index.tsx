@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box, SimpleGrid, Tabs, Text, VStack } from '@chakra-ui/react';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 const PERIODS = ['daily', 'weekly', 'monthly', 'annual'] as const;
 

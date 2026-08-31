@@ -3,7 +3,7 @@
 import React from 'react';
 import { Box, Container, Flex, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import Link from 'next/link';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import tinycolor from 'tinycolor2';
 import useSessionStore from '@/stores/Session.store';
 import useSettingsStore from '@/stores/Settings.store';

@@ -3,7 +3,7 @@ import { TireTypeEnum } from '@/enums/TireType.enum';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import useSettingsStore from '@/stores/Settings.store';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useAlert } from '@/hooks/useAlert';

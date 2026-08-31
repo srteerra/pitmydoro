@@ -3,7 +3,7 @@
 import { Button, Center, Image, Text, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { jersey15 } from '@/assets/fonts/Jersey';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 export default function NotFoundPage() {
   const router = useRouter();

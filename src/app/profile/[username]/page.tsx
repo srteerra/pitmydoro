@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button, Center, Text, VStack } from '@chakra-ui/react';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { userService } from '@/services/user.service';
 import { UserProfile } from '@/interfaces/UserProfile.interface';
 import useUserStore from '@/stores/User.store';

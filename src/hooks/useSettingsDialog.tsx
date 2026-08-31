@@ -1,4 +1,4 @@
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { useDialog } from '@/contexts/DialogContext';
 import { Settings, Tab } from '@/components/Pomodoro/Settings';
 

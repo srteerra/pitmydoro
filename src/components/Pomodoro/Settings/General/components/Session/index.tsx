@@ -1,9 +1,9 @@
 import { SwitchInput } from '@/components/Form/SwitchInput';
 import { Box, Flex, HStack, IconButton, NumberInput, Text, VStack } from '@chakra-ui/react';
 import { LuMinus, LuPlus } from 'react-icons/lu';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import useSettingsStore from '@/stores/Settings.store';
 import { useDebounce } from '@/hooks/useDebounce';
 

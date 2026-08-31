@@ -3,7 +3,7 @@
 import { Center, Container, Grid, GridItem, Text } from '@chakra-ui/react';
 import { About } from '@/components/Layout/WrapSections/components/About';
 import React from 'react';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import tinycolor from 'tinycolor2';
 import useSessionStore from '@/stores/Session.store';
 import { TiDivider } from '@/components/Layout/WrapSections/components/Divider';

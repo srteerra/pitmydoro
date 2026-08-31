@@ -2,7 +2,7 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 import { LocaleSwitch } from '@/components/Layout/Toggles/LocaleSwitch';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 export const Locale = () => {
   const t = useTranslations('settings.sections.language');

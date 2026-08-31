@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Alert, Button, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
 import { BiLogoGoogle } from 'react-icons/bi';
 import { InputController } from '@/components/Form/InputController';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { DefaultSignInFields } from '@/constants/DefaultFields';
 
 interface LoginFormInputs {

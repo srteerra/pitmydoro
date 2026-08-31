@@ -5,7 +5,7 @@ import { Box, HStack, Text } from '@chakra-ui/react';
 import { LuClock } from 'react-icons/lu';
 import moment from 'moment/min/moment-with-locales';
 import { timestampUtils } from '@/utils/timestamp.utils';
-import { useLocale, useTranslations } from 'use-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { UserProfile } from '@/interfaces/UserProfile.interface';
 
 interface Props {

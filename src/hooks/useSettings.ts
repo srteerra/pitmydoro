@@ -4,7 +4,7 @@ import { TireTypeEnum } from '@/enums/TireType.enum';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import { useAlert } from '@/hooks/useAlert';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { userService } from '@/services/user.service';
 import { useAuth } from '@/contexts/AuthContext';
 import { DefaultSettings } from '@/constants/DefaultSettings';
