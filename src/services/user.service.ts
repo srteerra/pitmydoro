@@ -18,6 +18,9 @@ import { DefaultSettings } from '@/constants/DefaultSettings';
 import { Settings } from '@/interfaces/Settings.interface';
 import { OverlaySettings } from '@/interfaces/Overlay.interface';
 import { UserProfile as BaseUserProfile } from '@/interfaces/UserProfile.interface';
+import { UserStreak } from '@/interfaces/UserStreak.interface';
+import { DEFAULT_PROFILE_THEME } from '@/utils/profileTheme.utils';
+import { advanceStreak, EMPTY_STREAK, localDayKey, resolveStreak } from '@/utils/streak.utils';
 
 const STORAGE_SETTINGS_KEY = 'pitmydoro_settings';
 
@@ -65,6 +68,15 @@ async function isUsernameTaken(username: string): Promise<boolean> {
   return !snapshot.empty;
 }
 
+async function isUsernameTakenByOther(username: string, uid: string): Promise<boolean> {
+  const reservation = await getDoc(doc(db, 'usernames', username));
+  if (reservation.exists()) return reservation.data().uid !== uid;
+
+  const q = query(collection(db, 'profiles'), where('username', '==', username), limit(1));
+  const snapshot = await getDocs(q);
+  return !snapshot.empty && snapshot.docs[0].id !== uid;
+}
+
 export const userService = {
   isValidUsername(raw: string): boolean {
     return isValidUsername(normalizeUsername(raw));
@@ -76,9 +88,34 @@ export const userService = {
     return !(await isUsernameTaken(username));
   },
 
+  async isUsernameAvailableInRegistry(raw: string): Promise<boolean> {
+    const username = normalizeUsername(raw);
+    if (!isValidUsername(username)) return false;
+    const reservation = await getDoc(doc(db, 'usernames', username));
+    return !reservation.exists();
+  },
+
+  async isUsernameAvailableFor(raw: string, uid: string): Promise<boolean> {
+    const username = normalizeUsername(raw);
+    if (!isValidUsername(username)) return false;
+    return !(await isUsernameTakenByOther(username, uid));
+  },
+
+  async getUsernameOwner(raw: string): Promise<string | null> {
+    const username = normalizeUsername(raw);
+    if (!username) return null;
+    const reservation = await getDoc(doc(db, 'usernames', username));
+    return reservation.exists() ? ((reservation.data().uid as string) ?? null) : null;
+  },
+
   async create(user: User, desiredUsername?: string) {
     const stored = localStorage.getItem(STORAGE_SETTINGS_KEY);
     const storedPreferences = stored ? JSON.parse(stored) : DefaultSettings;
+
+    const existingProfile = await getDoc(doc(db, 'profiles', user.uid));
+    if (existingProfile.exists()) {
+      return existingProfile.data().username as string;
+    }
 
     const requested = desiredUsername ? normalizeUsername(desiredUsername) : '';
     const base =
@@ -88,21 +125,31 @@ export const userService = {
     let counter = 1;
 
     for (let attempt = 0; attempt < 100; attempt++) {
-      if (await isUsernameTaken(candidate)) {
+      if (await isUsernameTakenByOther(candidate, user.uid)) {
         candidate = `${base}${counter++}`;
         continue;
       }
 
       try {
-        await runTransaction(db, async (tx) => {
+        const settled = await runTransaction(db, async (tx) => {
+          const profileRef = doc(db, 'profiles', user.uid);
+          const profileSnap = await tx.get(profileRef);
+          if (profileSnap.exists()) {
+            return profileSnap.data().username as string;
+          }
+
           const usernameRef = doc(db, 'usernames', candidate);
           const snapshot = await tx.get(usernameRef);
-          if (snapshot.exists()) throw new Error('USERNAME_TAKEN');
+          if (snapshot.exists() && snapshot.data().uid !== user.uid) {
+            throw new Error('USERNAME_TAKEN');
+          }
 
-          tx.set(usernameRef, {
-            uid: user.uid,
-            createdAt: serverTimestamp(),
-          });
+          if (!snapshot.exists()) {
+            tx.set(usernameRef, {
+              uid: user.uid,
+              createdAt: serverTimestamp(),
+            });
+          }
 
           tx.set(doc(db, 'users', user.uid), {
             email: user.email,
@@ -112,21 +159,23 @@ export const userService = {
             lastConnection: serverTimestamp(),
           });
 
-          tx.set(doc(db, 'profiles', user.uid), {
+          tx.set(profileRef, {
             username: candidate,
             displayName: user.displayName || candidate,
             bio: '',
-            photoURL: user.photoURL || '',
-            coverURL: '',
             location: '',
             favoriteTeam: null,
+            profileTheme: DEFAULT_PROFILE_THEME,
+            streak: EMPTY_STREAK,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             lastConnection: serverTimestamp(),
           });
+
+          return candidate;
         });
 
-        return candidate;
+        return settled;
       } catch (err: any) {
         if (err?.message === 'USERNAME_TAKEN') {
           candidate = `${base}${counter++}`;
@@ -142,28 +191,58 @@ export const userService = {
   async changeUsername(userId: string, newUsername: string): Promise<string> {
     const next = normalizeUsername(newUsername);
     if (!isValidUsername(next)) throw new Error('USERNAME_INVALID');
+    if (await isUsernameTakenByOther(next, userId)) throw new Error('USERNAME_TAKEN');
 
     await runTransaction(db, async (tx) => {
       const nextRef = doc(db, 'usernames', next);
       const nextSnap = await tx.get(nextRef);
 
-      if (nextSnap.exists()) {
-        if (nextSnap.data().uid === userId) return;
+      if (nextSnap.exists() && nextSnap.data().uid !== userId) {
         throw new Error('USERNAME_TAKEN');
       }
 
       const profileRef = doc(db, 'profiles', userId);
       const current = (await tx.get(profileRef)).data()?.username as string | undefined;
 
-      tx.set(nextRef, { uid: userId, createdAt: serverTimestamp() });
-      tx.update(profileRef, { username: next, updatedAt: serverTimestamp() });
-
+      let currentOwnedByUser = false;
       if (current && current !== next) {
-        tx.delete(doc(db, 'usernames', current));
+        const currentSnap = await tx.get(doc(db, 'usernames', current));
+        currentOwnedByUser = currentSnap.exists() && currentSnap.data().uid === userId;
+      }
+
+      if (!nextSnap.exists()) {
+        tx.set(nextRef, { uid: userId, createdAt: serverTimestamp() });
+      }
+
+      if (current !== next) {
+        tx.update(profileRef, { username: next, updatedAt: serverTimestamp() });
+      }
+
+      if (currentOwnedByUser) {
+        tx.delete(doc(db, 'usernames', current as string));
       }
     });
 
     return next;
+  },
+
+  async registerStreakDay(userId: string): Promise<UserStreak> {
+    const today = localDayKey();
+    const profileRef = doc(db, 'profiles', userId);
+
+    return runTransaction(db, async (tx) => {
+      const snapshot = await tx.get(profileRef);
+      if (!snapshot.exists()) return EMPTY_STREAK;
+
+      const stored = (snapshot.data().streak as UserStreak | undefined) ?? EMPTY_STREAK;
+      const next = advanceStreak(stored, today);
+
+      if (!next) return resolveStreak(stored, today);
+
+      tx.update(profileRef, { streak: next, updatedAt: serverTimestamp() });
+
+      return next;
+    });
   },
 
   async exists(userId: string): Promise<boolean> {

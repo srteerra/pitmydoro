@@ -1,19 +1,21 @@
 import { create } from 'zustand';
 import { Timestamp } from 'firebase/firestore';
 import { userService } from '@/services/user.service';
-import { Team } from '@/interfaces/Teams.interface';
 import { Socials } from '@/interfaces/Socials.interface';
+import { ProfileTheme } from '@/interfaces/ProfileTheme.interface';
+import { UserStreak } from '@/interfaces/UserStreak.interface';
 
 interface UserProfile {
   username: string;
   displayName: string;
   bio: string;
-  photoURL: string;
-  coverURL: string;
   location: string;
-  favoriteTeam: Team | null;
+  favoriteTeam: string | null;
+  profileTheme?: ProfileTheme;
+  profileBackground?: string | null;
   favoriteFlag?: string;
   socials?: Socials;
+  streak?: UserStreak;
   lastConnection?: Timestamp;
   uid?: string;
 }
