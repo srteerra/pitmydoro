@@ -1,8 +1,18 @@
 'use client';
 
-import { ComponentType, createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState, } from 'react';
+import {
+  ComponentType,
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Button, CloseButton, Dialog } from '@chakra-ui/react';
 import { Portal } from '@zag-js/react';
+import { SWAL_HOST_ID } from '@/constants/Dialog';
 
 type DialogContent = ComponentType<{ onClose: () => void }> | ReactNode;
 
@@ -29,6 +39,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState<DialogOptions | null>(null);
   const closeGuardRef = useRef<CloseGuard | null>(null);
+  const swalHostRef = useRef<HTMLDivElement>(null);
 
   const openDialog = useCallback((opts: DialogOptions) => {
     closeGuardRef.current = null;
@@ -85,12 +96,14 @@ export function DialogProvider({ children }: { children: ReactNode }) {
     <DialogContext.Provider value={{ openDialog, closeDialog, setCloseGuard }}>
       {children}
 
+      <div id={SWAL_HOST_ID} ref={swalHostRef} />
+
       <Dialog.Root
         open={isOpen}
         onExitComplete={performClose}
         closeOnInteractOutside={true}
         onInteractOutside={closeDialog}
-        persistentElements={[() => document.querySelector('.swal2-container')]}
+        persistentElements={[() => swalHostRef.current]}
         size={options?.size ?? 'md'}
       >
         <Portal>

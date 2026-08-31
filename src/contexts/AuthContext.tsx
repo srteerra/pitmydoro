@@ -17,6 +17,7 @@ import useUserStore from '@/stores/User.store';
 import { useOverlayStore } from '@/stores/Overlay.store';
 import { useTasks } from '@/hooks/useTasks';
 import { useSettings } from '@/hooks/useSettings';
+import { useStickyNotes } from '@/hooks/useStickyNotes';
 
 interface AuthContextType {
   user: User | null;
@@ -39,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const { loadTasks, wipeTasks } = useTasks();
   const { loadConfig, wipeConfig } = useSettings();
+  const { loadNotes, wipeNotes } = useStickyNotes();
   const pendingUsername = useRef<string | undefined>(undefined);
   const creationInFlight = useRef<Map<string, Promise<unknown>>>(new Map());
 
@@ -69,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loadConfig(userData?.preferences);
         useOverlayStore.getState().applySettings(userData?.overlay ?? null);
 
-        await Promise.all([loadTasks(user.uid), fetchProfile(user.uid)]);
+        await Promise.all([loadTasks(user.uid), fetchProfile(user.uid), loadNotes(user.uid)]);
         void userService.updateLastConnection(user.uid);
       }
 
@@ -103,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       await wipeTasks();
       await wipeConfig();
+      await wipeNotes();
       clearProfile();
       useOverlayStore.getState().clear();
     });
