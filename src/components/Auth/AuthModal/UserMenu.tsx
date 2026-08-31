@@ -53,6 +53,11 @@ export const UserMenu = ({ user, onLogout }: Props) => {
         <Menu.Trigger rounded='full' focusRing='outside'>
           <Avatar.Root borderRadius={'full'} size='lg' cursor='pointer' ref={ref}>
             <Avatar.Fallback name={username || user?.email || ''} />
+            <Avatar.Image
+              src={user?.photoURL ?? undefined}
+              alt={username || user?.email || ''}
+              referrerPolicy='no-referrer'
+            />
             <Float placement='bottom-end' offsetX='1' offsetY='1'>
               <Circle bg='green.500' size='8px' outline='0.2em solid' outlineColor='bg' />
             </Float>
@@ -65,9 +70,6 @@ export const UserMenu = ({ user, onLogout }: Props) => {
               <Menu.Separator />
               <Menu.Item cursor='pointer' value='account' onClick={handleProfile}>
                 {t('userMenu.profile')}
-              </Menu.Item>
-              <Menu.Item disabled cursor='pointer' value='settings'>
-                {t('userMenu.myAccount')}
               </Menu.Item>
               <Menu.Item cursor='pointer' value='reports' onClick={handleOpenReports}>
                 {t('userMenu.reports')}
