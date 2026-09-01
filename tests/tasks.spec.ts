@@ -176,11 +176,16 @@ test.describe('Tasks', () => {
     });
 
     test('should unmark a completed task', async ({ page }) => {
-      await openTaskMenu(page);
-      await clickMenuItem(page, 'task-menu-complete');
-      await openTaskMenu(page);
-      await clickMenuItem(page, 'task-menu-complete');
       const title = page.getByTestId('task-card').first().locator('text=Completable Task');
+
+      await openTaskMenu(page);
+      await clickMenuItem(page, 'task-menu-complete');
+      await expect(title).toHaveCSS('text-decoration-line', 'line-through');
+
+      await openTaskMenu(page);
+      await expect(page.getByTestId('task-menu-complete')).toContainText(/uncompleted/i);
+      await clickMenuItem(page, 'task-menu-complete');
+
       await expect(title).not.toHaveCSS('text-decoration-line', 'line-through');
     });
 

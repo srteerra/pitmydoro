@@ -50,7 +50,7 @@ export const UserMenu = ({ user, onLogout }: Props) => {
       <StreakBadge />
 
       <Menu.Root positioning={{ getAnchorRect }}>
-        <Menu.Trigger rounded='full' focusRing='outside'>
+        <Menu.Trigger data-pw-id='user-menu-trigger' rounded='full' focusRing='outside'>
           <Avatar.Root borderRadius={'full'} size='lg' cursor='pointer' ref={ref}>
             <Avatar.Fallback name={username || user?.email || ''} />
             <Avatar.Image
@@ -68,13 +68,28 @@ export const UserMenu = ({ user, onLogout }: Props) => {
             <Menu.Content>
               <StreakSummary />
               <Menu.Separator />
-              <Menu.Item cursor='pointer' value='account' onClick={handleProfile}>
+              <Menu.Item
+                data-pw-id='user-menu-profile'
+                cursor='pointer'
+                value='account'
+                onClick={handleProfile}
+              >
                 {t('userMenu.profile')}
               </Menu.Item>
-              <Menu.Item cursor='pointer' value='reports' onClick={handleOpenReports}>
+              <Menu.Item
+                data-pw-id='user-menu-reports'
+                cursor='pointer'
+                value='reports'
+                onClick={handleOpenReports}
+              >
                 {t('userMenu.reports')}
               </Menu.Item>
-              <Menu.Item cursor='pointer' value='logout' onClick={handleLogout}>
+              <Menu.Item
+                data-pw-id='user-menu-logout'
+                cursor='pointer'
+                value='logout'
+                onClick={handleLogout}
+              >
                 {t('userMenu.logOut')}
               </Menu.Item>
             </Menu.Content>

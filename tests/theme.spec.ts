@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+import { getThemeSwitcher } from './helpers';
 
 test.describe('Theme', () => {
   test.beforeEach(async ({ page }) => {
@@ -6,19 +7,18 @@ test.describe('Theme', () => {
   });
 
   test('should display theme switcher', async ({ page }) => {
-    const themeSwitcher = page.getByTestId('theme-switcher');
-    await expect(themeSwitcher).toBeVisible();
+    await expect(await getThemeSwitcher(page)).toBeVisible();
   });
 
   test('should handle click', async ({ page }) => {
-    const themeSwitcher = page.getByTestId('theme-switcher');
-    await expect(themeSwitcher).toBeVisible();
+    const themeSwitcher = await getThemeSwitcher(page);
 
+    await expect(themeSwitcher).toBeVisible();
     await themeSwitcher.click();
   });
 
   test('should switch theme', async ({ page }) => {
-    const themeSwitcher = page.getByTestId('theme-switcher');
+    const themeSwitcher = await getThemeSwitcher(page);
     await expect(themeSwitcher).toBeVisible();
 
     const getBodyBgColor = () =>
@@ -28,8 +28,6 @@ test.describe('Theme', () => {
 
     await themeSwitcher.click();
 
-    const colorAfter = await getBodyBgColor();
-
-    expect(colorAfter).not.toBe(colorBefore);
+    await expect.poll(getBodyBgColor, { timeout: 5_000 }).not.toBe(colorBefore);
   });
 });

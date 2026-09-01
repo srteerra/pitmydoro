@@ -1,7 +1,6 @@
 'use client';
 
-import { IconButton, Menu, Text, VStack } from '@chakra-ui/react';
-import { Portal } from '@zag-js/react';
+import { IconButton, Menu, Portal, Text, VStack } from '@chakra-ui/react';
 import { BsDiamond } from 'react-icons/bs';
 import { useEffect, useState } from 'react';
 import useSettingsStore from '@/stores/Settings.store';

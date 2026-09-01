@@ -10,8 +10,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button, CloseButton, Dialog } from '@chakra-ui/react';
-import { Portal } from '@zag-js/react';
+import { Button, CloseButton, Dialog, Portal } from '@chakra-ui/react';
 import { SWAL_HOST_ID } from '@/constants/Dialog';
 
 type DialogContent = ComponentType<{ onClose: () => void }> | ReactNode;
@@ -110,6 +109,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
           <Dialog.Backdrop />
           <Dialog.Positioner>
             <Dialog.Content
+              data-pw-id='dialog'
               borderRadius={'3xl'}
               backgroundColor={{ base: 'gray.50', _dark: 'dark.200' }}
             >

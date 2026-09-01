@@ -98,6 +98,7 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
   return (
     <Center w='full' paddingX={{ base: 3, md: 6 }} paddingY={{ base: 4, md: 8 }}>
       <Box
+        data-pw-id='profile-card'
         w='full'
         maxW='5xl'
         bg='bg.panel'
@@ -111,6 +112,7 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
         }}
       >
         <Box
+          data-pw-id='profile-banner'
           position='relative'
           w='full'
           h={{ base: '150px', sm: '200px', md: '240px' }}
@@ -134,6 +136,7 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
 
               {isOwn && (
                 <Button
+                  data-pw-id='profile-edit-button'
                   onClick={handleEditProfile}
                   variant='outline'
                   rounded='full'
@@ -149,7 +152,11 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
           <VStack align='stretch' gap={4} mt={4}>
             <Box>
               <Flex alignItems={'center'} gap={2}>
-                <Heading size={{ base: '2xl', md: '3xl' }} truncate>
+                <Heading
+                  data-pw-id='profile-display-name'
+                  size={{ base: '2xl', md: '3xl' }}
+                  truncate
+                >
                   {profile.displayName || profile.username}
                 </Heading>
 
@@ -165,6 +172,7 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
               </Flex>
 
               <Text
+                data-pw-id='profile-username'
                 fontSize={{ base: 'xl', md: '2xl' }}
                 fontWeight='medium'
                 color={usernameToneText}
@@ -175,6 +183,7 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
             </Box>
 
             <Text
+              data-pw-id='profile-bio'
               fontSize={{ base: 'sm', md: 'md' }}
               color={profile.bio ? 'fg' : 'fg.muted'}
               maxW='640px'
@@ -189,6 +198,7 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
                 {socialItems.map((social) => (
                   <Button
                     key={social.key}
+                    data-pw-id={`profile-social-${social.key}`}
                     asChild
                     variant='ghost'
                     rounded='full'

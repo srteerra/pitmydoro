@@ -11,7 +11,7 @@ export const StreakSummary = () => {
   const { current, activeToday } = useStreak();
 
   return (
-    <Box paddingX={3} paddingY={2.5} minW='232px'>
+    <Box data-pw-id='streak-summary' paddingX={3} paddingY={2.5} minW='232px'>
       <HStack gap={3} align='center'>
         <Circle
           size='38px'
@@ -24,14 +24,14 @@ export const StreakSummary = () => {
 
         <VStack gap={0} align='stretch' flex='1' minW={0}>
           <HStack gap={2} align='baseline'>
-            <Text fontSize='xl' fontWeight='bold' lineHeight='1'>
+            <Text data-pw-id='streak-summary-count' fontSize='xl' fontWeight='bold' lineHeight='1'>
               {current}
             </Text>
             <Text fontSize='sm' color='fg.muted'>
               {t('daysCount', { count: current })}
             </Text>
           </HStack>
-          <Text fontSize='xs' color='fg.muted'>
+          <Text data-pw-id='streak-summary-status' fontSize='xs' color='fg.muted'>
             {activeToday ? t('doneToday') : t('pendingToday')}
           </Text>
         </VStack>

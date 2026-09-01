@@ -24,8 +24,8 @@ const METRICS: (keyof typeof MOCK)[] = [
   'tasksCreated',
 ];
 
-const StatCard = ({ label, value }: { label: string; value: string }) => (
-  <VStack align='start' gap={1} padding={4} borderRadius='xl' bg='bg.muted'>
+const StatCard = ({ label, value, testId }: { label: string; value: string; testId: string }) => (
+  <VStack data-pw-id={testId} align='start' gap={1} padding={4} borderRadius='xl' bg='bg.muted'>
     <Text fontSize='xs' color='fg.muted' truncate>
       {label}
     </Text>
@@ -39,7 +39,7 @@ export const ProfileStats = () => {
   const t = useTranslations('profile');
 
   return (
-    <Box mt={8}>
+    <Box data-pw-id='profile-stats' mt={8}>
       <Text fontWeight='bold' fontSize='lg' mb={4}>
         {t('stats')}
       </Text>
@@ -47,7 +47,7 @@ export const ProfileStats = () => {
       <Tabs.Root defaultValue='daily' variant='line'>
         <Tabs.List>
           {PERIODS.map((period) => (
-            <Tabs.Trigger key={period} value={period}>
+            <Tabs.Trigger key={period} data-pw-id={`profile-stats-tab-${period}`} value={period}>
               {t(period)}
             </Tabs.Trigger>
           ))}
@@ -57,7 +57,12 @@ export const ProfileStats = () => {
           <Tabs.Content key={period} value={period}>
             <SimpleGrid columns={{ base: 2, md: 3 }} gap={3} mt={2}>
               {METRICS.map((metric) => (
-                <StatCard key={metric} label={t(metric)} value={MOCK[metric]} />
+                <StatCard
+                  key={metric}
+                  testId={`profile-stat-${metric}`}
+                  label={t(metric)}
+                  value={MOCK[metric]}
+                />
               ))}
             </SimpleGrid>
 

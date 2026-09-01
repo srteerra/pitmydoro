@@ -352,6 +352,7 @@ export const Counter = () => {
 
         <Box flex={1} display='flex' justifyContent='flex-start'>
           <IconButton
+            data-pw-id='settings-button'
             onClick={() => openSettings()}
             variant='ghost'
             size='lg'

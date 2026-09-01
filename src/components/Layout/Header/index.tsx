@@ -48,6 +48,7 @@ export const Header = () => {
       >
         <GridItem justifySelf='start'>
           <IconButton
+            data-pw-id='mobile-menu-button'
             aria-label='Open menu'
             variant='ghost'
             rounded='full'

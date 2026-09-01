@@ -20,6 +20,7 @@ export const StreakBadge = () => {
       content={activeToday ? t('activeTooltip', { count: current }) : t('pendingTooltip')}
     >
       <HStack
+        data-pw-id='streak-badge'
         gap={1}
         paddingX={2.5}
         paddingY={1}
@@ -32,7 +33,7 @@ export const StreakBadge = () => {
         aria-label={t('daysCount', { count: current })}
       >
         <LuFlame />
-        <Text fontSize='sm' fontWeight='bold' lineHeight='1'>
+        <Text data-pw-id='streak-badge-count' fontSize='sm' fontWeight='bold' lineHeight='1'>
           {current}
         </Text>
       </HStack>

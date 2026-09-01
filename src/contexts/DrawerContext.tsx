@@ -10,8 +10,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Button, CloseButton, Drawer, DrawerContent, Text } from '@chakra-ui/react';
-import { Portal } from '@zag-js/react';
+import { Button, CloseButton, Drawer, DrawerContent, Portal, Text } from '@chakra-ui/react';
 
 type DrawerContent = ComponentType<{ onClose: () => void }> | ReactNode;
 
@@ -118,6 +117,7 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
           <Drawer.Backdrop />
           <Drawer.Positioner padding={options?.offset ?? 0}>
             <Drawer.Content
+              data-pw-id='drawer'
               ref={contentRef}
               rounded='md'
               maxH='100dvh'

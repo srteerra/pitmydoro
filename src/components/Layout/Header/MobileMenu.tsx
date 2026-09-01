@@ -26,7 +26,13 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <Flex direction='column' height='full' justifyContent='space-between' gap={6}>
+    <Flex
+      data-pw-id='mobile-menu'
+      direction='column'
+      height='full'
+      justifyContent='space-between'
+      gap={6}
+    >
       <VStack align='stretch' gap={5}>
         <NextLink
           href='/learn'
