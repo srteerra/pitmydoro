@@ -2,7 +2,7 @@ import { SwitchInput } from '@/components/Form/SwitchInput';
 import { VStack } from '@chakra-ui/react';
 import React from 'react';
 import { useSettings } from '@/hooks/useSettings';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import useSettingsStore from '@/stores/Settings.store';
 
 export const Tasks = () => {

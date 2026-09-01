@@ -1,7 +1,7 @@
 import { VStack } from '@chakra-ui/react';
 import { SwitchInput } from '@/components/Form/SwitchInput';
 import React from 'react';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { useSettings } from '@/hooks/useSettings';
 import useSettingsStore from '@/stores/Settings.store';
 

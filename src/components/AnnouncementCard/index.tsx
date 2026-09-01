@@ -5,7 +5,7 @@ import { Badge, Box, Button, Flex, IconButton, Link, Text, VStack } from '@chakr
 import { IoClose, IoMegaphoneOutline } from 'react-icons/io5';
 import { BiLogoGithub } from 'react-icons/bi';
 import tinycolor from 'tinycolor2';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import useSessionStore from '@/stores/Session.store';
 import useSettingsStore from '@/stores/Settings.store';
 

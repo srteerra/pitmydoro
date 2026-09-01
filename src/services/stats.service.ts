@@ -9,14 +9,14 @@ import {
   Timestamp,
   where,
 } from 'firebase/firestore';
-import moment from 'moment';
 import { db } from '@/lib/firebase/config';
+import { localDayKey } from '@/utils/streak.utils';
 import { DailyStats } from '@/interfaces/Stats.interface';
 import { TaskStatsDelta } from '@/interfaces/Task.interface';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
 import useSettingsStore from '@/stores/Settings.store';
 
-export const dayKey = (date: Date | number = Date.now()) => moment(date).format('YYYY-MM-DD');
+export const dayKey = (date: Date | number = Date.now()) => localDayKey(date);
 
 export const statsService = {
   async incrementDailyStats(

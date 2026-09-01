@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Badge, type BadgeProps, Box } from '@chakra-ui/react';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 interface InDevelopmentBadgeProps extends BadgeProps {
   label?: string;

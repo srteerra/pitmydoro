@@ -5,7 +5,7 @@ import tinycolor from 'tinycolor2';
 import { BiLogoGithub } from 'react-icons/bi';
 import useSessionStore from '@/stores/Session.store';
 import Link from 'next/link';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import useSettingsStore from '@/stores/Settings.store';
 
 export const Footer = () => {

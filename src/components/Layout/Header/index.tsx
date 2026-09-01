@@ -9,18 +9,21 @@ import { LocaleSwitch } from '@/components/Layout/Toggles/LocaleSwitch';
 import Link from 'next/link';
 import { AuthModal } from '@/components/Auth/AuthModal';
 import GitHubStars from '@/components/GithubStars';
-import { LuBookText, LuMegaphone, LuMenu, LuMonitorPlay } from 'react-icons/lu';
+import { LuBookText, LuCoffee, LuMegaphone, LuMenu, LuMonitorPlay } from 'react-icons/lu';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
 import { Tooltip } from '@/components/ui/tooltip';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { useDrawer } from '@/contexts/DrawerContext';
 import { useTimerGuard } from '@/hooks/useTimerGuard';
 import { MobileMenu } from './MobileMenu';
+import { usePathname } from 'next/navigation';
 
 export const Header = () => {
   const t = useTranslations('header');
   const { openDrawer } = useDrawer();
   const { guardLink } = useTimerGuard();
+  const pathname = usePathname();
+  const isPomodoroPage = pathname === '/';
 
   const handleOpenMenu = () => {
     openDrawer({
@@ -45,6 +48,7 @@ export const Header = () => {
       >
         <GridItem justifySelf='start'>
           <IconButton
+            data-pw-id='mobile-menu-button'
             aria-label='Open menu'
             variant='ghost'
             rounded='full'
@@ -93,7 +97,16 @@ export const Header = () => {
           width={'full'}
           justifyContent={{ base: 'center', md: 'flex-end' }}
         >
-          <AuthModal />
+          <HStack gap={2}>
+            {isPomodoroPage && (
+              <Tooltip openDelay={100} closeDelay={100} content={t('minimalMode')}>
+                <Box as='span' display='inline-flex'>
+                  <TogglePomodoroMode />
+                </Box>
+              </Tooltip>
+            )}
+            <AuthModal />
+          </HStack>
         </GridItem>
 
         <GridItem
@@ -172,30 +185,33 @@ export const Header = () => {
               </Box>
             </Tooltip>
 
-            <Tooltip openDelay={100} closeDelay={100} content='Community'>
+            <Tooltip openDelay={100} closeDelay={100} content={'Community'}>
               <Box as='span' display='inline-flex'>
-                <Link
-                  href={'/community'}
+                <IconButton
+                  variant={'ghost'}
+                  rounded='full'
+                  size={{ base: 'sm', md: 'md' }}
+                  color={{ base: 'gray.500', _hover: 'gray.700' }}
                   aria-label='Community'
-                  onClick={(e) => guardLink(e, '/community')}
+                  disabled
                 >
-                  <IconButton
-                    as={'span'}
-                    variant={'ghost'}
-                    rounded='full'
-                    size={{ base: 'sm', md: 'md' }}
-                    color={{ base: 'gray.500', _hover: 'gray.700' }}
-                    aria-label='Community'
-                  >
-                    <LuMegaphone />
-                  </IconButton>
-                </Link>
+                  <LuMegaphone />
+                </IconButton>
               </Box>
             </Tooltip>
 
-            <Tooltip openDelay={100} closeDelay={100} content={t('minimalMode')}>
+            <Tooltip openDelay={100} closeDelay={100} content={`${t('comingSoon')}`}>
               <Box as='span' display='inline-flex'>
-                <TogglePomodoroMode />
+                <IconButton
+                  variant={'ghost'}
+                  rounded='full'
+                  size={{ base: 'sm', md: 'md' }}
+                  color={{ base: 'gray.500', _hover: 'gray.700' }}
+                  aria-label={t('donate')}
+                  disabled
+                >
+                  <LuCoffee />
+                </IconButton>
               </Box>
             </Tooltip>
           </HStack>

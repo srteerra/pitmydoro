@@ -4,7 +4,7 @@ import React from 'react';
 import { Box, HStack, Progress, Text, VStack } from '@chakra-ui/react';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import { calculatePasswordStrength } from '@/utils/passwordStrength.utils';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 interface Props {
   password: string;

@@ -7,7 +7,7 @@ import { Locale } from '@/components/Pomodoro/Settings/General/components/Locale
 import { Sounds } from '@/components/Pomodoro/Settings/General/components/Sounds';
 import { Notifications } from '@/components/Pomodoro/Settings/General/components/Notifcations';
 import { useSettings } from '@/hooks/useSettings';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import useSettingsStore from '@/stores/Settings.store';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
 

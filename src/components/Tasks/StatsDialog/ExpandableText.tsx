@@ -1,6 +1,6 @@
 import { Box, Text } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 interface Props {
   text: string;

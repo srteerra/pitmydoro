@@ -11,7 +11,7 @@ import { usePomodoro } from '@/hooks/usePomodoro';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
 import { FaFlag } from 'react-icons/fa';
 import { LuTimerReset } from 'react-icons/lu';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { useAlert } from '@/hooks/useAlert';
 import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
@@ -352,6 +352,7 @@ export const Counter = () => {
 
         <Box flex={1} display='flex' justifyContent='flex-start'>
           <IconButton
+            data-pw-id='settings-button'
             onClick={() => openSettings()}
             variant='ghost'
             size='lg'

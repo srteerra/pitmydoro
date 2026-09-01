@@ -7,7 +7,7 @@ import { MdLogin } from 'react-icons/md';
 import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
 import { UserMenu } from './UserMenu';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { useAlert } from '@/hooks/useAlert';
 
 type AuthMode = 'login' | 'register';

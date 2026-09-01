@@ -2,7 +2,7 @@ import { VStack } from '@chakra-ui/react';
 import React from 'react';
 import { SwitchInput } from '@/components/Form/SwitchInput';
 import { SliderInput } from '@/components/Form/SliderInput';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { useSettings } from '@/hooks/useSettings';
 import { useDebounce } from '@/hooks/useDebounce';
 import useSettingsStore from '@/stores/Settings.store';

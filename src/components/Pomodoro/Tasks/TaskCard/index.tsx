@@ -7,7 +7,7 @@ import { TiTimes } from 'react-icons/ti';
 import { FaCheck } from 'react-icons/fa';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
 import { Box, Card, Flex, IconButton, Input, NumberInput, Text, Textarea } from '@chakra-ui/react';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { useAlert } from '@/hooks/useAlert';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';

@@ -6,7 +6,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { taskService } from '@/services/task.service';
 import { statsService } from '@/services/stats.service';
+import { userService } from '@/services/user.service';
 import useSettingsStore from '@/stores/Settings.store';
+import useUserStore from '@/stores/User.store';
 import _ from 'lodash';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { useTasks } from '@/hooks/useTasks';
@@ -16,7 +18,7 @@ import { FlagEnum } from '@/enums/Flag.enum';
 import moment from 'moment';
 import { useAlert } from '@/hooks/useAlert';
 import { TireTypeEnum } from '@/enums/TireType.enum';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
 import { flushElapsedCheckpoint, flushElapsedTime } from '@/utils/accountElapsed.utils';
 import {
@@ -243,6 +245,13 @@ export const usePomodoro = () => {
       await flushElapsed();
 
       if (currentPomodoro.type === SessionStatusEnum.IN_SESSION) {
+        if (user) {
+          void userService
+            .registerStreakDay(user.uid)
+            .then((streak) => useUserStore.getState().updateProfile({ streak }))
+            .catch(() => undefined);
+        }
+
         if (autoStartBreak) {
           const taskInCaseStore = tasks.find((t) => t.id === currentPomodoro?.task?.id);
           const newTotalPomodoros = (taskInCaseStore?.totalPomodoros || 0) + 1;

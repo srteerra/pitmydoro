@@ -588,7 +588,6 @@ Ensure your changes are accessible:
   ```
 
 - 🚨 **Report vulnerabilities privately**:
-
   - See [SECURITY.md](SECURITY.md) for reporting process
   - Do NOT open public issues for security bugs
 
@@ -1282,7 +1281,6 @@ Asegura que tus cambios sean accesibles:
   ```
 
 - 🚨 **Reporta vulnerabilidades privadamente**:
-
   - Ver [SECURITY.md](SECURITY.md) para el proceso de reporte
   - NO abras issues públicos para bugs de seguridad
 

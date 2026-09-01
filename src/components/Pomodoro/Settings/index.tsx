@@ -8,7 +8,7 @@ import { General } from '@/components/Pomodoro/Settings/General';
 import { Scuderia } from '@/components/Pomodoro/Settings/Scuderia';
 import { Support } from '@/components/Pomodoro/Settings/Support';
 import { Tooltip } from '@/components/ui/tooltip';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import './styles.css';
 import useSettingsStore from '@/stores/Settings.store';
 import { PomodoroMode } from '@/interfaces/Settings.interface';

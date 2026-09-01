@@ -7,12 +7,15 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
-import { Button, CloseButton, Dialog } from '@chakra-ui/react';
-import { Portal } from '@zag-js/react';
+import { Button, CloseButton, Dialog, Portal } from '@chakra-ui/react';
+import { SWAL_HOST_ID } from '@/constants/Dialog';
 
 type DialogContent = ComponentType<{ onClose: () => void }> | ReactNode;
+
+type CloseGuard = () => boolean | Promise<boolean>;
 
 export interface DialogOptions {
   title: string;
@@ -26,6 +29,7 @@ export interface DialogOptions {
 interface DialogContextValue {
   openDialog: (options: DialogOptions) => void;
   closeDialog: () => void;
+  setCloseGuard: (guard: CloseGuard | null) => void;
 }
 
 const DialogContext = createContext<DialogContextValue | null>(null);
@@ -33,13 +37,17 @@ const DialogContext = createContext<DialogContextValue | null>(null);
 export function DialogProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState<DialogOptions | null>(null);
+  const closeGuardRef = useRef<CloseGuard | null>(null);
+  const swalHostRef = useRef<HTMLDivElement>(null);
 
   const openDialog = useCallback((opts: DialogOptions) => {
+    closeGuardRef.current = null;
     setOptions(opts);
     setIsOpen(true);
   }, []);
 
-  const closeDialog = useCallback(() => {
+  const performClose = useCallback(() => {
+    closeGuardRef.current = null;
     setIsOpen(false);
 
     setTimeout(() => {
@@ -47,6 +55,17 @@ export function DialogProvider({ children }: { children: ReactNode }) {
       setOptions(null);
     }, 200);
   }, [options]);
+
+  const closeDialog = useCallback(async () => {
+    const guard = closeGuardRef.current;
+    if (guard && !(await guard())) return;
+
+    performClose();
+  }, [performClose]);
+
+  const setCloseGuard = useCallback((guard: CloseGuard | null) => {
+    closeGuardRef.current = guard;
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -73,20 +92,24 @@ export function DialogProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <DialogContext.Provider value={{ openDialog, closeDialog }}>
+    <DialogContext.Provider value={{ openDialog, closeDialog, setCloseGuard }}>
       {children}
+
+      <div id={SWAL_HOST_ID} ref={swalHostRef} />
 
       <Dialog.Root
         open={isOpen}
-        onExitComplete={closeDialog}
+        onExitComplete={performClose}
         closeOnInteractOutside={true}
         onInteractOutside={closeDialog}
+        persistentElements={[() => swalHostRef.current]}
         size={options?.size ?? 'md'}
       >
         <Portal>
           <Dialog.Backdrop />
           <Dialog.Positioner>
             <Dialog.Content
+              data-pw-id='dialog'
               borderRadius={'3xl'}
               backgroundColor={{ base: 'gray.50', _dark: 'dark.200' }}
             >

@@ -7,14 +7,16 @@ import { LuBookText } from 'react-icons/lu';
 import { ToggleThemeMode } from '@/components/Layout/Toggles/ThemeMode';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
 import GitHubStars from '@/components/GithubStars';
-import { useTranslations } from 'use-intl';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTimerGuard } from '@/hooks/useTimerGuard';
 
 export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
   const t = useTranslations('header');
   const router = useRouter();
   const { confirmInterruptIfRunning } = useTimerGuard();
+  const pathname = usePathname();
+  const isPomodoroPage = pathname === '/';
 
   const handleNav = async (e: React.MouseEvent, href: string) => {
     e.preventDefault();
@@ -24,7 +26,13 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <Flex direction='column' height='full' justifyContent='space-between' gap={6}>
+    <Flex
+      data-pw-id='mobile-menu'
+      direction='column'
+      height='full'
+      justifyContent='space-between'
+      gap={6}
+    >
       <VStack align='stretch' gap={5}>
         <NextLink
           href='/learn'
@@ -49,7 +57,7 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
         <GitHubStars />
 
         <HStack gap={2} justifyContent='center'>
-          <TogglePomodoroMode />
+          {isPomodoroPage && <TogglePomodoroMode />}
           <ToggleThemeMode />
         </HStack>
       </VStack>

@@ -17,6 +17,7 @@ import useUserStore from '@/stores/User.store';
 import { useOverlayStore } from '@/stores/Overlay.store';
 import { useTasks } from '@/hooks/useTasks';
 import { useSettings } from '@/hooks/useSettings';
+import { useStickyNotes } from '@/hooks/useStickyNotes';
 
 interface AuthContextType {
   user: User | null;
@@ -39,25 +40,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const { loadTasks, wipeTasks } = useTasks();
   const { loadConfig, wipeConfig } = useSettings();
+  const { loadNotes, wipeNotes } = useStickyNotes();
   const pendingUsername = useRef<string | undefined>(undefined);
+  const creationInFlight = useRef<Map<string, Promise<unknown>>>(new Map());
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
 
       if (user) {
-        let userData = await userService.getUserData(user.uid);
+        try {
+          const [existingUserData, existingProfile] = await Promise.all([
+            userService.getUserData(user.uid),
+            userService.getProfile(user.uid),
+          ]);
 
-        if (!userData) {
-          await userService.create(user, pendingUsername.current);
-          pendingUsername.current = undefined;
-          userData = await userService.getUserData(user.uid);
+          let userData = existingUserData;
+
+          if (!userData || !existingProfile) {
+            let creation = creationInFlight.current.get(user.uid);
+            if (!creation) {
+              creation = userService.create(user, pendingUsername.current);
+              creationInFlight.current.set(user.uid, creation);
+            }
+
+            try {
+              await creation;
+            } finally {
+              creationInFlight.current.delete(user.uid);
+            }
+
+            pendingUsername.current = undefined;
+            userData = await userService.getUserData(user.uid);
+          }
+
+          loadConfig(userData?.preferences);
+          useOverlayStore.getState().applySettings(userData?.overlay ?? null);
+
+          await Promise.all([loadTasks(user.uid), fetchProfile(user.uid), loadNotes(user.uid)]);
+          void userService.updateLastConnection(user.uid).catch((error) => {
+            console.error('Failed to update last connection:', error);
+          });
+        } catch (error) {
+          console.error('Failed to bootstrap authenticated session:', error);
         }
-
-        loadConfig(userData?.preferences);
-        useOverlayStore.getState().applySettings(userData?.overlay ?? null);
-
-        await Promise.all([loadTasks(user.uid), fetchProfile(user.uid)]);
       }
 
       setLoading(false);
@@ -90,6 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       await wipeTasks();
       await wipeConfig();
+      await wipeNotes();
       clearProfile();
       useOverlayStore.getState().clear();
     });

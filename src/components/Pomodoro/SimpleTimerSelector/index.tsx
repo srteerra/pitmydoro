@@ -3,7 +3,7 @@ import useSettingsStore from '@/stores/Settings.store';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { MAX_DURATION } from '@/constants/DefaultSettings';
 import { useAlert } from '@/hooks/useAlert';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { CSSProperties, useCallback, useEffect, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -12,9 +12,10 @@ interface DurationEditableProps {
   value: number;
   onChange: (val: number) => void;
   accent: string;
+  testId: string;
 }
 
-const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) => (
+const DurationEditable = ({ value, onChange, accent, testId }: DurationEditableProps) => (
   <Editable.Root
     value={String(value)}
     onValueChange={(e) => {
@@ -45,6 +46,7 @@ const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) =>
           }
         >
           <Editable.Preview
+            data-pw-id={`${testId}-preview`}
             color={{ base: 'gray.800', _dark: 'white' }}
             style={{
               display: 'inline',
@@ -55,6 +57,7 @@ const DurationEditable = ({ value, onChange, accent }: DurationEditableProps) =>
             }}
           />
           <Editable.Input
+            data-pw-id={`${testId}-input`}
             onKeyDown={(e) => {
               if (!/^\d$/.test(e.key)) return;
               const input = e.currentTarget;
@@ -132,6 +135,7 @@ export const SimpleTimerSelector = () => {
 
   return (
     <Box
+      data-pw-id='simple-timer'
       fontSize='16px'
       fontWeight={500}
       color='gray.500'
@@ -150,6 +154,7 @@ export const SimpleTimerSelector = () => {
               value={localSession}
               onChange={handleSessionChange}
               accent='#e05c5c'
+              testId='simple-timer-session'
             />{' '}
             {st('minutes', { count: localSession })}
           </>
@@ -160,6 +165,7 @@ export const SimpleTimerSelector = () => {
               value={localBreaks[SessionStatusEnum.SHORT_BREAK]}
               onChange={(val) => handleBreakChange(SessionStatusEnum.SHORT_BREAK, val)}
               accent='#5c9ee0'
+              testId='simple-timer-short-break'
             />{' '}
             {st('minutes', { count: localBreaks[SessionStatusEnum.SHORT_BREAK] })}
           </>
@@ -170,6 +176,7 @@ export const SimpleTimerSelector = () => {
               value={localBreaks[SessionStatusEnum.LONG_BREAK]}
               onChange={(val) => handleBreakChange(SessionStatusEnum.LONG_BREAK, val)}
               accent='#5cc9a0'
+              testId='simple-timer-long-break'
             />{' '}
             {st('minutes', { count: localBreaks[SessionStatusEnum.LONG_BREAK] })}
           </>

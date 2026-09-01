@@ -8,7 +8,7 @@ import { LuCheck } from 'react-icons/lu';
 import { InputController } from '@/components/Form/InputController';
 import { PasswordStrength } from '../PasswordStrength';
 import { calculatePasswordStrength } from '@/utils/passwordStrength.utils';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { DefaultSignUpFields } from '@/constants/DefaultFields';
 import { useUsernameAvailability } from '@/hooks/useUsernameAvailability';
 

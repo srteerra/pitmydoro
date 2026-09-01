@@ -3,7 +3,8 @@ import { useToken } from '@chakra-ui/react';
 import './styles.css';
 import { useTheme } from 'next-themes';
 import { toaster } from '@/components/ui/toaster';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
+import { SWAL_HOST_ID } from '@/constants/Dialog';
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -136,6 +137,7 @@ export const useAlert = () => {
 
     return new Promise((resolve) =>
       Swal.fire({
+        target: document.getElementById(SWAL_HOST_ID) ?? 'body',
         title,
         text,
         showDenyButton: true,
@@ -154,6 +156,13 @@ export const useAlert = () => {
         confirmButtonText,
         denyButtonText,
         icon: accent.icon,
+        didOpen: () => {
+          const container = Swal.getContainer();
+          if (container) {
+            container.style.zIndex = '2000';
+            container.style.pointerEvents = 'auto';
+          }
+        },
       }).then((result) => resolve(result.isConfirmed))
     );
   };

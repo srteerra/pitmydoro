@@ -10,6 +10,7 @@ import { keywords } from '@/constants/Keywords';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { DrawerProvider } from '@/contexts/DrawerContext';
 import { OverlaySync } from '@/components/StreamOverlay/OverlaySync';
+import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'Pit My Doro',
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <DrawerProvider>
                   <ColorModeProvider enableSystem={false}>
                     <OverlaySync />
+                    <Toaster />
                     <div className='app-zoom'>{children}</div>
                   </ColorModeProvider>
                 </DrawerProvider>

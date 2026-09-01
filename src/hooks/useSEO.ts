@@ -1,4 +1,4 @@
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 export const useSeo = () => {
   const t = useTranslations('meta');

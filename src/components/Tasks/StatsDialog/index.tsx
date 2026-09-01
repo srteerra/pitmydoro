@@ -28,7 +28,7 @@ import { useTheme } from 'next-themes';
 import { CgCheckO, CgCoffee, CgProfile, CgStopwatch, CgTime } from 'react-icons/cg';
 import { LuHash } from 'react-icons/lu';
 import useUserStore from '@/stores/User.store';
-import { useLocale, useTranslations } from 'use-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { StatsList } from '@/components/Tasks/StatsDialog/StatsList';
 import { ExpandableText } from '@/components/Tasks/StatsDialog/ExpandableText';
 import { HelpTip } from '@/components/ui/help-tip';
@@ -226,10 +226,6 @@ export const StatsDialog = ({ task }: Props) => {
             <DataList.ItemValue display='flex' alignItems='center'>
               <Avatar.Root borderRadius={'full'} size='sm' cursor='pointer'>
                 <Avatar.Fallback name={profile?.username} />
-                <Avatar.Image
-                  src={profile?.photoURL || `https://ui-avatars.com/api/?name=${profile?.username}`}
-                  alt='Avatar'
-                />
               </Avatar.Root>
             </DataList.ItemValue>
           </DataList.Item>

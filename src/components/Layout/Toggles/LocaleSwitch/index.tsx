@@ -1,14 +1,13 @@
 'use client';
 
 import { setUserLocale } from '@/services/locale.service';
-import { Box, IconButton, Image, Menu, Text } from '@chakra-ui/react';
-import { Portal } from '@zag-js/react';
+import { Box, IconButton, Image, Menu, Portal, Text } from '@chakra-ui/react';
 import { IoEarth } from 'react-icons/io5';
 import { Locale } from 'moment';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useTransition } from 'react';
 import useSettingsStore from '@/stores/Settings.store';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 
 interface Props {
   portalDisabled?: boolean;

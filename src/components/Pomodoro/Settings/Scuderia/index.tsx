@@ -13,7 +13,7 @@ import { Team } from '@/interfaces/Teams.interface';
 import React, { useMemo, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
 import { ColorPreview } from '@/components/Pomodoro/components/ColorPreview';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import _ from 'lodash';
 import tinycolor from 'tinycolor2';

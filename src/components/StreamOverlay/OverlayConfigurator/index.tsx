@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Button, Center, Flex, HStack, Text, VStack } from '@chakra-ui/react';
 import { FiCheck, FiCopy, FiExternalLink } from 'react-icons/fi';
 import { LuMonitorPlay } from 'react-icons/lu';
-import { useTranslations } from 'use-intl';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
 import { useOverlayStore } from '@/stores/Overlay.store';
 import { useOverlayDoc } from '@/hooks/useOverlayDoc';
