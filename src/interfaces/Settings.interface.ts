@@ -28,6 +28,7 @@ export interface Settings {
   enableSounds: boolean;
   volume: number;
   enableNotifications: boolean;
+  earlyAlertSeconds: number;
   mode: PomodoroMode;
   minimalSessionDuration: number;
 }
