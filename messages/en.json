@@ -326,6 +326,13 @@
         "enableNotifications": {
           "title": "Enable Notifications",
           "description": "Enable or disable notifications."
+        },
+        "earlyAlert": {
+          "title": "Early alert",
+          "description": "Alert this many seconds before the timer ends.",
+          "decrease": "Decrease early alert time",
+          "increase": "Increase early alert time",
+          "error": "Early alert time must be between 1 and 60 seconds."
         }
       },
       "language": {

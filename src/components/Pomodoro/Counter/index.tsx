@@ -52,6 +52,7 @@ export const Counter = () => {
   const tasks = useTaskStore((state) => state.tasks);
   const tiresSettings = useSettingsStore((state) => state.tiresSettings);
   const enableNotifications = useSettingsStore((state) => state.enableNotifications);
+  const earlyAlertSeconds = useSettingsStore((state) => state.earlyAlertSeconds);
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
   const mode = useSettingsStore((state) => state.mode);
   const minimalSessionDuration = useSettingsStore((state) => state.minimalSessionDuration);
@@ -101,7 +102,8 @@ export const Counter = () => {
 
     document.title = `${formatSeconds(Math.floor(total / 1000), 'clock')} - ${pomodoroT(status === SessionStatusEnum.IN_SESSION ? 'sessionLabel' : status === SessionStatusEnum.SHORT_BREAK ? 'shortBreakLabel' : 'longBreakLabel')}`;
 
-    if (total <= 4000 && !isEndingSoon) {
+    const earlyAlertThreshold = earlyAlertSeconds * 1000;
+    if (total <= earlyAlertThreshold && !isEndingSoon) {
       setIsEndingSoon(true);
       radioSound();
       if (isDesktopDevice()) {
@@ -119,7 +121,7 @@ export const Counter = () => {
       }
     }
 
-    if (total > 4000 && isEndingSoon) {
+    if (total > earlyAlertThreshold && isEndingSoon) {
       setIsEndingSoon(false);
     }
   };

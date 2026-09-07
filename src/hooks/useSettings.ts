@@ -34,6 +34,7 @@ export const useSettings = () => {
     setSettings,
     setPomodoroMode,
     setEnableNotifications,
+    setEarlyAlertSeconds,
     setMinimalSessionDuration,
   } = useSettingsStore();
 
@@ -92,6 +93,17 @@ export const useSettings = () => {
   const handleSwitchNotifications = async (value: boolean) => {
     setEnableNotifications(value);
     if (user) await userService.updatePreferences(user.uid, { enableNotifications: value });
+    toastSuccess(t('settingsSaved'));
+  };
+
+  const handleEarlyAlertSeconds = async (seconds: number) => {
+    if (!Number.isInteger(seconds) || seconds < 1 || seconds > 60) {
+      toastError(t('sections.notifications.earlyAlert.error'));
+      return;
+    }
+
+    setEarlyAlertSeconds(seconds);
+    if (user) await userService.updatePreferences(user.uid, { earlyAlertSeconds: seconds });
     toastSuccess(t('settingsSaved'));
   };
 
@@ -176,6 +188,7 @@ export const useSettings = () => {
     resetSettings,
     handleVolumeChange,
     handleSwitchNotifications,
+    handleEarlyAlertSeconds,
     handleChangeBreakDuration,
     handleBreaksInterval,
     handleSwitchOrderTasks,

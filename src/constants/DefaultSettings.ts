@@ -44,6 +44,7 @@ export const DefaultSettings: Settings = {
   enableSounds: true,
   volume: 1,
   enableNotifications: true,
+  earlyAlertSeconds: 4,
   minimalSessionDuration: 25,
 };
 

@@ -24,6 +24,7 @@ interface SettingsActions {
   setEnableSounds: (enableSounds: boolean) => void;
   setVolume: (volume: number) => void;
   setEnableNotifications: (enableNotifications: boolean) => void;
+  setEarlyAlertSeconds: (seconds: number) => void;
   setMinimalSessionDuration: (duration: number) => void;
   setSettings: (settings: Partial<Settings>) => void;
 }
@@ -46,6 +47,7 @@ const useSettingsStore = create<Settings & SettingsActions>()(
         enableSounds: DefaultSettings.enableSounds,
         volume: DefaultSettings.volume,
         enableNotifications: DefaultSettings.enableNotifications,
+        earlyAlertSeconds: DefaultSettings.earlyAlertSeconds,
         currentScuderia: DefaultSettings.currentScuderia,
         minimalSessionDuration: DefaultSettings.minimalSessionDuration,
         setPomodoroMode: (mode) => set(() => ({ mode })),
@@ -54,6 +56,7 @@ const useSettingsStore = create<Settings & SettingsActions>()(
         setEnableSounds: (enableSounds) => set(() => ({ enableSounds })),
         setVolume: (volume) => set(() => ({ volume })),
         setEnableNotifications: (enableNotifications) => set(() => ({ enableNotifications })),
+        setEarlyAlertSeconds: (earlyAlertSeconds) => set(() => ({ earlyAlertSeconds })),
         setLocale: (locale) => set(() => ({ locale })),
         setIsLongBreakPerTask: (longBreakPerTask) =>
           set(() => ({ isLongBreakPerTask: longBreakPerTask })),

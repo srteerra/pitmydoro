@@ -327,6 +327,13 @@
         "enableNotifications": {
           "title": "Habilitar notificaciones",
           "description": "Habilitar o deshabilitar las notificaciones."
+        },
+        "earlyAlert": {
+          "title": "Aviso anticipado",
+          "description": "Avisa esta cantidad de segundos antes de que termine el temporizador.",
+          "decrease": "Reducir el tiempo de aviso anticipado",
+          "increase": "Aumentar el tiempo de aviso anticipado",
+          "error": "El aviso anticipado debe estar entre 1 y 60 segundos."
         }
       },
       "language": {
