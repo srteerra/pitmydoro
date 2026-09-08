@@ -1,19 +1,8 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import {
-  Box,
-  Button,
-  Center,
-  Circle,
-  Flex,
-  Heading,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { LuBadgeCheck, LuCalendar, LuMapPin } from 'react-icons/lu';
+import { Box, Button, Center, Flex, Heading, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { LuCalendar, LuMapPin } from 'react-icons/lu';
 import { FaDiscord, FaInstagram, FaTwitch, FaXTwitter } from 'react-icons/fa6';
 import moment from 'moment/min/moment-with-locales';
 import { useLocale, useTranslations } from 'next-intl';
@@ -24,6 +13,7 @@ import { LastConnection } from '@/components/Profile/LastConnection';
 import { EditProfile } from '@/components/Profile/EditProfile';
 import { ShareProfile } from '@/components/Profile/ShareProfile';
 import { ProfileStats } from '@/components/Profile/Stats';
+import { FeaturedBadge } from '@/components/Profile/Badges/FeaturedBadge';
 import { PixelAvatar } from '@/components/Profile/PixelAvatar';
 import { jersey15 } from '@/assets/fonts/Jersey';
 import { useDialog } from '@/contexts/DialogContext';
@@ -33,6 +23,7 @@ import tinycolor from 'tinycolor2';
 
 interface Props {
   profile: Partial<UserProfile> & { username: string };
+  userId?: string;
   isOwn?: boolean;
 }
 
@@ -53,7 +44,7 @@ const InfoPill = ({ icon, label }: { icon: React.ReactNode; label: string }) => 
   </HStack>
 );
 
-export const Profile = ({ profile, isOwn = false }: Props) => {
+export const Profile = ({ profile, userId, isOwn = false }: Props) => {
   const t = useTranslations('profile');
   const locale = useLocale();
   const { theme } = useTheme();
@@ -160,15 +151,11 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
                   {profile.displayName || profile.username}
                 </Heading>
 
-                <Circle
-                  size='24px'
-                  bg='blue.500'
-                  color='white'
-                  outline='3px solid'
-                  outlineColor='bg.panel'
-                >
-                  <LuBadgeCheck size={16} />
-                </Circle>
+                <FeaturedBadge
+                  badges={profile.badges}
+                  featuredBadge={profile.featuredBadge}
+                  isOwn={isOwn}
+                />
               </Flex>
 
               <Text
@@ -255,7 +242,7 @@ export const Profile = ({ profile, isOwn = false }: Props) => {
             </Flex>
           </VStack>
 
-          <ProfileStats />
+          <ProfileStats userId={userId} profileTheme={profileTheme} />
         </Box>
       </Box>
     </Center>

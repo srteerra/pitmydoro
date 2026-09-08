@@ -20,5 +20,5 @@ export default function ProfilePage() {
 
   if (!user || !profile) return <Loader />;
 
-  return <Profile profile={profile} isOwn />;
+  return <Profile profile={profile} userId={user.uid} isOwn />;
 }

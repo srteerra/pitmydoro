@@ -71,5 +71,5 @@ export default function PublicProfilePage() {
     );
   }
 
-  return <Profile profile={profile} />;
+  return <Profile profile={profile} userId={profile.uid} />;
 }

@@ -8,6 +8,9 @@ export interface ReportTotals {
   breakTime: number;
   pausedTime: number;
   pomodoros: number;
+  pauses: number;
+  tasksCompleted: number;
+  tasksCreated: number;
 }
 
 const emptyTotals = (): ReportTotals => ({
@@ -15,6 +18,9 @@ const emptyTotals = (): ReportTotals => ({
   breakTime: 0,
   pausedTime: 0,
   pomodoros: 0,
+  pauses: 0,
+  tasksCompleted: 0,
+  tasksCreated: 0,
 });
 
 export const periodRange = (period: ReportPeriod): { from: string; to: string } => {
@@ -30,6 +36,11 @@ export const fetchRange = (): { from: string; to: string } => ({
   to: moment().endOf('day').format('YYYY-MM-DD'),
 });
 
+export const rollingYearRange = (): { from: string; to: string } => ({
+  from: moment().subtract(1, 'year').startOf('isoWeek').format('YYYY-MM-DD'),
+  to: moment().endOf('day').format('YYYY-MM-DD'),
+});
+
 export const sumTotals = (items: DailyStats[], from: string, to: string): ReportTotals =>
   items
     .filter((item) => item.date >= from && item.date <= to)
@@ -39,6 +50,9 @@ export const sumTotals = (items: DailyStats[], from: string, to: string): Report
         breakTime: acc.breakTime + (item.breakTime ?? 0),
         pausedTime: acc.pausedTime + (item.pausedTime ?? 0),
         pomodoros: acc.pomodoros + (item.pomodoros ?? 0),
+        pauses: acc.pauses + (item.pauses ?? 0),
+        tasksCompleted: acc.tasksCompleted + (item.tasksCompleted ?? 0),
+        tasksCreated: acc.tasksCreated + (item.tasksCreated ?? 0),
       }),
       emptyTotals()
     );
