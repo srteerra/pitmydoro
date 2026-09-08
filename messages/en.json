@@ -98,6 +98,10 @@
     "editProfile": "Edit profile",
     "comingSoon": "Coming soon",
     "aboutSection": "About you",
+    "displayNameLabel": "Name",
+    "displayNamePlaceholder": "How you want to be called",
+    "displayNameTooLong": "Name must be {max} characters or less",
+    "displayNameNoProfanity": "Please remove inappropriate language",
     "usernameLabel": "Username",
     "usernamePlaceholder": "your_username",
     "usernameRequired": "Username is required",
@@ -128,7 +132,12 @@
     "pauses": "Pauses",
     "tasksCompleted": "Tasks completed",
     "tasksCreated": "Tasks created",
-    "statsPlaceholder": "Placeholder data — real stats coming soon.",
+    "pomodoros": "Pomodoros",
+    "heatmapTitle": "Activity",
+    "heatmapSummary": "{count} pomodoros in the last year",
+    "heatmapTooltip": "{count, plural, =0 {No pomodoros on {date}} one {# pomodoro · {time} — {date}} other {# pomodoros · {time} — {date}}}",
+    "heatmapLess": "Less",
+    "heatmapMore": "More",
     "shareProfile": "Share profile",
     "linkCopied": "Profile link copied",
     "copyLink": "Copy link",
@@ -153,6 +162,41 @@
     "keepEditing": "Keep editing",
     "cancel": "Cancel",
     "changesDiscarded": "Changes discarded"
+  },
+  "badges": {
+    "dialogTitle": "Badge",
+    "dragHint": "Drag to spin the medal",
+    "pickerTitle": "Your badges",
+    "pickerHint": "Pick a badge to wear next to your name. Locked ones are assigned by the team — tap any of them to see it in 3D.",
+    "equipLabel": "Tap to wear",
+    "unequipLabel": "Tap to remove",
+    "lockedLabel": "Locked",
+    "lockedPreviewLabel": "Locked · tap to view",
+    "lockedHint": "This one is assigned by the team. You can still spin it here.",
+    "backToPicker": "Back to badges",
+    "changeBadge": "Change badge",
+    "equipped": "{name} is now next to your name",
+    "unequipped": "Badge removed from your name",
+    "streamer": {
+      "name": "Streamer",
+      "description": "Streams live and races the clock in front of an audience."
+    },
+    "supporter": {
+      "name": "Supporter",
+      "description": "Backed Pit My Doro with a donation and helped keep it running."
+    },
+    "dev": {
+      "name": "Dev",
+      "description": "Contributed code to the project."
+    },
+    "creator": {
+      "name": "Creator",
+      "description": "Content creator who featured or reviewed Pit My Doro on YouTube, Instagram, TikTok or elsewhere."
+    },
+    "designer": {
+      "name": "Designer",
+      "description": "Contributed designs to the project."
+    }
   },
   "stats": {
     "seeStats": "See Stats",

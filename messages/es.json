@@ -99,6 +99,10 @@
     "editProfile": "Editar perfil",
     "comingSoon": "Próximamente",
     "aboutSection": "Sobre ti",
+    "displayNameLabel": "Nombre",
+    "displayNamePlaceholder": "Cómo quieres que te llamen",
+    "displayNameTooLong": "El nombre debe tener {max} caracteres o menos",
+    "displayNameNoProfanity": "Por favor elimina el lenguaje inapropiado",
     "usernameLabel": "Nombre de usuario",
     "usernamePlaceholder": "tu_usuario",
     "usernameRequired": "El nombre de usuario es obligatorio",
@@ -129,7 +133,12 @@
     "pauses": "Pausas",
     "tasksCompleted": "Tareas completadas",
     "tasksCreated": "Tareas creadas",
-    "statsPlaceholder": "Datos de ejemplo — estadísticas reales próximamente.",
+    "pomodoros": "Pomodoros",
+    "heatmapTitle": "Actividad",
+    "heatmapSummary": "{count} pomodoros en el último año",
+    "heatmapTooltip": "{count, plural, =0 {Sin pomodoros el {date}} one {# pomodoro · {time} — {date}} other {# pomodoros · {time} — {date}}}",
+    "heatmapLess": "Menos",
+    "heatmapMore": "Más",
     "shareProfile": "Compartir perfil",
     "linkCopied": "Enlace del perfil copiado",
     "copyLink": "Copiar enlace",
@@ -154,6 +163,41 @@
     "keepEditing": "Seguir editando",
     "cancel": "Cancelar",
     "changesDiscarded": "Cambios descartados"
+  },
+  "badges": {
+    "dialogTitle": "Insignia",
+    "dragHint": "Arrastra para girar la medalla",
+    "pickerTitle": "Tus insignias",
+    "pickerHint": "Elige una insignia para llevar junto a tu nombre. Las bloqueadas las asigna el equipo: toca cualquiera para verla en 3D.",
+    "equipLabel": "Toca para portar",
+    "unequipLabel": "Toca para quitar",
+    "lockedLabel": "Bloqueada",
+    "lockedPreviewLabel": "Bloqueada · toca para verla",
+    "lockedHint": "Esta la asigna el equipo. Aun así puedes girarla aquí.",
+    "backToPicker": "Volver a insignias",
+    "changeBadge": "Cambiar insignia",
+    "equipped": "{name} ya está junto a tu nombre",
+    "unequipped": "Insignia quitada de tu nombre",
+    "streamer": {
+      "name": "Streamer",
+      "description": "Transmite en vivo y corre contra el reloj frente a una audiencia."
+    },
+    "supporter": {
+      "name": "Supporter",
+      "description": "Apoyó a Pit My Doro con un donativo y ayudó a mantenerlo en marcha."
+    },
+    "dev": {
+      "name": "Dev",
+      "description": "Contribuyó con código al proyecto."
+    },
+    "creator": {
+      "name": "Creator",
+      "description": "Creador de contenido que mencionó o valoró Pit My Doro en YouTube, Instagram, TikTok u otra plataforma."
+    },
+    "designer": {
+      "name": "Designer",
+      "description": "Aportó diseños al proyecto."
+    }
   },
   "stats": {
     "seeStats": "Ver estadísticas",
