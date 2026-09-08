@@ -26,6 +26,7 @@
     "@emotion/styled": "^11.14.0",
     "@next/third-parties": "^15.3.2",
     "@types/howler": "^2.2.12",
+    "@types/three": "^0.185.4",
     "@types/tinycolor2": "^1.4.6",
     "bad-words": "^4.0.0",
     "firebase": "^12.9.0",
@@ -49,6 +50,7 @@
     "react-icons": "^5.5.0",
     "recharts": "^3.7.0",
     "sweetalert2": "^11.6.13",
+    "three": "^0.185.1",
     "tinycolor2": "^1.6.0",
     "zustand": "^5.0.3"
   },

@@ -4,6 +4,7 @@ import { userService } from '@/services/user.service';
 import { Socials } from '@/interfaces/Socials.interface';
 import { ProfileTheme } from '@/interfaces/ProfileTheme.interface';
 import { UserStreak } from '@/interfaces/UserStreak.interface';
+import { BadgeId, UserBadges } from '@/interfaces/Badge.interface';
 
 interface UserProfile {
   username: string;
@@ -16,6 +17,8 @@ interface UserProfile {
   favoriteFlag?: string;
   socials?: Socials;
   streak?: UserStreak;
+  badges?: UserBadges;
+  featuredBadge?: BadgeId | null;
   lastConnection?: Timestamp;
   uid?: string;
 }

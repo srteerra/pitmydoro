@@ -17,14 +17,12 @@ import type { User } from 'firebase/auth';
 import { DefaultSettings } from '@/constants/DefaultSettings';
 import { Settings } from '@/interfaces/Settings.interface';
 import { OverlaySettings } from '@/interfaces/Overlay.interface';
-import { UserProfile as BaseUserProfile } from '@/interfaces/UserProfile.interface';
+import { UserProfile } from '@/interfaces/UserProfile.interface';
 import { UserStreak } from '@/interfaces/UserStreak.interface';
 import { DEFAULT_PROFILE_THEME } from '@/utils/profileTheme.utils';
 import { advanceStreak, EMPTY_STREAK, localDayKey, resolveStreak } from '@/utils/streak.utils';
 
 const STORAGE_SETTINGS_KEY = 'pitmydoro_settings';
-
-type UserProfile = BaseUserProfile & { uid?: string };
 
 interface UserData {
   email: string;
