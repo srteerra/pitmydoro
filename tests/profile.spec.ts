@@ -10,6 +10,19 @@ import {
 } from '@/utils/profileTheme.utils';
 import { timestampUtils } from '@/utils/timestamp.utils';
 import { SCUDERIAS } from '@/constants/Scuderias';
+import {
+  DISPLAY_NAME_MAX_LENGTH,
+  displayNameHasProfanity,
+  isDisplayNameTooLong,
+  normalizeDisplayName,
+} from '@/utils/displayName.utils';
+import { buildHeatmap } from '@/utils/statsHeatmap.utils';
+import { BADGES } from '@/constants/Badges';
+import { findBadge, isBadgeOwned, resolveBadges, resolveFeaturedBadge } from '@/utils/badges.utils';
+import en from '../messages/en.json';
+import es from '../messages/es.json';
+import { periodRange, rollingYearRange, sumTotals } from '@/utils/statsReport.utils';
+import { DailyStats } from '@/interfaces/Stats.interface';
 
 const nonExistentUsername = () => `nouser${Date.now()}${Math.floor(Math.random() * 1000)}`;
 
@@ -157,5 +170,265 @@ test.describe('Profile timestamps', () => {
 
   test('renders a dash when there is no date', () => {
     expect(timestampUtils.formatDate(undefined)).toBe('—');
+  });
+});
+
+const dailyStats = (entries: Partial<DailyStats>[]) => entries as DailyStats[];
+
+test.describe('Profile stats totals', () => {
+  test('adds up every metric inside the range', () => {
+    const stats = dailyStats([
+      {
+        date: '2026-01-10',
+        workTime: 60,
+        breakTime: 20,
+        pausedTime: 10,
+        pomodoros: 2,
+        pauses: 3,
+        tasksCompleted: 1,
+        tasksCreated: 4,
+      },
+      {
+        date: '2026-01-11',
+        workTime: 40,
+        breakTime: 5,
+        pausedTime: 0,
+        pomodoros: 1,
+        pauses: 1,
+        tasksCompleted: 2,
+        tasksCreated: 0,
+      },
+    ]);
+
+    expect(sumTotals(stats, '2026-01-10', '2026-01-11')).toEqual({
+      workTime: 100,
+      breakTime: 25,
+      pausedTime: 10,
+      pomodoros: 3,
+      pauses: 4,
+      tasksCompleted: 3,
+      tasksCreated: 4,
+    });
+  });
+
+  test('ignores days outside the range and missing counters', () => {
+    const stats = dailyStats([
+      { date: '2026-01-09', workTime: 999, pomodoros: 9 },
+      { date: '2026-01-10', workTime: 60, pomodoros: 2 },
+    ]);
+
+    const totals = sumTotals(stats, '2026-01-10', '2026-01-10');
+
+    expect(totals.workTime).toBe(60);
+    expect(totals.pomodoros).toBe(2);
+    expect(totals.pauses).toBe(0);
+    expect(totals.tasksCompleted).toBe(0);
+  });
+
+  test('never starts a period after today', () => {
+    const { from, to } = periodRange('day');
+
+    expect(from).toBe(to);
+  });
+});
+
+test.describe('Profile activity heatmap', () => {
+  const range = rollingYearRange();
+
+  test('fills whole iso weeks over the rolling year', () => {
+    const { weeks } = buildHeatmap([], range.from, range.to);
+    const days = weeks.flatMap((week) => week.days);
+
+    expect(weeks.length).toBeGreaterThanOrEqual(52);
+    expect(days.length).toBe(weeks.length * 7);
+    expect(new Date(`${days[0].date}T00:00:00`).getDay()).toBe(1);
+  });
+
+  test('scales levels against the best day', () => {
+    const stats = dailyStats([
+      { date: range.to, pomodoros: 8, workTime: 1000 },
+      { date: range.from, pomodoros: 2, workTime: 500 },
+    ]);
+
+    const { weeks, total, bestDay } = buildHeatmap(stats, range.from, range.to);
+    const days = weeks.flatMap((week) => week.days);
+    const cellFor = (date: string) => days.find((day) => day.date === date);
+
+    expect(total).toBe(10);
+    expect(bestDay).toBe(8);
+    expect(cellFor(range.to)?.level).toBe(4);
+    expect(cellFor(range.from)?.level).toBe(1);
+    expect(days.filter((day) => day.pomodoros === 0).every((day) => day.level === 0)).toBe(true);
+  });
+
+  test('flags the days after today so they are not painted', () => {
+    const { weeks } = buildHeatmap([], range.from, range.to);
+    const days = weeks.flatMap((week) => week.days);
+
+    expect(days.filter((day) => day.isFuture).length).toBeLessThan(7);
+    expect(days.every((day) => !day.isFuture || day.pomodoros === 0)).toBe(true);
+  });
+
+  test('labels each month once in reading order', () => {
+    const { months } = buildHeatmap([], range.from, range.to);
+    const keys = months.map((month) => month.key);
+    const indexes = months.map((month) => month.weekIndex);
+
+    expect(new Set(keys).size).toBe(keys.length);
+    expect([...indexes].sort((a, b) => a - b)).toEqual(indexes);
+    expect(months[0].weekIndex).toBe(0);
+  });
+});
+
+test.describe('Profile display name rules', () => {
+  test('collapses whitespace and trims', () => {
+    expect(normalizeDisplayName('  Angel   Lopez  ')).toBe('Angel Lopez');
+    expect(normalizeDisplayName('\n Max \t Verstappen ')).toBe('Max Verstappen');
+    expect(normalizeDisplayName(undefined)).toBe('');
+    expect(normalizeDisplayName(null)).toBe('');
+  });
+
+  test('caps the length on the normalized value', () => {
+    expect(DISPLAY_NAME_MAX_LENGTH).toBe(30);
+    expect(isDisplayNameTooLong('a'.repeat(DISPLAY_NAME_MAX_LENGTH))).toBe(false);
+    expect(isDisplayNameTooLong('a'.repeat(DISPLAY_NAME_MAX_LENGTH + 1))).toBe(true);
+    expect(isDisplayNameTooLong(`  ${'a'.repeat(DISPLAY_NAME_MAX_LENGTH)}  `)).toBe(false);
+    expect(isDisplayNameTooLong('')).toBe(false);
+  });
+
+  test('rejects profanity in both languages', () => {
+    expect(displayNameHasProfanity('El Mierda')).toBe(true);
+    expect(displayNameHasProfanity('shit racer')).toBe(true);
+    expect(displayNameHasProfanity('accented mierdá')).toBe(true);
+    expect(displayNameHasProfanity('Angel Lopez')).toBe(false);
+    expect(displayNameHasProfanity('')).toBe(false);
+  });
+
+  test('stays free otherwise, unlike the username', () => {
+    const freeNames = ['Ángel L. 🏎', 'max_verstappen 33', 'THE Doctor', 'a'];
+
+    freeNames.forEach((name) => {
+      expect(isDisplayNameTooLong(name)).toBe(false);
+      expect(displayNameHasProfanity(name)).toBe(false);
+    });
+  });
+});
+
+test.describe('Profile badges', () => {
+  test('returns nothing when the profile carries no badges', () => {
+    expect(resolveBadges(undefined)).toEqual([]);
+    expect(resolveBadges(null)).toEqual([]);
+    expect(resolveBadges({})).toEqual([]);
+  });
+
+  test('keeps the canonical order no matter how the map is written', () => {
+    const owned = resolveBadges({ isDesigner: true, isDev: true, isStreamer: true });
+
+    expect(owned.map((badge) => badge.id)).toEqual(['streamer', 'dev', 'designer']);
+  });
+
+  test('only counts flags that are actually on', () => {
+    const owned = resolveBadges({
+      isDev: true,
+      isStreamer: false,
+      isSupporter: undefined,
+    });
+
+    expect(owned.map((badge) => badge.id)).toEqual(['dev']);
+  });
+
+  test('tolerates the shapes a manual Firestore edit can produce', () => {
+    expect(resolveBadges({ isDev: 'true' } as never).map((b) => b.id)).toEqual(['dev']);
+    expect(resolveBadges({ isDev: 1 } as never).map((b) => b.id)).toEqual(['dev']);
+    expect(resolveBadges({ isDev: 'false' } as never)).toEqual([]);
+    expect(resolveBadges({ isDev: 0 } as never)).toEqual([]);
+    expect(resolveBadges({ notABadge: true } as never)).toEqual([]);
+  });
+
+  test('every badge is uniquely identified and coloured', () => {
+    const ids = BADGES.map((badge) => badge.id);
+    const flags = BADGES.map((badge) => badge.flag);
+    const colors = BADGES.map((badge) => badge.color);
+
+    expect(new Set(ids).size).toBe(BADGES.length);
+    expect(new Set(flags).size).toBe(BADGES.length);
+    expect(new Set(colors).size).toBe(BADGES.length);
+    BADGES.forEach((badge) => {
+      expect(badge.color).toMatch(/^#[0-9A-Fa-f]{6}$/);
+      expect(badge.flag).toBe(`is${badge.id[0].toUpperCase()}${badge.id.slice(1)}`);
+    });
+  });
+
+  test('every badge carries a drawable glyph', () => {
+    BADGES.forEach((badge) => {
+      const shapes = (badge.glyph.paths?.length ?? 0) + (badge.glyph.circles?.length ?? 0);
+      expect(shapes).toBeGreaterThan(0);
+    });
+  });
+
+  test('every badge is translated in both locales', () => {
+    BADGES.forEach((badge) => {
+      [en, es].forEach((messages) => {
+        const entry = (
+          messages.badges as unknown as Record<string, { name: string; description: string }>
+        )[badge.id];
+
+        expect(entry?.name?.length ?? 0).toBeGreaterThan(0);
+        expect(entry?.description?.length ?? 0).toBeGreaterThan(0);
+      });
+    });
+  });
+
+  test('looks a badge up by id', () => {
+    expect(findBadge('dev')?.flag).toBe('isDev');
+    expect(findBadge('nope' as never)).toBeUndefined();
+  });
+});
+
+test.describe('Featured badge', () => {
+  const owner = { isDev: true, isStreamer: true };
+
+  test('knows which badges the profile actually owns', () => {
+    expect(isBadgeOwned(owner, 'dev')).toBe(true);
+    expect(isBadgeOwned(owner, 'streamer')).toBe(true);
+    expect(isBadgeOwned(owner, 'supporter')).toBe(false);
+    expect(isBadgeOwned(undefined, 'dev')).toBe(false);
+    expect(isBadgeOwned(owner, 'nope' as never)).toBe(false);
+  });
+
+  test('resolves the badge worn next to the name', () => {
+    expect(resolveFeaturedBadge(owner, 'dev')?.id).toBe('dev');
+    expect(resolveFeaturedBadge(owner, null)).toBeNull();
+    expect(resolveFeaturedBadge(owner, undefined)).toBeNull();
+  });
+
+  test('refuses to show a featured badge the profile does not own', () => {
+    expect(resolveFeaturedBadge(owner, 'supporter')).toBeNull();
+    expect(resolveFeaturedBadge({}, 'dev')).toBeNull();
+    expect(resolveFeaturedBadge(undefined, 'dev')).toBeNull();
+  });
+
+  test('stops showing a badge that was revoked while worn', () => {
+    expect(resolveFeaturedBadge({ isDev: true }, 'dev')?.id).toBe('dev');
+    expect(resolveFeaturedBadge({ isDev: false }, 'dev')).toBeNull();
+  });
+
+  test('labels every equip state in both locales', () => {
+    [
+      'pickerTitle',
+      'pickerHint',
+      'equipLabel',
+      'unequipLabel',
+      'changeBadge',
+      'lockedLabel',
+      'lockedPreviewLabel',
+      'lockedHint',
+      'backToPicker',
+    ].forEach((key) => {
+      [en, es].forEach((messages) => {
+        const value = (messages.badges as unknown as Record<string, string>)[key];
+        expect(value?.length ?? 0).toBeGreaterThan(0);
+      });
+    });
   });
 });
