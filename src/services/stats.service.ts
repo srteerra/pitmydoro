@@ -11,8 +11,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { localDayKey } from '@/utils/streak.utils';
-import { DailyStats } from '@/interfaces/Stats.interface';
-import { TaskStatsDelta } from '@/interfaces/Task.interface';
+import { DailyStats, DailyStatsDelta } from '@/interfaces/Stats.interface';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
 import useSettingsStore from '@/stores/Settings.store';
 
@@ -21,7 +20,7 @@ export const dayKey = (date: Date | number = Date.now()) => localDayKey(date);
 export const statsService = {
   async incrementDailyStats(
     userId: string,
-    delta: TaskStatsDelta,
+    delta: DailyStatsDelta,
     date: Date | number = Date.now()
   ) {
     const updates: Record<string, unknown> = {};
@@ -30,6 +29,11 @@ export const statsService = {
     if (delta.breakTime !== undefined) updates.breakTime = increment(delta.breakTime);
     if (delta.pausedTime !== undefined) updates.pausedTime = increment(delta.pausedTime);
     if (delta.pomodoros !== undefined) updates.pomodoros = increment(delta.pomodoros);
+    if (delta.pauses !== undefined) updates.pauses = increment(delta.pauses);
+    if (delta.interruptions !== undefined) updates.interruptions = increment(delta.interruptions);
+    if (delta.tasksCreated !== undefined) updates.tasksCreated = increment(delta.tasksCreated);
+    if (delta.tasksCompleted !== undefined)
+      updates.tasksCompleted = increment(delta.tasksCompleted);
 
     const { mode, currentScuderia } = useSettingsStore.getState();
     const spriteSeconds = (delta.workTime ?? 0) + (delta.breakTime ?? 0);

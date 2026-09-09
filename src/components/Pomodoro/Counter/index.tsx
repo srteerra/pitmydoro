@@ -64,6 +64,7 @@ export const Counter = () => {
     usePomodoroStore();
   const setOverlayTiming = usePomodoroStore((state) => state.setOverlayTiming);
   const lastTotalRef = useRef(0);
+  const isIdle = !isActive && !currentPomodoro;
 
   const backButtonColor =
     theme === 'dark'
@@ -160,24 +161,28 @@ export const Counter = () => {
   ]);
 
   const handleStartClick = async () => {
-    countdownRef.current?.start();
     playSound();
 
-    const frozenRemaining = usePomodoroStore.getState().overlayRemainingMs;
-    const baseMs = currentPomodoro
-      ? frozenRemaining || lastTotalRef.current || getCurrentDuration()
-      : getCurrentDuration();
+    if (currentPomodoro) {
+      countdownRef.current?.start();
+
+      const frozenRemaining = usePomodoroStore.getState().overlayRemainingMs;
+      const baseMs = frozenRemaining || lastTotalRef.current || getCurrentDuration();
+      setOverlayTiming({ endsAt: Date.now() + baseMs, remainingMs: baseMs });
+
+      await resume();
+      return;
+    }
+
+    const baseMs = getCurrentDuration();
+    setDateClock(Date.now() + baseMs);
     setOverlayTiming({ endsAt: Date.now() + baseMs, remainingMs: baseMs });
 
-    if (currentPomodoro) {
-      await resume();
-    } else {
-      const sessionMinutes =
-        mode === PomodoroMode.MINIMAL
-          ? minimalSessionDuration
-          : tiresSettings[selectedTire]?.duration;
-      await start(status, sessionMinutes, currentScuderia);
-    }
+    const sessionMinutes =
+      mode === PomodoroMode.MINIMAL
+        ? minimalSessionDuration
+        : tiresSettings[selectedTire]?.duration;
+    await start(status, sessionMinutes, currentScuderia);
   };
 
   const handlePauseClick = async () => {
@@ -250,6 +255,13 @@ export const Counter = () => {
       countdownRef.current?.pause();
     }
   }, [isActive]);
+
+  useEffect(() => {
+    if (!isActive) return;
+    if (countdownRef.current?.isStarted()) return;
+
+    countdownRef.current?.start();
+  }, [isActive, dateClock]);
 
   useEffect(() => {
     const handleHide = () => {
@@ -327,7 +339,6 @@ export const Counter = () => {
 
         <Center>
           <Countdown
-            key={dateClock}
             ref={(countdown) => {
               if (countdown) countdownRef.current = countdown.getApi();
             }}
@@ -336,7 +347,10 @@ export const Counter = () => {
             date={dateClock}
             onTick={handleTick}
             renderer={({ hours, minutes, seconds }) => {
-              const totalMinutes = hours * 60 + minutes;
+              const idleSeconds = isIdle ? Math.round(getCurrentDuration() / 1000) : null;
+              const totalMinutes =
+                idleSeconds === null ? hours * 60 + minutes : Math.floor(idleSeconds / 60);
+              const totalSeconds = idleSeconds === null ? seconds : idleSeconds % 60;
               return (
                 <Text
                   fontWeight='bold'
@@ -345,7 +359,7 @@ export const Counter = () => {
                   color={theme === 'dark' ? 'white' : counterColor}
                   className={jua.className}
                 >
-                  {zeroPad(totalMinutes)}:{zeroPad(seconds)}
+                  {zeroPad(totalMinutes)}:{zeroPad(totalSeconds)}
                 </Text>
               );
             }}

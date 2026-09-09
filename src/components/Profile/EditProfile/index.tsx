@@ -29,6 +29,12 @@ import { SCUDERIAS } from '@/constants/Scuderias';
 import { Socials } from '@/interfaces/Socials.interface';
 import { isValidSocialUrl, normalizeSocialUrl, SocialPlatform } from '@/utils/socials.utils';
 import { BIO_MAX_LENGTH, bioHasLink, bioHasProfanity } from '@/utils/bio.utils';
+import {
+  DISPLAY_NAME_MAX_LENGTH,
+  displayNameHasProfanity,
+  isDisplayNameTooLong,
+  normalizeDisplayName,
+} from '@/utils/displayName.utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDialog } from '@/contexts/DialogContext';
 import { userService } from '@/services/user.service';
@@ -40,6 +46,7 @@ import useProfileThemeStore from '@/stores/ProfileTheme.store';
 import { DEFAULT_PROFILE_THEME, themeFromTeam } from '@/utils/profileTheme.utils';
 
 interface ProfileFields {
+  displayName: string;
   username: string;
   bio: string;
   instagram: string;
@@ -79,6 +86,27 @@ const SOCIAL_INPUTS: {
     icon: <FaXTwitter />,
   },
 ];
+
+const AvatarPreview = ({
+  control,
+  fallback,
+  color,
+}: {
+  control: Control<ProfileFields>;
+  fallback?: string;
+  color?: string;
+}) => {
+  const displayName = useWatch({ control, name: 'displayName' });
+
+  return (
+    <PixelAvatar
+      name={normalizeDisplayName(displayName) || fallback}
+      color={color}
+      size={{ base: 112 }}
+      ring={false}
+    />
+  );
+};
 
 const TeamGrid = React.memo(
   ({ selected, onSelect }: { selected: string | null; onSelect: (id: string) => void }) => (
@@ -264,6 +292,7 @@ export const EditProfile = () => {
   const { control, handleSubmit, reset, setValue, setError, formState } = useForm<ProfileFields>({
     mode: 'onChange',
     defaultValues: {
+      displayName: profile?.displayName || '',
       username: profile?.username || '',
       bio: profile?.bio || '',
       instagram: profile?.socials?.instagram || '',
@@ -386,6 +415,7 @@ export const EditProfile = () => {
     };
 
     const nextUsername = data.username.trim().toLowerCase();
+    const displayName = normalizeDisplayName(data.displayName);
     const bio = data.bio.trim();
 
     const needsClaim = registration === 'unclaimed';
@@ -409,6 +439,7 @@ export const EditProfile = () => {
 
     updateLocalProfile({
       username: nextUsername,
+      displayName,
       bio,
       favoriteTeam: selected,
       profileTheme,
@@ -420,6 +451,7 @@ export const EditProfile = () => {
 
     if (user) {
       await userService.updateProfile(user.uid, {
+        displayName,
         bio,
         favoriteTeam: selected,
         profileTheme,
@@ -429,7 +461,7 @@ export const EditProfile = () => {
       });
     }
 
-    reset({ ...data, username: nextUsername, bio });
+    reset({ ...data, username: nextUsername, displayName, bio });
     toastSuccess(t('profileSaved'));
 
     dirtyRef.current = false;
@@ -451,15 +483,53 @@ export const EditProfile = () => {
 
         <Flex gap={5} align='flex-start' direction={{ base: 'column', sm: 'row' }}>
           <Box flexShrink={0} alignSelf={{ base: 'center', sm: 'flex-start' }}>
-            <PixelAvatar
-              name={profile?.username}
+            <AvatarPreview
+              control={control}
+              fallback={profile?.username}
               color={profileTheme.primary}
-              size={{ base: 112 }}
-              ring={false}
             />
           </Box>
 
           <VStack align='stretch' gap={4} flex='1' w='full'>
+            <Controller
+              control={control}
+              name='displayName'
+              rules={{
+                validate: (value: string) => {
+                  if (isDisplayNameTooLong(value))
+                    return t('displayNameTooLong', { max: DISPLAY_NAME_MAX_LENGTH });
+                  if (displayNameHasProfanity(value)) return t('displayNameNoProfanity');
+                  return true;
+                },
+              }}
+              render={({ field, fieldState }) => (
+                <Field.Root invalid={!!fieldState.error}>
+                  <Field.Label>{t('displayNameLabel')}</Field.Label>
+                  <Input
+                    {...field}
+                    data-pw-id='profile-display-name-input'
+                    placeholder={t('displayNamePlaceholder')}
+                    rounded='full'
+                    autoComplete='off'
+                  />
+                  <Flex justify='space-between' w='full' paddingX={2} paddingTop={1}>
+                    <Field.ErrorText>{fieldState.error?.message}</Field.ErrorText>
+                    <Text
+                      fontSize='xs'
+                      color={
+                        (field.value?.length ?? 0) > DISPLAY_NAME_MAX_LENGTH
+                          ? 'red.500'
+                          : 'fg.muted'
+                      }
+                      ml='auto'
+                    >
+                      {field.value?.length ?? 0}/{DISPLAY_NAME_MAX_LENGTH}
+                    </Text>
+                  </Flex>
+                </Field.Root>
+              )}
+            />
+
             <UsernameField
               control={control}
               uid={uid}

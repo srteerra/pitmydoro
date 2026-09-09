@@ -43,6 +43,8 @@ export const FlagPicker = ({ value, onChange }: Props) => {
           open={open}
           onOpenChange={(e) => setOpen(e.open)}
           positioning={{ placement: 'bottom-end' }}
+          lazyMount
+          unmountOnExit
         >
           <Popover.Trigger asChild>
             <Button variant='outline' rounded='full' minW='60px' fontSize='xl'>

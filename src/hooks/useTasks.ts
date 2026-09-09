@@ -3,11 +3,21 @@ import { EditTask, Task } from '@/interfaces/Task.interface';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useAuth } from '@/contexts/AuthContext';
 import { taskService } from '@/services/task.service';
+import { statsService } from '@/services/stats.service';
 import { Timestamp } from 'firebase/firestore';
 import _ from 'lodash';
 import useSettingsStore from '@/stores/Settings.store';
 import { usePomodoroStore } from '@/stores/Pomodoro.store';
 import { flushElapsedTime, rebindRunningPomodoroTask } from '@/utils/accountElapsed.utils';
+import { localDayKey } from '@/utils/streak.utils';
+import { timestampUtils } from '@/utils/timestamp.utils';
+
+const countCompletedDelta = (isComplete?: boolean, previousCompletedAt?: Timestamp | null) => {
+  if (isComplete) return 1;
+
+  const previousMs = timestampUtils.toMillis(previousCompletedAt);
+  return previousMs && localDayKey(previousMs) === localDayKey() ? -1 : 0;
+};
 
 export function useTasks() {
   const { user } = useAuth();
@@ -41,6 +51,7 @@ export function useTasks() {
 
     if (user) {
       await taskService.create(taskData, user.uid);
+      await statsService.incrementDailyStats(user.uid, { tasksCreated: 1 });
     }
   };
 
@@ -82,6 +93,7 @@ export function useTasks() {
       await flushElapsedTime(user?.uid);
     }
 
+    const previousCompletedAt = tasks.find((t) => t.id === id)?.completedAt;
     const updates = { completedAt: isComplete ? Timestamp.now() : null };
     updateTask(id, updates);
 
@@ -115,6 +127,11 @@ export function useTasks() {
 
     if (user) {
       await taskService.complete(user.uid, id, isComplete);
+
+      const completedDelta = countCompletedDelta(isComplete, previousCompletedAt);
+      if (completedDelta !== 0) {
+        await statsService.incrementDailyStats(user.uid, { tasksCompleted: completedDelta });
+      }
     }
   };
 

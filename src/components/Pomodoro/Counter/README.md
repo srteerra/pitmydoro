@@ -5,6 +5,7 @@ Countdown clock with start / pause / reset controls and session lifecycle manage
 ## Responsibilities
 
 - Displays a live `MM:SS` countdown powered by `react-countdown`.
+- While idle (no pomodoro in progress) the clock renders the configured session/break duration directly, so it never drifts to `24:59` while sitting still. `dateClock` is refreshed on start so a session always runs its full duration.
 - **Start** — calls `usePomodoro.start()` or `resume()` depending on whether a pomodoro is already in progress, and plays the start sound.
 - **Pause** — pauses the clock and calls `usePomodoro.pause()`.
 - **Reset menu** — two options:
