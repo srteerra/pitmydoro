@@ -8,10 +8,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
-  workers: isCI ? '50%' : undefined,
+  workers: isCI ? '50%' : '75%',
   timeout: 60_000,
   expect: { timeout: 5_000 },
-  reporter: isCI ? 'github' : 'html',
+  reporter: isCI ? [['github'], ['html', { open: 'never' }]] : 'html',
   use: {
     baseURL,
     trace: 'on-first-retry',
@@ -27,8 +27,12 @@ export default defineConfig({
         { name: 'Mobile Safari', use: { ...devices['iPhone 12'] } },
       ],
   webServer: {
-    command: 'bun run dev',
-    url: 'http://localhost:3000',
+    command: isCI
+      ? 'pnpm run start'
+      : process.env.PW_DEV_SERVER
+        ? 'pnpm run dev'
+        : 'pnpm run build && pnpm run start',
+    url: baseURL,
     reuseExistingServer: !isCI,
     timeout: 120_000,
   },
