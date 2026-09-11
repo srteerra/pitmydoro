@@ -1,4 +1,14 @@
-import { collection, doc, getDocs, increment, orderBy, query, setDoc, Timestamp, where, } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDocs,
+  increment,
+  orderBy,
+  query,
+  setDoc,
+  Timestamp,
+  where,
+} from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { localDayKey } from '@/utils/streak.utils';
 import { DailyStats, DailyStatsDelta } from '@/interfaces/Stats.interface';
