@@ -9,7 +9,7 @@ import { LocaleSwitch } from '@/components/Layout/Toggles/LocaleSwitch';
 import Link from 'next/link';
 import { AuthModal } from '@/components/Auth/AuthModal';
 import GitHubStars from '@/components/GithubStars';
-import { LuBookText, LuCoffee, LuMegaphone, LuMenu, LuMonitorPlay } from 'react-icons/lu';
+import { LuBookText, LuMegaphone, LuMenu, LuMonitorPlay, LuTrophy } from 'react-icons/lu';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useTranslations } from 'next-intl';
@@ -200,18 +200,24 @@ export const Header = () => {
               </Box>
             </Tooltip>
 
-            <Tooltip openDelay={100} closeDelay={100} content={`${t('comingSoon')}`}>
+            <Tooltip openDelay={100} closeDelay={100} content={t('leaderboard')}>
               <Box as='span' display='inline-flex'>
-                <IconButton
-                  variant={'ghost'}
-                  rounded='full'
-                  size={{ base: 'sm', md: 'md' }}
-                  color={{ base: 'gray.500', _hover: 'gray.700' }}
-                  aria-label={t('donate')}
-                  disabled
+                <Link
+                  href={'/leaderboard'}
+                  aria-label='Leaderboard'
+                  onClick={(e) => guardLink(e, '/leaderboard')}
                 >
-                  <LuCoffee />
-                </IconButton>
+                  <IconButton
+                    as={'span'}
+                    variant={'ghost'}
+                    rounded='full'
+                    size={{ base: 'sm', md: 'md' }}
+                    color={{ base: 'gray.500', _hover: 'gray.700' }}
+                    aria-label='Leaderboard'
+                  >
+                    <LuTrophy />
+                  </IconButton>
+                </Link>
               </Box>
             </Tooltip>
           </HStack>

@@ -430,6 +430,7 @@
   },
   "header": {
     "learn": "Aprende más",
+    "leaderboard": "Ranking",
     "language": "Cambiar idioma",
     "theme": "Modo oscuro / claro",
     "minimalMode": "Cambiar modo vista",
@@ -891,6 +892,10 @@
     "learn": {
       "title": "Aprende Fórmula 1 – Guía para principiantes | Pit My Doro",
       "description": "¿Nuevo en la Fórmula 1? Aprende lo básico en minutos: cómo funcionan el campeonato y el fin de semana de carrera, la duración, las reglas, las paradas en boxes, los compuestos de neumáticos y los términos de F1 que todo aficionado debería conocer."
+    },
+    "leaderboard": {
+      "title": "Ranking – Pit My Doro",
+      "description": "Descubre quién acumuló más tiempo de concentración esta semana y este mes en Pit My Doro."
     }
   },
   "streak": {
@@ -900,5 +905,19 @@
     "longest": "Mejor racha: {count, plural, one {# día} other {# días}}",
     "activeTooltip": "{count, plural, one {racha de # día} other {racha de # días}}",
     "pendingTooltip": "Completa una sesión hoy para mantener tu racha"
+  },
+  "leaderboard": {
+    "title": "Ranking",
+    "subtitle": "Los usuarios con más tiempo de concentración.",
+    "weekly": "Esta semana",
+    "monthly": "Este mes",
+    "rank": "#",
+    "driver": "Piloto",
+    "focusTime": "Tiempo de foco",
+    "participants": "{count} en lista",
+    "updated": "actualizado {time}",
+    "sealed": "Final",
+    "empty": "Todavía no hay resultados para este periodo.",
+    "error": "No se pudo cargar la clasificación. Inténtalo más tarde."
   }
 }
