@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "pitmydoro-dev",
+    "dev": "pitmydoro-dev",
+    "prod": "pitmydoro"
+  }
+}
