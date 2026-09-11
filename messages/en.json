@@ -429,6 +429,7 @@
   },
   "header": {
     "learn": "Learn more",
+    "leaderboard": "Leaderboard",
     "language": "Change language",
     "theme": "Dark / Light mode",
     "minimalMode": "Switch view mode",
@@ -890,6 +891,10 @@
     "learn": {
       "title": "Learn Formula 1 – A Beginner's Guide | Pit My Doro",
       "description": "New to Formula 1? Learn the basics in minutes: how the championship and race weekend work, race length, rules, pit stops, tire compounds, and the F1 terms every fan should know."
+    },
+    "leaderboard": {
+      "title": "Leaderboard – Pit My Doro",
+      "description": "See who logged the most focus time this week and this month on Pit My Doro."
     }
   },
   "streak": {
@@ -899,5 +904,19 @@
     "longest": "Longest streak: {count, plural, one {# day} other {# days}}",
     "activeTooltip": "{count, plural, one {# day streak} other {# day streak}}",
     "pendingTooltip": "Complete a session today to keep your streak"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "Users who logged the most focus time.",
+    "weekly": "This week",
+    "monthly": "This month",
+    "rank": "#",
+    "driver": "Driver",
+    "focusTime": "Focus time",
+    "participants": "{count} in the list",
+    "updated": "updated {time}",
+    "sealed": "Final",
+    "empty": "No results for this period yet.",
+    "error": "Couldn't load the leaderboard. Try again later."
   }
 }

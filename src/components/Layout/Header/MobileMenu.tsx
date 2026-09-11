@@ -3,7 +3,7 @@
 import React from 'react';
 import { Flex, HStack, Text, VStack } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { LuBookText } from 'react-icons/lu';
+import { LuBookText, LuTrophy } from 'react-icons/lu';
 import { ToggleThemeMode } from '@/components/Layout/Toggles/ThemeMode';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
 import GitHubStars from '@/components/GithubStars';
@@ -49,6 +49,24 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
           >
             <LuBookText />
             <Text>{t('learn')}</Text>
+          </HStack>
+        </NextLink>
+
+        <NextLink
+          href='/leaderboard'
+          aria-label='Leaderboard'
+          onClick={(e) => handleNav(e, '/leaderboard')}
+        >
+          <HStack
+            gap={2}
+            fontWeight='medium'
+            bgColor={{ base: 'gray.100', _hover: 'gray.200', _dark: 'gray.700' }}
+            padding={4}
+            rounded='xl'
+            color={{ base: 'gray.700', _hover: 'gray.900', _dark: 'gray.200' }}
+          >
+            <LuTrophy />
+            <Text>{t('leaderboard')}</Text>
           </HStack>
         </NextLink>
       </VStack>

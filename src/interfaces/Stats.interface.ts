@@ -3,6 +3,7 @@ import { TaskStatsDelta } from '@/interfaces/Task.interface';
 
 export interface DailyStats {
   date: string;
+  utcDate?: string;
   workTime: number;
   breakTime: number;
   pausedTime: number;
