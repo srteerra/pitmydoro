@@ -1,0 +1,47 @@
+name: Deploy Firebase
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'functions/**'
+      - 'firestore.indexes.json'
+      - 'firebase.json'
+      - '.firebaserc'
+      - '.github/workflows/deploy-firebase.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  Deploy:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install function dependencies
+        run: npm ci --prefix functions
+
+      - name: Build functions
+        run: npm run build --prefix functions
+
+      - name: Write service account credentials
+        run: echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/service-account.json"
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Deploy indexes and functions
+        run: npx --yes firebase-tools@latest deploy --only firestore:indexes,functions --project prod --non-interactive --force
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/service-account.json
+
+      - name: Remove service account credentials
+        if: always()
+        run: rm -f "$RUNNER_TEMP/service-account.json"
