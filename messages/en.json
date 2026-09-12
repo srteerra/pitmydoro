@@ -908,13 +908,14 @@
   "leaderboard": {
     "title": "Leaderboard",
     "subtitle": "Users who logged the most focus time.",
+    "notice": "Some Pomodoros from the Sep 7–13 week may not have been recorded. Only those from Sep 11 onward are counted.",
     "weekly": "This week",
     "monthly": "This month",
     "rank": "#",
-    "driver": "Driver",
+    "user": "User",
     "focusTime": "Focus time",
-    "participants": "{count} in the list",
     "updated": "updated {time}",
+    "nextRefresh": "next refresh in {time}",
     "sealed": "Final",
     "empty": "No results for this period yet.",
     "error": "Couldn't load the leaderboard. Try again later."
