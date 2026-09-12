@@ -1,7 +1,17 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Badge, Container, Flex, HStack, Spinner, Tabs, Text, VStack } from '@chakra-ui/react';
+import {
+  Alert,
+  Badge,
+  Container,
+  Flex,
+  HStack,
+  Spinner,
+  Tabs,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { useLocale, useTranslations } from 'next-intl';
 import { leaderboardService } from '@/services/leaderboard.service';
 import {
@@ -30,6 +40,43 @@ const relativeTime = (locale: string, ms: number): string => {
   return formatter.format(Math.round(hours / 24), 'day');
 };
 
+const msUntilNextRefresh = (): number => {
+  const now = new Date();
+  const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0);
+
+  return next - now.getTime();
+};
+
+const formatCountdown = (ms: number): string => {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const seconds = total % 60;
+
+  return [hours, minutes, seconds].map((unit) => String(unit).padStart(2, '0')).join(':');
+};
+
+const NextRefresh = () => {
+  const t = useTranslations('leaderboard');
+  const [remaining, setRemaining] = useState<number | null>(null);
+
+  useEffect(() => {
+    setRemaining(msUntilNextRefresh());
+
+    const interval = setInterval(() => setRemaining(msUntilNextRefresh()), 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  if (remaining === null) return null;
+
+  return (
+    <Text data-pw-id='leaderboard-next-refresh'>
+      {t('nextRefresh', { time: formatCountdown(remaining) })}
+    </Text>
+  );
+};
+
 const formatPeriod = (locale: string, snapshot: LeaderboardSnapshot): string => {
   const formatter = new Intl.DateTimeFormat(locale, {
     day: 'numeric',
@@ -52,12 +99,16 @@ const PeriodPanel = ({ snapshot }: { snapshot: LeaderboardSnapshot }) => {
     <VStack align='stretch' gap={0}>
       <HStack gap={3} wrap='wrap' color='fg.muted' fontSize='sm'>
         <Text>{formatPeriod(locale, snapshot)}</Text>
-        <Text>·</Text>
-        <Text>{t('participants', { count: snapshot.participants })}</Text>
         {updated && (
           <>
             <Text>·</Text>
             <Text>{t('updated', { time: updated })}</Text>
+          </>
+        )}
+        {!snapshot.sealed && (
+          <>
+            <Text>·</Text>
+            <NextRefresh />
           </>
         )}
         {snapshot.sealed && (
@@ -108,7 +159,11 @@ export const Leaderboard = () => {
   );
 
   return (
-    <Container maxW='3xl' py={{ base: 10, md: 16 }}>
+    <Container
+      maxW='3xl'
+      py={{ base: 10, md: 16 }}
+      minH={{ base: 'calc(100vh - 72px)', lg: 'calc(100vh - 100px)' }}
+    >
       <VStack as='header' align='flex-start' gap={3} mb={{ base: 8, md: 10 }}>
         <Flex align='center' gap={3} mb={1}>
           <Text
@@ -126,6 +181,19 @@ export const Leaderboard = () => {
           {t('subtitle')}
         </Text>
       </VStack>
+
+      <Alert.Root
+        status='warning'
+        variant='subtle'
+        rounded='lg'
+        mb={{ base: 8, md: 10 }}
+        data-pw-id='leaderboard-notice'
+      >
+        <Alert.Indicator />
+        <Alert.Content>
+          <Alert.Description fontSize='sm'>{t('notice')}</Alert.Description>
+        </Alert.Content>
+      </Alert.Root>
 
       {loading && (
         <Flex data-pw-id='leaderboard-loading' justify='center' align='center' minH='12rem'>

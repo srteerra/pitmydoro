@@ -53,7 +53,7 @@ export const LeaderboardTable = ({ entries }: Props) => {
     <VStack data-pw-id='leaderboard-table' align='stretch' gap={2} mt={4}>
       <HStack px={4} color='fg.muted' fontSize='xs' textTransform='uppercase' letterSpacing='wide'>
         <Text minW='2.25rem'>{t('rank')}</Text>
-        <Text flex={1}>{t('driver')}</Text>
+        <Text flex={1}>{t('user')}</Text>
         <Text>{t('focusTime')}</Text>
       </HStack>
 

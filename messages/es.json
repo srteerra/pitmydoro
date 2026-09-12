@@ -909,13 +909,14 @@
   "leaderboard": {
     "title": "Ranking",
     "subtitle": "Los usuarios con más tiempo de concentración.",
+    "notice": "Es posible que algunos pomodoros de la semana del 7 al 13 no se hayan registrado. Solo cuentan los del 11 de sept. en adelante.",
     "weekly": "Esta semana",
     "monthly": "Este mes",
     "rank": "#",
-    "driver": "Piloto",
-    "focusTime": "Tiempo de foco",
-    "participants": "{count} en lista",
+    "user": "Usuario",
+    "focusTime": "Tiempo trabajando",
     "updated": "actualizado {time}",
+    "nextRefresh": "próxima actualización en {time}",
     "sealed": "Final",
     "empty": "Todavía no hay resultados para este periodo.",
     "error": "No se pudo cargar la clasificación. Inténtalo más tarde."
