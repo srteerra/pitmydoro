@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Team } from '@/interfaces/Teams.interface';
-import { Task, TaskStatsDelta } from '@/interfaces/Task.interface';
+import { Task } from '@/interfaces/Task.interface';
+import { DailyStatsDelta } from '@/interfaces/Stats.interface';
 import { Timestamp } from 'firebase/firestore';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTaskStore } from '@/stores/Tasks.store';
@@ -27,10 +28,11 @@ import {
   incrementPomodoroPause,
   startPomodoroEntry,
 } from '@/utils/pomodoroEntry.utils';
+import { claimSessionLock, releaseSessionLock } from '@/utils/sessionLock.utils';
 
 export const usePomodoro = () => {
   const { user } = useAuth();
-  const { confirmAlert } = useAlert();
+  const { confirmAlert, toastError } = useAlert();
   const { checkTask, handleReorderTasks } = useTasks();
   const t = useTranslations('pomodoro');
 
@@ -100,11 +102,11 @@ export const usePomodoro = () => {
     return moment.duration(Number(newTime), 'minutes').asMilliseconds();
   };
 
-  const applyStats = async (taskId: string, delta: TaskStatsDelta) => {
-    applyTaskStats(taskId, delta);
+  const applyStats = async (taskId: string | null, delta: DailyStatsDelta) => {
+    if (taskId) applyTaskStats(taskId, delta);
 
     if (user) {
-      await taskService.updateTaskStats(user.uid, taskId, delta);
+      if (taskId) await taskService.updateTaskStats(user.uid, taskId, delta);
       await statsService.incrementDailyStats(user.uid, delta);
     }
   };
@@ -136,6 +138,11 @@ export const usePomodoro = () => {
   };
 
   const start = async (type: SessionStatusEnum, duration: number, team: Team, task?: Task) => {
+    if (!claimSessionLock()) {
+      toastError(t('sessionInOtherTab'));
+      return;
+    }
+
     try {
       setIsActive(true);
       setStopped(false);
@@ -177,7 +184,7 @@ export const usePomodoro = () => {
 
     if (status === SessionStatusEnum.IN_SESSION) setFlag(FlagEnum.YELLOW);
 
-    if (!currentPomodoro?.task) return;
+    if (!currentPomodoro) return;
 
     if (currentPomodoro.status === 'paused') {
       console.warn('Pomodoro already paused');
@@ -185,7 +192,7 @@ export const usePomodoro = () => {
     }
 
     try {
-      const taskId = currentPomodoro.task.id;
+      const taskId = currentPomodoro.task?.id ?? null;
 
       await flushElapsed();
 
@@ -208,13 +215,18 @@ export const usePomodoro = () => {
   };
 
   const resume = async () => {
+    if (!claimSessionLock()) {
+      toastError(t('sessionInOtherTab'));
+      return;
+    }
+
     setIsActive(true);
     setStopped(false);
 
     if (status === SessionStatusEnum.IN_SESSION) setFlag(FlagEnum.GREEN);
     else setFlag(null);
 
-    if (!currentPomodoro?.task) return;
+    if (!currentPomodoro) return;
     if (currentPomodoro.status !== 'paused') return;
 
     try {
@@ -265,31 +277,28 @@ export const usePomodoro = () => {
           );
         }
 
-        if (currentPomodoro.task) {
-          const task = currentPomodoro.task;
-          const taskInStore = useTaskStore.getState().tasks.find((t) => t.id === task.id);
+        const task = currentPomodoro.task;
+        const taskInStore = task
+          ? useTaskStore.getState().tasks.find((t) => t.id === task.id)
+          : undefined;
+        const taskId = task && taskInStore ? task.id : null;
 
-          if (!taskInStore) {
-            finalizePomodoroEntry(false);
-            setCurrentPomodoro(null);
-            setAccountedAt(null);
-            return;
+        const entry = usePomodoroStore.getState().currentPomodoroEntry;
+        const pomodoroTime = Math.round((entry?.timer ?? currentPomodoro.duration) * 60);
+
+        if (entry) {
+          const workDiff = pomodoroTime - entry.workTime;
+          if (workDiff > 0) {
+            creditPomodoroWork(workDiff);
+            await applyStats(taskId, { workTime: workDiff });
           }
+        }
 
+        const record = finalizePomodoroEntry(true);
+        await applyStats(taskId, { pomodoros: 1, pomodoroTime, ...(record ? { record } : {}) });
+
+        if (task && taskInStore) {
           const newTotalPomodoros = taskInStore.totalPomodoros + 1;
-
-          const entry = usePomodoroStore.getState().currentPomodoroEntry;
-          if (entry) {
-            const targetWorkSeconds = Math.round(entry.timer * 60);
-            const workDiff = targetWorkSeconds - entry.workTime;
-            if (workDiff > 0) {
-              creditPomodoroWork(workDiff);
-              await applyStats(task.id, { workTime: workDiff });
-            }
-          }
-
-          const record = finalizePomodoroEntry(true);
-          await applyStats(task.id, { pomodoros: 1, ...(record ? { record } : {}) });
 
           const shouldCompleteTask =
             !taskInStore.completedAt &&
@@ -360,6 +369,7 @@ export const usePomodoro = () => {
       setAccountedAt(null);
       setIsActive(false);
       setStopped(true);
+      releaseSessionLock();
     } catch (error) {
       console.error('Error completing pomodoro:', error);
       throw error;
@@ -397,11 +407,13 @@ export const usePomodoro = () => {
     setDateClock(Date.now() + duration);
 
     resetPomodoro();
+    releaseSessionLock();
   };
 
   const interrupt = async () => {
-    const taskId = currentPomodoro?.task?.id;
-    if (!taskId) return reset(null, true);
+    if (!currentPomodoro) return reset(null, true);
+
+    const taskId = currentPomodoro.task?.id ?? null;
 
     try {
       await applyStats(taskId, { interruptions: 1 });

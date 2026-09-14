@@ -77,7 +77,9 @@
     "week": "Semana",
     "month": "Mes",
     "year": "Año",
-    "comingSoon": "Próximamente más"
+    "comingSoon": "Próximamente más",
+    "focusedTimeInfo": "Solo el tiempo de los pomodoros que terminaste. Si cortas una sesión antes, no cuenta aquí.",
+    "workTimeInfo": "Todo el tiempo que pasaste en sesiones, las hayas terminado o no."
   },
   "profile": {
     "lastConnection": "Última conexión",
@@ -127,7 +129,6 @@
     "weekly": "Semanal",
     "monthly": "Mensual",
     "annual": "Anual",
-    "workingTime": "Tiempo de trabajo",
     "breakTime": "Tiempo de descanso",
     "pausedTime": "Tiempo en pausa",
     "pauses": "Pausas",
@@ -162,7 +163,8 @@
     "discard": "Descartar",
     "keepEditing": "Seguir editando",
     "cancel": "Cancelar",
-    "changesDiscarded": "Cambios descartados"
+    "changesDiscarded": "Cambios descartados",
+    "focusedTime": "Tiempo enfocado"
   },
   "badges": {
     "dialogTitle": "Insignia",
@@ -220,9 +222,11 @@
     "pomodorosActivity": "Actividad en pomodoros",
     "seeMore": "Ver más",
     "seeLess": "Ver menos",
-    "workTimeInfo": "Tiempo total de concentración en esta tarea.",
+    "workTimeInfo": "Todo el tiempo que pasaste en sesiones, las hayas terminado o no.",
     "pausedTimeInfo": "Tiempo total en pausa durante sesión.",
-    "interruptionsInfo": "Sesiones detenidas antes de terminar."
+    "interruptionsInfo": "Sesiones detenidas antes de terminar.",
+    "totalFocusedTime": "Tiempo Enfocado",
+    "focusedTimeInfo": "Solo el tiempo de los pomodoros que terminaste. Si cortas una sesión antes, no cuenta aquí."
   },
   "pomodoro": {
     "resetTimer": "Reiniciar tiempo",
@@ -269,7 +273,8 @@
       "deleteTaskConfirmMessage": "Esta acción no se puede deshacer.",
       "tasksHint": "💡 Comienza a añadir tareas para organizar tu sesión de trabajo...",
       "manualPomodorosWarning": "Esto solo ajusta el contador de la tarea. Tus reportes y tiempo de enfoque cuentan solo sesiones reales completadas."
-    }
+    },
+    "sessionInOtherTab": "Ya tienes una sesión activa en otra pestaña o ventana."
   },
   "stickyNotes": {
     "open": "Abrir nota {label}",
@@ -314,7 +319,8 @@
           "title": "Duración del descanso largo",
           "label": "Duración (minutos)"
         },
-        "maxDurationExceeded": "La duración máxima es de {max} minutos."
+        "maxDurationExceeded": "La duración máxima es de {max} minutos.",
+        "lockedDuringSession": "No puedes cambiar las duraciones mientras una sesión está en curso."
       },
       "session": {
         "title": "Sesión",
@@ -919,6 +925,7 @@
     "nextRefresh": "próxima actualización en {time}",
     "sealed": "Final",
     "empty": "Todavía no hay resultados para este periodo.",
-    "error": "No se pudo cargar la clasificación. Inténtalo más tarde."
+    "error": "No se pudo cargar la clasificación. Inténtalo más tarde.",
+    "metricNotice": "La métrica ha cambiado: a partir del 13 de sept solo cuenta el tiempo de pomodoros completados. La tabla por mes queda deshabilitada hasta octubre."
   }
 }

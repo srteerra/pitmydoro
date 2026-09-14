@@ -7,17 +7,20 @@ import { useTranslations } from 'next-intl';
 import { CSSProperties, useCallback, useEffect, useState } from 'react';
 import { useSettings } from '@/hooks/useSettings';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useSessionLock } from '@/hooks/useSessionLock';
 
 interface DurationEditableProps {
   value: number;
   onChange: (val: number) => void;
   accent: string;
   testId: string;
+  disabled?: boolean;
 }
 
-const DurationEditable = ({ value, onChange, accent, testId }: DurationEditableProps) => (
+const DurationEditable = ({ value, onChange, accent, testId, disabled }: DurationEditableProps) => (
   <Editable.Root
     value={String(value)}
+    disabled={disabled}
     onValueChange={(e) => {
       const n = Number(e.value);
       if (!isNaN(n) && n > 0) onChange(n);
@@ -30,7 +33,7 @@ const DurationEditable = ({ value, onChange, accent, testId }: DurationEditableP
         <Box
           as='span'
           display='inline'
-          cursor='text'
+          cursor={disabled ? 'not-allowed' : 'text'}
           fontSize='18px'
           style={
             {
@@ -51,7 +54,7 @@ const DurationEditable = ({ value, onChange, accent, testId }: DurationEditableP
             style={{
               display: 'inline',
               fontWeight: 600,
-              cursor: 'text',
+              cursor: disabled ? 'not-allowed' : 'text',
               padding: 10,
               background: 'none',
             }}
@@ -93,6 +96,7 @@ export const SimpleTimerSelector = () => {
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
   const { handleChangeMinimalSessionDuration, handleChangeBreakDuration } = useSettings();
   const { toastError } = useAlert();
+  const sessionLocked = useSessionLock();
   const t = useTranslations('settings.sections.timers');
   const st = useTranslations('pomodoro.simpleTimer');
 
@@ -122,12 +126,22 @@ export const SimpleTimerSelector = () => {
   );
 
   const handleSessionChange = (value: number) => {
+    if (sessionLocked) {
+      toastError(t('lockedDuringSession'));
+      return;
+    }
+
     const validated = validateDuration(value);
     setLocalSession(validated);
     debouncedSession(validated);
   };
 
   const handleBreakChange = (status: SessionStatusEnum, value: number) => {
+    if (sessionLocked) {
+      toastError(t('lockedDuringSession'));
+      return;
+    }
+
     const validated = validateDuration(value);
     setLocalBreaks((prev) => ({ ...prev, [status]: validated }));
     debouncedBreak(status, validated);
@@ -155,6 +169,7 @@ export const SimpleTimerSelector = () => {
               onChange={handleSessionChange}
               accent='#e05c5c'
               testId='simple-timer-session'
+              disabled={sessionLocked}
             />{' '}
             {st('minutes', { count: localSession })}
           </>
@@ -166,6 +181,7 @@ export const SimpleTimerSelector = () => {
               onChange={(val) => handleBreakChange(SessionStatusEnum.SHORT_BREAK, val)}
               accent='#5c9ee0'
               testId='simple-timer-short-break'
+              disabled={sessionLocked}
             />{' '}
             {st('minutes', { count: localBreaks[SessionStatusEnum.SHORT_BREAK] })}
           </>
@@ -177,6 +193,7 @@ export const SimpleTimerSelector = () => {
               onChange={(val) => handleBreakChange(SessionStatusEnum.LONG_BREAK, val)}
               accent='#5cc9a0'
               testId='simple-timer-long-break'
+              disabled={sessionLocked}
             />{' '}
             {st('minutes', { count: localBreaks[SessionStatusEnum.LONG_BREAK] })}
           </>

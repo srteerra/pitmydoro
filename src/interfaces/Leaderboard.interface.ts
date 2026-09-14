@@ -9,7 +9,8 @@ export interface LeaderboardEntry {
   displayName: string;
   photoURL: string | null;
   favoriteFlag: string | null;
-  workTime: number;
+  pomodoroTime: number;
+  workTime?: number;
 }
 
 export interface LeaderboardSnapshot {
@@ -17,7 +18,7 @@ export interface LeaderboardSnapshot {
   type: LeaderboardPeriodType;
   from: string;
   to: string;
-  metric: 'workTime';
+  metric: 'workTime' | 'pomodoroTime';
   top: LeaderboardEntry[];
   participants: number;
   sealed: boolean;

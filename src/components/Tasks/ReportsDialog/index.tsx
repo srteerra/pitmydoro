@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
-import { CgCoffee, CgStopwatch, CgTime } from 'react-icons/cg';
+import { CgCoffee, CgStopwatch, CgTime, CgTimer } from 'react-icons/cg';
 import { useAuth } from '@/contexts/AuthContext';
 import useSettingsStore from '@/stores/Settings.store';
 import { statsService } from '@/services/stats.service';
@@ -12,6 +12,7 @@ import { formatSeconds } from '@/utils/formatSeconds.utils';
 import { cardColors, chartShade } from '@/utils/cardColors.utils';
 import { fetchRange, periodRange, ReportPeriod, sumTotals } from '@/utils/statsReport.utils';
 import { SegmentedControl } from '@/components/ui/segmented-control';
+import { HelpTip } from '@/components/ui/help-tip';
 
 const PERIODS: ReportPeriod[] = ['day', 'week', 'month', 'year'];
 
@@ -55,11 +56,22 @@ export const ReportsDialog = () => {
 
   const cards = [
     {
+      label: statsT('totalFocusedTime'),
+      value: formatSeconds(totals.pomodoroTime, 'duration'),
+      icon: <CgTimer />,
+      color: tinycolor(sessionColor).lighten(12).desaturate(30).toString(),
+      colSpan: 2,
+      testId: 'report-focused-time',
+      info: reportsT('focusedTimeInfo'),
+    },
+    {
       label: statsT('totalWorKTime'),
       value: formatSeconds(totals.workTime, 'duration'),
       icon: <CgTime />,
-      color: tinycolor(sessionColor).lighten(12).desaturate(30).toString(),
+      color: tinycolor(sessionColor).lighten(24).desaturate(30).toString(),
       colSpan: 2,
+      testId: 'report-work-time',
+      info: reportsT('workTimeInfo'),
     },
     {
       label: statsT('totalBreakTime'),
@@ -67,6 +79,8 @@ export const ReportsDialog = () => {
       icon: <CgCoffee />,
       color: tinycolor(breakColor).lighten(12).desaturate(30).toString(),
       colSpan: 1,
+      testId: 'report-break-time',
+      info: undefined as string | undefined,
     },
     {
       label: statsT('totalPausedTime'),
@@ -74,6 +88,8 @@ export const ReportsDialog = () => {
       icon: <CgStopwatch />,
       color: tinycolor(pausesColor).lighten(12).desaturate(30).toString(),
       colSpan: 1,
+      testId: 'report-paused-time',
+      info: undefined as string | undefined,
     },
   ];
 
@@ -143,21 +159,29 @@ export const ReportsDialog = () => {
                 borderRadius='xl'
                 bg={bg}
               >
-                <Flex align='center' gap={2} color={fg} opacity={0.85}>
-                  <Box fontSize='lg' display='flex'>
-                    {card.icon}
-                  </Box>
-                  <Text
-                    fontSize='2xs'
-                    fontWeight='medium'
-                    textTransform='uppercase'
-                    letterSpacing='wider'
-                    lineClamp={1}
-                  >
-                    {card.label}
-                  </Text>
+                <Flex align='center' gap={2} color={fg} opacity={0.85} justify='space-between'>
+                  <Flex align='center' gap={2} minW={0}>
+                    <Box fontSize='lg' display='flex'>
+                      {card.icon}
+                    </Box>
+                    <Text
+                      fontSize='2xs'
+                      fontWeight='medium'
+                      textTransform='uppercase'
+                      letterSpacing='wider'
+                      lineClamp={1}
+                    >
+                      {card.label}
+                    </Text>
+                  </Flex>
+                  {card.info && <HelpTip content={card.info} placement='left' />}
                 </Flex>
-                <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight='bold' color={fg}>
+                <Text
+                  data-pw-id={card.testId}
+                  fontSize={{ base: 'xl', md: '2xl' }}
+                  fontWeight='bold'
+                  color={fg}
+                >
                   {card.value}
                 </Text>
               </Flex>

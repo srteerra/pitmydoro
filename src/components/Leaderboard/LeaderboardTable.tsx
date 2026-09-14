@@ -89,7 +89,7 @@ export const LeaderboardTable = ({ entries }: Props) => {
             </Box>
 
             <Text fontWeight='bold' fontVariantNumeric='tabular-nums' flexShrink={0}>
-              {formatSeconds(entry.workTime, 'duration')}
+              {formatSeconds(entry.pomodoroTime ?? entry.workTime ?? 0, 'duration')}
             </Text>
           </HStack>
         </Link>

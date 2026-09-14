@@ -26,6 +26,8 @@ import { InDevelopmentBadge } from '@/components/InDevelopmentBadge';
 
 const PERIODS: LeaderboardPeriodType[] = ['weekly', 'monthly'];
 
+const DISABLED_PERIODS: LeaderboardPeriodType[] = ['monthly'];
+
 const relativeTime = (locale: string, ms: number): string => {
   if (!ms) return '';
 
@@ -192,6 +194,9 @@ export const Leaderboard = () => {
         <Alert.Indicator />
         <Alert.Content>
           <Alert.Description fontSize='sm'>{t('notice')}</Alert.Description>
+          <Text data-pw-id='leaderboard-metric-notice' fontSize='xs' opacity={0.8} mt={1}>
+            {t('metricNotice')}
+          </Text>
         </Alert.Content>
       </Alert.Root>
 
@@ -211,7 +216,12 @@ export const Leaderboard = () => {
         <Tabs.Root defaultValue='weekly' variant='line'>
           <Tabs.List>
             {PERIODS.map((period) => (
-              <Tabs.Trigger key={period} data-pw-id={`leaderboard-tab-${period}`} value={period}>
+              <Tabs.Trigger
+                key={period}
+                data-pw-id={`leaderboard-tab-${period}`}
+                value={period}
+                disabled={DISABLED_PERIODS.includes(period)}
+              >
                 {t(period)}
               </Tabs.Trigger>
             ))}

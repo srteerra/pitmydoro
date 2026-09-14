@@ -29,7 +29,7 @@ export const flushElapsedTime = async (userId?: string | null, options: FlushOpt
     setCarryMs,
   } = usePomodoroStore.getState();
 
-  if (!pomo?.task || accountedAt == null) return;
+  if (!pomo || accountedAt == null) return;
 
   const now = Date.now();
   const elapsedMs = now - accountedAt;
@@ -49,12 +49,12 @@ export const flushElapsedTime = async (userId?: string | null, options: FlushOpt
 
   if (elapsedSeconds <= 0) return;
 
-  const taskId = pomo.task.id;
+  const taskId = pomo.task?.id ?? null;
 
   const apply = async (delta: TaskStatsDelta) => {
-    useTaskStore.getState().applyTaskStats(taskId, delta);
+    if (taskId) useTaskStore.getState().applyTaskStats(taskId, delta);
     if (userId) {
-      await taskService.updateTaskStats(userId, taskId, delta);
+      if (taskId) await taskService.updateTaskStats(userId, taskId, delta);
       await statsService.incrementDailyStats(userId, delta);
     }
   };

@@ -2,14 +2,14 @@ import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { PeriodRange, PeriodType } from './periods';
 import { RankedEntry } from './aggregate';
 
-export const SNAPSHOT_VERSION = 1;
+export const SNAPSHOT_VERSION = 2;
 
 export interface LeaderboardSnapshot {
   periodId: string;
   type: PeriodType;
   from: string;
   to: string;
-  metric: 'workTime';
+  metric: 'pomodoroTime';
   top: RankedEntry[];
   participants: number;
   sealed: boolean;
@@ -27,7 +27,7 @@ export const buildSnapshot = (
   type: range.type,
   from: range.from,
   to: range.to,
-  metric: 'workTime',
+  metric: 'pomodoroTime',
   top,
   participants,
   sealed,

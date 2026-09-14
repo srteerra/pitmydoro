@@ -76,7 +76,9 @@
     "week": "Week",
     "month": "Month",
     "year": "Year",
-    "comingSoon": "More coming soon"
+    "comingSoon": "More coming soon",
+    "focusedTimeInfo": "Only the time from pomodoros you finished. If you stop a session early, it does not count here.",
+    "workTimeInfo": "All the time you spent in sessions, whether you finished them or not."
   },
   "profile": {
     "lastConnection": "Last connection",
@@ -126,7 +128,6 @@
     "weekly": "Weekly",
     "monthly": "Monthly",
     "annual": "Annual",
-    "workingTime": "Working time",
     "breakTime": "Break time",
     "pausedTime": "Paused time",
     "pauses": "Pauses",
@@ -161,7 +162,8 @@
     "discard": "Discard",
     "keepEditing": "Keep editing",
     "cancel": "Cancel",
-    "changesDiscarded": "Changes discarded"
+    "changesDiscarded": "Changes discarded",
+    "focusedTime": "Focused time"
   },
   "badges": {
     "dialogTitle": "Badge",
@@ -219,9 +221,11 @@
     "pomodorosActivity": "Pomodoros activity",
     "seeMore": "See more",
     "seeLess": "See less",
-    "workTimeInfo": "Total focused time on this task.",
+    "workTimeInfo": "All the time you spent in sessions, whether you finished them or not.",
     "pausedTimeInfo": "Total time the timer was paused during sessions.",
-    "interruptionsInfo": "Sessions ended before finishing."
+    "interruptionsInfo": "Sessions ended before finishing.",
+    "totalFocusedTime": "Focused Time",
+    "focusedTimeInfo": "Only the time from pomodoros you finished. If you stop a session early, it does not count here."
   },
   "pomodoro": {
     "resetTimer": "Reset Timer",
@@ -268,7 +272,8 @@
       "deleteTaskConfirmMessage": "This action cannot be undone.",
       "tasksHint": "💡 Start adding tasks to organize your work session...",
       "manualPomodorosWarning": "This only adjusts the task counter. Your reports and focus time count only real completed sessions."
-    }
+    },
+    "sessionInOtherTab": "A session is already running in another tab or window."
   },
   "stickyNotes": {
     "open": "Open {label} note",
@@ -313,7 +318,8 @@
           "title": "Long Break Duration",
           "label": "Duration (minutes)"
         },
-        "maxDurationExceeded": "Maximum duration is {max} minutes."
+        "maxDurationExceeded": "Maximum duration is {max} minutes.",
+        "lockedDuringSession": "You can't change durations while a session is in progress."
       },
       "session": {
         "title": "Session",
@@ -918,6 +924,7 @@
     "nextRefresh": "next refresh in {time}",
     "sealed": "Final",
     "empty": "No results for this period yet.",
-    "error": "Couldn't load the leaderboard. Try again later."
+    "error": "Couldn't load the leaderboard. Try again later.",
+    "metricNotice": "The metric has changed: from Sept 13 only time from completed pomodoros counts. The monthly table stays disabled until October."
   }
 }

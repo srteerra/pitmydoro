@@ -130,7 +130,7 @@ export const StatsHeatmap = ({ stats, from, to, accent }: Props) => {
                         closeDelay={60}
                         content={t('heatmapTooltip', {
                           count: day.pomodoros,
-                          time: formatSeconds(day.workTime, 'duration'),
+                          time: formatSeconds(day.pomodoroTime, 'duration'),
                           date: moment(day.date, 'YYYY-MM-DD').format('LL'),
                         })}
                       >

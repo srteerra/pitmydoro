@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+import { closeSettingsDialog, openSettingsDialog } from './helpers';
 
 test.describe('Pomodoro', () => {
   test.beforeEach(async ({ page }) => {
@@ -85,6 +86,44 @@ test.describe('Pomodoro', () => {
 
     await page.locator('[data-pw-id="tire-2"]').click();
     await expect(timer).toContainText('25:00');
+  });
+
+  test('should lock the duration settings while a session is running', async ({ page }) => {
+    const dialog = await openSettingsDialog(page);
+    await expect(dialog.getByRole('spinbutton').first()).toBeEnabled();
+    await closeSettingsDialog(page);
+
+    await page.getByRole('button', { name: 'Start' }).click();
+
+    const lockedDialog = await openSettingsDialog(page);
+    await expect(lockedDialog.getByRole('spinbutton').first()).toBeDisabled();
+  });
+
+  test('should block a second tab from running a session at the same time', async ({
+    page,
+    context,
+  }) => {
+    await page.getByRole('button', { name: 'Start' }).click();
+
+    const second = await context.newPage();
+    await second.goto('/');
+
+    const startButton = second.getByRole('button', { name: 'Start' });
+    await expect(second.getByTestId('session-elsewhere-warning')).toBeVisible();
+    await expect(startButton).toBeDisabled();
+
+    const dialog = await openSettingsDialog(second);
+    await expect(dialog.getByRole('spinbutton').first()).toBeDisabled();
+    await closeSettingsDialog(second);
+
+    await page.getByTestId('reset-button').click();
+    await page.getByTestId('reset-timer-menu-item').click();
+    await page.getByRole('button', { name: 'Accept' }).click();
+
+    await expect(second.getByTestId('session-elsewhere-warning')).toBeHidden();
+    await expect(startButton).toBeEnabled();
+
+    await second.close();
   });
 
   test('should start/pause a timer and reset works', async ({ page }) => {
