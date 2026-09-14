@@ -57,7 +57,7 @@ export const buildHeatmap = (items: DailyStats[], from: string, to: string): Hea
       days.push({
         date,
         pomodoros,
-        pomodoroTime: stats?.pomodoroTime ?? 0,
+        pomodoroTime: stats?.pomodoroTime ?? stats?.workTime ?? 0,
         level: levelFor(pomodoros, max),
         isFuture: day.isAfter(today),
       });
