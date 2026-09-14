@@ -25,7 +25,7 @@ import { Area, AreaChart, CartesianGrid, Legend, Tooltip, XAxis } from 'recharts
 import useSettingsStore from '@/stores/Settings.store';
 import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
-import { CgCheckO, CgCoffee, CgProfile, CgStopwatch, CgTime } from 'react-icons/cg';
+import { CgCheckO, CgCoffee, CgProfile, CgStopwatch, CgTime, CgTimer } from 'react-icons/cg';
 import { LuHash } from 'react-icons/lu';
 import useUserStore from '@/stores/User.store';
 import { useLocale, useTranslations } from 'next-intl';
@@ -85,6 +85,14 @@ export const StatsDialog = ({ task }: Props) => {
 
   const pomodoros = taskStats?.pomodoros ?? [];
 
+  const focusedSeconds =
+    pomodoros.length === 0 && task.totalPomodoros > 0
+      ? null
+      : pomodoros.reduce(
+          (acc, entry) => (entry.completed ? acc + (statSeconds(entry.workTime) ?? 0) : acc),
+          0
+        );
+
   const areaChart = useChart({
     data: pomodoros.map((p) => ({
       label: `#${p.index}`,
@@ -99,10 +107,19 @@ export const StatsDialog = ({ task }: Props) => {
 
   const durationCards = [
     {
+      label: statsT('totalFocusedTime'),
+      value: formatSeconds(focusedSeconds, 'duration'),
+      icon: <CgTimer />,
+      color: tinycolor(sessionColor).lighten(12).desaturate(30).toString(),
+      colSpan: 2,
+      testId: 'stat-focused-time',
+      info: statsT('focusedTimeInfo'),
+    },
+    {
       label: statsT('totalWorKTime'),
       value: formatSeconds(taskStats?.totalWorkTime, 'duration'),
       icon: <CgTime />,
-      color: tinycolor(sessionColor).lighten(12).desaturate(30).toString(),
+      color: tinycolor(sessionColor).lighten(24).desaturate(30).toString(),
       colSpan: 2,
       testId: 'stat-work-time',
       info: statsT('workTimeInfo'),

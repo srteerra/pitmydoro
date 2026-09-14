@@ -30,7 +30,7 @@ const PERIOD_RANGE: Record<ProfilePeriod, ReportPeriod> = {
 
 const METRICS = [
   'pomodoros',
-  'workingTime',
+  'focusedTime',
   'breakTime',
   'pausedTime',
   'pauses',
@@ -44,8 +44,8 @@ const metricValue = (metric: Metric, totals: ReportTotals): string => {
   switch (metric) {
     case 'pomodoros':
       return `${totals.pomodoros}`;
-    case 'workingTime':
-      return formatSeconds(totals.workTime, 'duration');
+    case 'focusedTime':
+      return formatSeconds(totals.pomodoroTime, 'duration');
     case 'breakTime':
       return formatSeconds(totals.breakTime, 'duration');
     case 'pausedTime':

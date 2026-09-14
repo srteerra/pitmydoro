@@ -5,6 +5,7 @@ export interface DailyStats {
   date: string;
   utcDate?: string;
   workTime: number;
+  pomodoroTime?: number;
   breakTime: number;
   pausedTime: number;
   pomodoros: number;
@@ -17,6 +18,7 @@ export interface DailyStats {
 }
 
 export interface DailyStatsDelta extends TaskStatsDelta {
+  pomodoroTime?: number;
   tasksCreated?: number;
   tasksCompleted?: number;
 }

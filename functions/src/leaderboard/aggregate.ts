@@ -1,7 +1,7 @@
 import { getFirestore, QueryDocumentSnapshot } from 'firebase-admin/firestore';
 import { PeriodRange, unionRange } from './periods';
 
-export const MAX_DAILY_WORK_SECONDS = 57_600;
+export const MAX_DAILY_POMODORO_SECONDS = 57_600;
 
 export const TOP_SIZE = 50;
 
@@ -12,7 +12,7 @@ export interface RankedEntry {
   displayName: string;
   photoURL: string | null;
   favoriteFlag: string | null;
-  workTime: number;
+  pomodoroTime: number;
 }
 
 export interface PeriodTotals {
@@ -42,13 +42,13 @@ export const aggregate = async (ranges: PeriodRange[]): Promise<PeriodTotals[]> 
     const date = doc.get('utcDate');
     if (typeof date !== 'string') continue;
 
-    const workTime = doc.get('workTime');
-    if (typeof workTime !== 'number' || !Number.isFinite(workTime)) continue;
-    if (workTime <= 0 || workTime > MAX_DAILY_WORK_SECONDS) continue;
+    const pomodoroTime = doc.get('pomodoroTime');
+    if (typeof pomodoroTime !== 'number' || !Number.isFinite(pomodoroTime)) continue;
+    if (pomodoroTime <= 0 || pomodoroTime > MAX_DAILY_POMODORO_SECONDS) continue;
 
     for (const bucket of buckets) {
       if (date < bucket.range.from || date > bucket.range.to) continue;
-      bucket.totals.set(uid, (bucket.totals.get(uid) ?? 0) + workTime);
+      bucket.totals.set(uid, (bucket.totals.get(uid) ?? 0) + pomodoroTime);
     }
   }
 
@@ -60,7 +60,7 @@ export const rank = async (
   limit: number = TOP_SIZE
 ): Promise<{ top: RankedEntry[]; participants: number }> => {
   const sorted = [...totals.entries()]
-    .filter(([, workTime]) => workTime > 0)
+    .filter(([, pomodoroTime]) => pomodoroTime > 0)
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
   const participants = sorted.length;
@@ -73,7 +73,7 @@ export const rank = async (
 
   const top: RankedEntry[] = [];
 
-  for (const [uid, workTime] of candidates) {
+  for (const [uid, pomodoroTime] of candidates) {
     if (top.length >= limit) break;
 
     const profile = profiles.get(uid);
@@ -95,7 +95,7 @@ export const rank = async (
       photoURL: typeof photoURL === 'string' && photoURL.length > 0 ? photoURL : null,
       favoriteFlag:
         typeof favoriteFlag === 'string' && favoriteFlag.length > 0 ? favoriteFlag : null,
-      workTime,
+      pomodoroTime,
     });
   }
 

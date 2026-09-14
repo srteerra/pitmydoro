@@ -5,6 +5,7 @@ export type ReportPeriod = 'day' | 'week' | 'month' | 'year';
 
 export interface ReportTotals {
   workTime: number;
+  pomodoroTime: number;
   breakTime: number;
   pausedTime: number;
   pomodoros: number;
@@ -15,6 +16,7 @@ export interface ReportTotals {
 
 const emptyTotals = (): ReportTotals => ({
   workTime: 0,
+  pomodoroTime: 0,
   breakTime: 0,
   pausedTime: 0,
   pomodoros: 0,
@@ -47,6 +49,7 @@ export const sumTotals = (items: DailyStats[], from: string, to: string): Report
     .reduce<ReportTotals>(
       (acc, item) => ({
         workTime: acc.workTime + (item.workTime ?? 0),
+        pomodoroTime: acc.pomodoroTime + (item.pomodoroTime ?? 0),
         breakTime: acc.breakTime + (item.breakTime ?? 0),
         pausedTime: acc.pausedTime + (item.pausedTime ?? 0),
         pomodoros: acc.pomodoros + (item.pomodoros ?? 0),

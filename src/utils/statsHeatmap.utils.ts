@@ -6,7 +6,7 @@ export const HEATMAP_LEVELS = 4;
 export interface HeatmapCell {
   date: string;
   pomodoros: number;
-  workTime: number;
+  pomodoroTime: number;
   level: number;
   isFuture: boolean;
 }
@@ -57,7 +57,7 @@ export const buildHeatmap = (items: DailyStats[], from: string, to: string): Hea
       days.push({
         date,
         pomodoros,
-        workTime: stats?.workTime ?? 0,
+        pomodoroTime: stats?.pomodoroTime ?? 0,
         level: levelFor(pomodoros, max),
         isFuture: day.isAfter(today),
       });

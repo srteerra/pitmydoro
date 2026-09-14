@@ -33,6 +33,7 @@ export const statsService = {
     const updates: Record<string, unknown> = {};
 
     if (delta.workTime !== undefined) updates.workTime = increment(delta.workTime);
+    if (delta.pomodoroTime !== undefined) updates.pomodoroTime = increment(delta.pomodoroTime);
     if (delta.breakTime !== undefined) updates.breakTime = increment(delta.breakTime);
     if (delta.pausedTime !== undefined) updates.pausedTime = increment(delta.pausedTime);
     if (delta.pomodoros !== undefined) updates.pomodoros = increment(delta.pomodoros);
