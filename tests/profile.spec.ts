@@ -265,6 +265,29 @@ test.describe('Profile activity heatmap', () => {
     expect(days.filter((day) => day.pomodoros === 0).every((day) => day.level === 0)).toBe(true);
   });
 
+  test('falls back to workTime when the day predates the pomodoroTime metric', () => {
+    const stats = dailyStats([
+      { date: range.to, pomodoros: 4, pomodoroTime: 900, workTime: 1200 },
+      { date: range.from, pomodoros: 3, workTime: 1500 },
+    ]);
+
+    const { weeks } = buildHeatmap(stats, range.from, range.to);
+    const days = weeks.flatMap((week) => week.days);
+    const cellFor = (date: string) => days.find((day) => day.date === date);
+
+    expect(cellFor(range.to)?.pomodoroTime).toBe(900);
+    expect(cellFor(range.from)?.pomodoroTime).toBe(1500);
+  });
+
+  test('keeps an explicit zero instead of falling back to workTime', () => {
+    const stats = dailyStats([{ date: range.to, pomodoros: 0, pomodoroTime: 0, workTime: 1500 }]);
+
+    const { weeks } = buildHeatmap(stats, range.from, range.to);
+    const days = weeks.flatMap((week) => week.days);
+
+    expect(days.find((day) => day.date === range.to)?.pomodoroTime).toBe(0);
+  });
+
   test('flags the days after today so they are not painted', () => {
     const { weeks } = buildHeatmap([], range.from, range.to);
     const days = weeks.flatMap((week) => week.days);
