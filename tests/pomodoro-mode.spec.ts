@@ -111,6 +111,20 @@ test.describe('Pomodoro mode switch', () => {
     await expect.poll(async () => (await readSettings(page))?.minimalSessionDuration).toBe(40);
   });
 
+  test('locks the minimal durations while a session is running', async ({ page }) => {
+    await selectMode(page, 'minimal');
+
+    const preview = page.getByTestId('simple-timer-session-preview');
+    await expect(preview).toHaveText('25');
+
+    await page.getByRole('button', { name: 'Start' }).click();
+
+    await preview.click();
+
+    await expect(page.getByTestId('simple-timer-session-input')).toBeHidden();
+    await expect(preview).toHaveText('25');
+  });
+
   test('edits the minimal break durations', async ({ page }) => {
     await selectMode(page, 'minimal');
 

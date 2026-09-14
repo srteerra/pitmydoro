@@ -181,6 +181,7 @@ test.describe('Profile stats totals', () => {
       {
         date: '2026-01-10',
         workTime: 60,
+        pomodoroTime: 50,
         breakTime: 20,
         pausedTime: 10,
         pomodoros: 2,
@@ -191,6 +192,7 @@ test.describe('Profile stats totals', () => {
       {
         date: '2026-01-11',
         workTime: 40,
+        pomodoroTime: 25,
         breakTime: 5,
         pausedTime: 0,
         pomodoros: 1,
@@ -202,6 +204,7 @@ test.describe('Profile stats totals', () => {
 
     expect(sumTotals(stats, '2026-01-10', '2026-01-11')).toEqual({
       workTime: 100,
+      pomodoroTime: 75,
       breakTime: 25,
       pausedTime: 10,
       pomodoros: 3,
@@ -220,6 +223,7 @@ test.describe('Profile stats totals', () => {
     const totals = sumTotals(stats, '2026-01-10', '2026-01-10');
 
     expect(totals.workTime).toBe(60);
+    expect(totals.pomodoroTime).toBe(0);
     expect(totals.pomodoros).toBe(2);
     expect(totals.pauses).toBe(0);
     expect(totals.tasksCompleted).toBe(0);
@@ -246,8 +250,8 @@ test.describe('Profile activity heatmap', () => {
 
   test('scales levels against the best day', () => {
     const stats = dailyStats([
-      { date: range.to, pomodoros: 8, workTime: 1000 },
-      { date: range.from, pomodoros: 2, workTime: 500 },
+      { date: range.to, pomodoros: 8, pomodoroTime: 1000 },
+      { date: range.from, pomodoros: 2, pomodoroTime: 500 },
     ]);
 
     const { weeks, total, bestDay } = buildHeatmap(stats, range.from, range.to);

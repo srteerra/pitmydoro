@@ -543,6 +543,29 @@ test.describe('Task stats on natural completion', () => {
     expect(entry.workTime).toBe(FAST_SECONDS);
   });
 
+  test('counts only completed pomodoros in the focused time card', async ({ page }) => {
+    const title = 'Focused card';
+    await addTask(page, title);
+    await selectTask(page, title);
+
+    await startTimer(page);
+    await waitForCompletion(page);
+
+    await startTimer(page);
+    await page.waitForTimeout(1200);
+    await resetTimer(page);
+
+    await page
+      .getByTestId('task-card')
+      .filter({ hasText: title })
+      .getByTestId('task-menu-trigger')
+      .click();
+    await page.getByTestId('task-menu-stats').click();
+
+    await expect(page.getByTestId('stat-focused-time')).toHaveText(`${FAST_SECONDS}s`);
+    await expect(page.getByTestId('stat-work-time')).not.toHaveText(`${FAST_SECONDS}s`);
+  });
+
   test('reconciles break time to the full break duration on completion', async ({ page }) => {
     const title = 'Complete break';
     await addTask(page, title);
@@ -573,5 +596,122 @@ test.describe('Task stats on natural completion', () => {
     const task = await readTask(page, title);
     expect(task!.stats!.totalBreakTime).toBe(FAST_SECONDS);
     expect(task!.stats!.totalWorkTime).toBe(0);
+  });
+});
+
+test.describe('Sessions without an active task', () => {
+  const FAST_SECONDS = 3;
+  const FAST_MINUTES = FAST_SECONDS / 60;
+
+  const seedFastSettings = (page: Page) =>
+    page.addInitScript(
+      ([sessionMinutes]) => {
+        localStorage.removeItem('pitmydoro_tasks');
+        localStorage.setItem(
+          'pitmydoro_settings',
+          JSON.stringify({
+            version: 0,
+            state: {
+              autoStartBreak: false,
+              autoStartSession: false,
+              autoCompleteTask: false,
+              autoStartNextTask: false,
+              autoOrderTasks: false,
+              enableSounds: false,
+              breaksDuration: { shortBreak: sessionMinutes, longBreak: 15 },
+              tiresSettings: {
+                0: { compound: 'Soft', duration: 15 },
+                1: { compound: 'Medium', duration: 20 },
+                2: { compound: 'Hard', duration: sessionMinutes },
+                3: { compound: 'Intermediate', duration: 30 },
+                4: { compound: 'Wet', duration: 35 },
+              },
+            },
+          })
+        );
+      },
+      [FAST_MINUTES] as const
+    );
+
+  const waitForCompletion = (page: Page) => page.waitForTimeout((FAST_SECONDS + 2) * 1000);
+
+  const collectErrors = (page: Page) => {
+    const errors: string[] = [];
+
+    page.on('pageerror', (error) => errors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() === 'error') errors.push(message.text());
+    });
+
+    return errors;
+  };
+
+  const readTasks = (page: Page) =>
+    page.evaluate((key) => {
+      const raw = localStorage.getItem(key);
+      if (!raw) return [];
+      return JSON.parse(raw)?.state?.tasks ?? [];
+    }, STORE_KEY);
+
+  test.beforeEach(async ({ page }) => {
+    await seedFastSettings(page);
+  });
+
+  test('completes a session with no task selected', async ({ page }) => {
+    const errors = collectErrors(page);
+
+    await page.goto('/');
+    await page.locator('[data-pw-id="tire-2"]').click();
+    await startTimer(page);
+    await waitForCompletion(page);
+
+    await expect(page.getByRole('button', { name: 'Start' })).toBeVisible();
+    expect(await readTasks(page)).toHaveLength(0);
+    expect(errors).toEqual([]);
+  });
+
+  test('survives a pause and resume cycle with no task selected', async ({ page }) => {
+    const errors = collectErrors(page);
+
+    await page.goto('/');
+    await page.locator('[data-pw-id="tire-0"]').click();
+    await startTimer(page);
+    await page.waitForTimeout(1200);
+    await pauseTimer(page);
+    await page.waitForTimeout(1200);
+    await startTimer(page);
+    await page.waitForTimeout(1200);
+    await pauseTimer(page);
+
+    await expect(page.getByRole('button', { name: 'Start' })).toBeVisible();
+    expect(await readTasks(page)).toHaveLength(0);
+    expect(errors).toEqual([]);
+  });
+
+  test('survives a break with no task selected', async ({ page }) => {
+    const errors = collectErrors(page);
+
+    await page.goto('/');
+    await page.getByTestId('short-break-label').click();
+    await startTimer(page);
+    await waitForCompletion(page);
+
+    await expect(page.getByRole('button', { name: 'Start' })).toBeVisible();
+    expect(await readTasks(page)).toHaveLength(0);
+    expect(errors).toEqual([]);
+  });
+
+  test('interrupting with no task selected resets the timer', async ({ page }) => {
+    const errors = collectErrors(page);
+
+    await page.goto('/');
+    await page.locator('[data-pw-id="tire-0"]').click();
+    await startTimer(page);
+    await page.waitForTimeout(1200);
+    await resetTimer(page);
+
+    await expect(page.getByRole('button', { name: 'Start' })).toBeVisible();
+    expect(await readTasks(page)).toHaveLength(0);
+    expect(errors).toEqual([]);
   });
 });
