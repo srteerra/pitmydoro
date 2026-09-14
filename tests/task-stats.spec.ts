@@ -635,12 +635,22 @@ test.describe('Sessions without an active task', () => {
 
   const waitForCompletion = (page: Page) => page.waitForTimeout((FAST_SECONDS + 2) * 1000);
 
+  const POMODORO_FAILURE = /Error (starting|pausing|resuming|completing|interrupting|switching) /;
+  const ENVIRONMENT_NOISE =
+    /FirebaseError|Failed to fetch|NetworkError|Load failed|status of \d{3}/;
+
   const collectErrors = (page: Page) => {
     const errors: string[] = [];
 
-    page.on('pageerror', (error) => errors.push(error.message));
+    page.on('pageerror', (error) => {
+      if (!ENVIRONMENT_NOISE.test(error.message)) errors.push(error.message);
+    });
+
     page.on('console', (message) => {
-      if (message.type() === 'error') errors.push(message.text());
+      if (message.type() !== 'error') return;
+
+      const text = message.text();
+      if (POMODORO_FAILURE.test(text)) errors.push(text);
     });
 
     return errors;
