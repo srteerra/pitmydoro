@@ -8,6 +8,7 @@ import useSettingsStore from '@/stores/Settings.store';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useAlert } from '@/hooks/useAlert';
 import { MAX_DURATION } from '@/constants/DefaultSettings';
+import { useSessionLock } from '@/hooks/useSessionLock';
 
 export const Timers = () => {
   const { handleChangeBreakDuration, handleChangeTireDuration } = useSettings();
@@ -15,6 +16,7 @@ export const Timers = () => {
   const breaksDuration = useSettingsStore((state) => state.breaksDuration);
   const t = useTranslations('settings.sections.timers');
   const { toastError } = useAlert();
+  const sessionLocked = useSessionLock();
 
   const [localTiresSettings, setLocalTiresSettings] = useState(tiresSettings);
   const [localBreaksDuration, setLocalBreaksDuration] = useState(breaksDuration);
@@ -34,6 +36,11 @@ export const Timers = () => {
   const debouncedBreakDuration = useDebounce(handleChangeBreakDuration, 1000);
 
   const handleTireChange = (tire: TireTypeEnum, value: number) => {
+    if (sessionLocked) {
+      toastError(t('lockedDuringSession'));
+      return;
+    }
+
     const validatedValue = validateDuration(value);
 
     setLocalTiresSettings((prev) => ({
@@ -45,6 +52,11 @@ export const Timers = () => {
   };
 
   const handleBreakChange = (status: SessionStatusEnum, value: number) => {
+    if (sessionLocked) {
+      toastError(t('lockedDuringSession'));
+      return;
+    }
+
     const validatedValue = validateDuration(value);
 
     setLocalBreaksDuration((prev) => ({
@@ -85,6 +97,12 @@ export const Timers = () => {
 
   return (
     <VStack gap={8} marginY={'20px'}>
+      {sessionLocked && (
+        <Text fontSize='xs' color='fg.muted' textAlign='center'>
+          {t('lockedDuringSession')}
+        </Text>
+      )}
+
       <Flex
         w='full'
         px={{ base: 0, md: 10 }}
@@ -111,6 +129,7 @@ export const Timers = () => {
               size={'xs'}
               min={1}
               max={MAX_DURATION}
+              disabled={sessionLocked}
               value={String(localTiresSettings[tire].duration)}
               onValueChange={(e) => handleTireChange(tire, Number(e.value))}
             >
@@ -149,6 +168,7 @@ export const Timers = () => {
             size={'xs'}
             min={1}
             max={MAX_DURATION}
+            disabled={sessionLocked}
             value={String(localBreaksDuration[SessionStatusEnum.SHORT_BREAK])}
             onValueChange={(e) => handleBreakChange(SessionStatusEnum.SHORT_BREAK, Number(e.value))}
           >
@@ -178,6 +198,7 @@ export const Timers = () => {
             size={'xs'}
             min={1}
             max={MAX_DURATION}
+            disabled={sessionLocked}
             value={String(localBreaksDuration[SessionStatusEnum.LONG_BREAK])}
             onValueChange={(e) => handleBreakChange(SessionStatusEnum.LONG_BREAK, Number(e.value))}
           >

@@ -11,6 +11,7 @@ import { DefaultSettings } from '@/constants/DefaultSettings';
 import { PomodoroMode, Settings } from '@/interfaces/Settings.interface';
 import { flushElapsedTime } from '@/utils/accountElapsed.utils';
 import { rebindSprite } from '@/utils/pomodoroEntry.utils';
+import { isSessionLocked } from '@/hooks/useSessionLock';
 
 export const useSettings = () => {
   const { toastSuccess, toastError } = useAlert();
@@ -113,6 +114,11 @@ export const useSettings = () => {
   };
 
   const handleChangeBreakDuration = async (type: SessionStatusEnum, duration: number) => {
+    if (isSessionLocked()) {
+      toastError(t('sections.timers.lockedDuringSession'));
+      return;
+    }
+
     const newBreaksDurationData = {
       ...breaksDuration,
       [type]: duration,
@@ -130,6 +136,11 @@ export const useSettings = () => {
   };
 
   const handleChangeMinimalSessionDuration = async (duration: number) => {
+    if (isSessionLocked()) {
+      toastError(t('sections.timers.lockedDuringSession'));
+      return;
+    }
+
     setMinimalSessionDuration(duration);
 
     if (user) {
@@ -140,6 +151,11 @@ export const useSettings = () => {
   };
 
   const handleChangeTireDuration = async (tire: TireTypeEnum, duration: number) => {
+    if (isSessionLocked()) {
+      toastError(t('sections.timers.lockedDuringSession'));
+      return;
+    }
+
     const newTiresSettingsData = {
       ...tiresSettings,
       [tire]: {

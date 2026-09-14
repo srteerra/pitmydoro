@@ -24,12 +24,18 @@ import { formatSeconds } from '@/utils/formatSeconds.utils';
 import { TiCogOutline } from 'react-icons/ti';
 import { isDesktopDevice } from '@/utils/device.utils';
 import { useSettingsDialog } from '@/hooks/useSettingsDialog';
+import { useSessionLockedElsewhere } from '@/hooks/useSessionLock';
+import {
+  LOCK_HEARTBEAT_MS,
+  refreshSessionLock,
+  releaseSessionLock,
+} from '@/utils/sessionLock.utils';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 export const Counter = () => {
   const countdownRef = useRef<CountdownApi | null>(null);
   const { theme } = useTheme();
-  const { confirmAlert, toastWithAction } = useAlert();
+  const { confirmAlert, toastWithAction, toastError } = useAlert();
   const { resetAllTasks, undoResetAllTasks } = useTasks();
   const { openSettings } = useSettingsDialog();
   const { open, onOpen, onClose } = useDisclosure();
@@ -65,6 +71,8 @@ export const Counter = () => {
   const setOverlayTiming = usePomodoroStore((state) => state.setOverlayTiming);
   const lastTotalRef = useRef(0);
   const isIdle = !isActive && !currentPomodoro;
+  const sessionElsewhere = useSessionLockedElsewhere();
+  const startBlocked = !currentPomodoro && sessionElsewhere;
 
   const backButtonColor =
     theme === 'dark'
@@ -161,6 +169,11 @@ export const Counter = () => {
   ]);
 
   const handleStartClick = async () => {
+    if (startBlocked) {
+      toastError(pomodoroT('sessionInOtherTab'));
+      return;
+    }
+
     playSound();
 
     if (currentPomodoro) {
@@ -264,10 +277,22 @@ export const Counter = () => {
   }, [isActive, dateClock]);
 
   useEffect(() => {
+    if (!currentPomodoro) return;
+
+    refreshSessionLock();
+    const heartbeat = setInterval(refreshSessionLock, LOCK_HEARTBEAT_MS);
+
+    return () => clearInterval(heartbeat);
+  }, [currentPomodoro]);
+
+  useEffect(() => {
     const handleHide = () => {
       if (document.visibilityState === 'hidden') flushCheckpoint();
     };
-    const handlePageHide = () => flushElapsed();
+    const handlePageHide = () => {
+      flushElapsed();
+      releaseSessionLock();
+    };
 
     document.addEventListener('visibilitychange', handleHide);
     window.addEventListener('pagehide', handlePageHide);
@@ -389,10 +414,24 @@ export const Counter = () => {
         textColor={theme === 'dark' ? 'dark.200' : 'light'}
         isActive={isActive}
         onClick={isActive ? handlePauseClick : handleStartClick}
+        disabled={startBlocked}
+        opacity={startBlocked ? 0.5 : 1}
+        cursor={startBlocked ? 'not-allowed' : 'pointer'}
         size='md'
       >
         {isActive ? pomodoroT('pauseTimer') : pomodoroT('startTimer')}
       </RippleButton>
+
+      {startBlocked && (
+        <Text
+          data-pw-id='session-elsewhere-warning'
+          fontSize='sm'
+          color='fg.error'
+          marginBottom={3}
+        >
+          {pomodoroT('sessionInOtherTab')}
+        </Text>
+      )}
 
       <Center>
         <Flex
