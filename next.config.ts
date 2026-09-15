@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'www.pitmydoro.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'cdn.buymeacoffee.com',
       },
     ],

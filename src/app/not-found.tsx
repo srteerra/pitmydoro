@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import { jersey15 } from '@/assets/fonts/Jersey';
 import { useTranslations } from 'next-intl';
 
-export default function NotFoundPage() {
+export default function NotFound() {
   const router = useRouter();
   const t = useTranslations('404');
 
   return (
-    <Center minH='100vh'>
+    <Center minH='100vh' data-pw-id='not-found'>
       <VStack textAlign='center' px={6} gap={6}>
         <Image
           src='/images/404.webp'
@@ -39,6 +39,7 @@ export default function NotFoundPage() {
           size='lg'
           borderRadius='full'
           onClick={() => router.push('/')}
+          data-pw-id='not-found-home'
         >
           {t('goBack')}
         </Button>
