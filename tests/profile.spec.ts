@@ -27,11 +27,11 @@ import { DailyStats } from '@/interfaces/Stats.interface';
 const nonExistentUsername = () => `nouser${Date.now()}${Math.floor(Math.random() * 1000)}`;
 
 test.describe('Public profile by username', () => {
-  test('shows the not-found state for a username that does not exist', async ({ page }) => {
-    await page.goto(`/profile/${nonExistentUsername()}`);
+  test('shows the not-found screen for a username that does not exist', async ({ page }) => {
+    const response = await page.goto(`/profile/${nonExistentUsername()}`);
 
+    expect(response?.status()).toBe(200);
     await expect(page.getByTestId('profile-not-found')).toBeVisible();
-    await expect(page.getByTestId('profile-not-found-home')).toBeVisible();
     await expect(page.getByTestId('profile-card')).toHaveCount(0);
   });
 
@@ -40,6 +40,14 @@ test.describe('Public profile by username', () => {
     await page.goto(`/profile/${username}`);
 
     await expect(page.getByTestId('profile-not-found')).toContainText(username);
+    await expect(page.getByTestId('profile-not-found-username')).toContainText(`@${username}`);
+  });
+
+  test('offers a way back home and to the leaderboard', async ({ page }) => {
+    await page.goto(`/profile/${nonExistentUsername()}`);
+
+    await expect(page.getByTestId('profile-not-found-home')).toBeVisible();
+    await expect(page.getByTestId('profile-not-found-leaderboard')).toBeVisible();
   });
 
   test('go home button leaves the profile route', async ({ page }) => {
@@ -48,6 +56,14 @@ test.describe('Public profile by username', () => {
     await page.getByTestId('profile-not-found-home').click();
 
     await expect(page).not.toHaveURL(/\/profile\//, { timeout: 20_000 });
+  });
+
+  test('leaderboard button goes to the leaderboard', async ({ page }) => {
+    await page.goto(`/profile/${nonExistentUsername()}`);
+
+    await page.getByTestId('profile-not-found-leaderboard').click();
+
+    await expect(page).toHaveURL(/\/leaderboard/, { timeout: 20_000 });
   });
 
   test('keeps the not-found state usable after a reload', async ({ page }) => {
