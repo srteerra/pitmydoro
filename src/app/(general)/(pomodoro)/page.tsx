@@ -4,8 +4,6 @@ import { Pomodoro } from '@/components/Pomodoro';
 import React, { useEffect, useState } from 'react';
 import { Loader } from '@/components/Loader';
 import { Router } from 'next/router';
-import { NextSeo } from 'next-seo';
-import { useSeo } from '@/hooks/useSEO';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
 import { SimpleTimerSelector } from '@/components/Pomodoro/SimpleTimerSelector';
@@ -14,7 +12,6 @@ import { Container } from '@chakra-ui/react';
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const seo = useSeo();
   const mode = useSettingsStore((state) => state.mode);
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const setCurrentScuderia = useSettingsStore((state) => state.setCurrentScuderia);
@@ -44,7 +41,6 @@ export default function Home() {
   if (loading) return <Loader />;
   return (
     <Container minHeight={'80vh'}>
-      <NextSeo {...seo} />
       {mode === PomodoroMode.MINIMAL && <SimpleTimerSelector />}
       <Pomodoro />
     </Container>

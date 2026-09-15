@@ -3,7 +3,7 @@ import { getUserLocale } from '@/services/locale.service';
 import { getTranslations } from 'next-intl/server';
 import { Metadata } from 'next';
 
-const url = 'https://pitmydoro.com/learn';
+const url = 'https://www.pitmydoro.com/learn';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getUserLocale();
@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'Pit My Doro',
       images: [
         {
-          url: 'https://pitmydoro.com/images/cover.png',
+          url: 'https://www.pitmydoro.com/images/cover.png',
           width: 1200,
           height: 630,
         },
@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: t('title'),
       description: t('description'),
-      images: ['https://pitmydoro.com/images/cover.png'],
+      images: ['https://www.pitmydoro.com/images/cover.png'],
     },
   };
 }
@@ -51,13 +51,13 @@ export default async function LearnLayout({ children }: { children: React.ReactN
     headline: t('title'),
     description: t('description'),
     inLanguage: locale,
-    image: 'https://pitmydoro.com/images/cover.png',
+    image: 'https://www.pitmydoro.com/images/cover.png',
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
     author: { '@type': 'Organization', name: 'Pit My Doro' },
     publisher: {
       '@type': 'Organization',
       name: 'Pit My Doro',
-      logo: { '@type': 'ImageObject', url: 'https://pitmydoro.com/images/cover.png' },
+      logo: { '@type': 'ImageObject', url: 'https://www.pitmydoro.com/images/cover.png' },
     },
   };
 
@@ -65,7 +65,7 @@ export default async function LearnLayout({ children }: { children: React.ReactN
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://pitmydoro.com' },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.pitmydoro.com' },
       { '@type': 'ListItem', position: 2, name: t('title'), item: url },
     ],
   };
