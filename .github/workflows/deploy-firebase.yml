@@ -10,15 +10,26 @@ on:
       - '.firebaserc'
       - '.github/workflows/deploy-firebase.yml'
   workflow_dispatch:
+    inputs:
+      project:
+        description: 'Firebase project alias to deploy to'
+        type: choice
+        options: [dev, prod]
+        default: dev
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ inputs.project || 'prod' }}
   cancel-in-progress: false
 
 jobs:
   Deploy:
     timeout-minutes: 20
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      FIREBASE_PROJECT: ${{ inputs.project || 'prod' }}
+      FIREBASE_TOOLS_VERSION: 14.20.0
     steps:
       - uses: actions/checkout@v4
 
@@ -32,16 +43,15 @@ jobs:
       - name: Build functions
         run: npm run build --prefix functions
 
-      - name: Write service account credentials
-        run: echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/service-account.json"
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Deploy indexes and functions
-        run: npx --yes firebase-tools@latest deploy --only firestore:indexes,functions --project prod --non-interactive --force
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/service-account.json
-
-      - name: Remove service account credentials
-        if: always()
-        run: rm -f "$RUNNER_TEMP/service-account.json"
+        run: |
+          npx --yes firebase-tools@"$FIREBASE_TOOLS_VERSION" deploy \
+            --only firestore:indexes,functions \
+            --project "$FIREBASE_PROJECT" \
+            --non-interactive \
+            --force
