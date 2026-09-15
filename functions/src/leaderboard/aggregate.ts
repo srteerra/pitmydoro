@@ -5,6 +5,20 @@ export const MAX_DAILY_POMODORO_SECONDS = 57_600;
 
 export const TOP_SIZE = 50;
 
+const BADGES = [
+  { id: 'streamer', flag: 'isStreamer' },
+  { id: 'supporter', flag: 'isSupporter' },
+  { id: 'dev', flag: 'isDev' },
+  { id: 'creator', flag: 'isCreator' },
+  { id: 'designer', flag: 'isDesigner' },
+] as const;
+
+export type BadgeId = (typeof BADGES)[number]['id'];
+
+export type BadgeFlag = (typeof BADGES)[number]['flag'];
+
+export type UserBadges = Partial<Record<BadgeFlag, boolean>>;
+
 export interface RankedEntry {
   rank: number;
   uid: string;
@@ -12,8 +26,31 @@ export interface RankedEntry {
   displayName: string;
   photoURL: string | null;
   favoriteFlag: string | null;
+  badges: UserBadges | null;
+  featuredBadge: BadgeId | null;
   pomodoroTime: number;
 }
+
+const isEnabled = (value: unknown): boolean => value === true || value === 1 || value === 'true';
+
+const normalizeBadges = (value: unknown): UserBadges | null => {
+  if (!value || typeof value !== 'object') return null;
+
+  const source = value as Record<string, unknown>;
+  const badges: UserBadges = {};
+
+  for (const { flag } of BADGES) {
+    if (isEnabled(source[flag])) badges[flag] = true;
+  }
+
+  return Object.keys(badges).length > 0 ? badges : null;
+};
+
+const normalizeFeaturedBadge = (value: unknown, badges: UserBadges | null): BadgeId | null => {
+  const badge = BADGES.find(({ id }) => id === value);
+
+  return badge && badges?.[badge.flag] ? badge.id : null;
+};
 
 export interface PeriodTotals {
   range: PeriodRange;
@@ -85,6 +122,7 @@ export const rank = async (
     const displayName = profile.get('displayName');
     const photoURL = profile.get('photoURL');
     const favoriteFlag = profile.get('favoriteFlag');
+    const badges = normalizeBadges(profile.get('badges'));
 
     top.push({
       rank: top.length + 1,
@@ -95,6 +133,8 @@ export const rank = async (
       photoURL: typeof photoURL === 'string' && photoURL.length > 0 ? photoURL : null,
       favoriteFlag:
         typeof favoriteFlag === 'string' && favoriteFlag.length > 0 ? favoriteFlag : null,
+      badges,
+      featuredBadge: normalizeFeaturedBadge(profile.get('featuredBadge'), badges),
       pomodoroTime,
     });
   }
