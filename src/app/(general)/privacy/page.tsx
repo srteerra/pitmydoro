@@ -87,7 +87,6 @@ export default function PrivacyPage() {
           <LegalItem>{t.rich('sections.processors.analyticsProvider', strong)}</LegalItem>
           <LegalItem>{t.rich('sections.processors.google', strong)}</LegalItem>
           <LegalItem>{t.rich('sections.processors.vercel', strong)}</LegalItem>
-          <LegalItem>{t.rich('sections.processors.sentry', strong)}</LegalItem>
         </LegalList>
         <LegalText>{t('sections.processors.policies')}</LegalText>
         <LegalText>{t('sections.processors.responsibility')}</LegalText>
@@ -106,16 +105,9 @@ export default function PrivacyPage() {
 
       <LegalSection title={t('sections.analytics.title')}>
         <LegalText>{t('sections.analytics.intro')}</LegalText>
-
-        <LegalSubtitle>{t('sections.analytics.analyticsTitle')}</LegalSubtitle>
         <LegalText>{t('sections.analytics.analytics')}</LegalText>
         <LegalText>{t.rich('sections.analytics.analyticsPurpose', strong)}</LegalText>
         <LegalCallout>{t('sections.analytics.analyticsConsent')}</LegalCallout>
-
-        <LegalSubtitle>{t('sections.analytics.errorsTitle')}</LegalSubtitle>
-        <LegalText>{t('sections.analytics.errors')}</LegalText>
-        <LegalText>{t('sections.analytics.errorsPurpose')}</LegalText>
-        <LegalCallout>{t('sections.analytics.errorsScope')}</LegalCallout>
       </LegalSection>
 
       <LegalSection title={t('sections.sharing.title')}>
