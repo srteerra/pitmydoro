@@ -18,6 +18,14 @@ import { useTimerGuard } from '@/hooks/useTimerGuard';
 import { MobileMenu } from './MobileMenu';
 import { usePathname } from 'next/navigation';
 
+const APPEAR = {
+  logo: 'headerLogoIn 0.5s ease-out both',
+  step1: 'headerItemIn 0.4s ease-out 0.34s both',
+  step2: 'headerItemIn 0.4s ease-out 0.46s both',
+  step3: 'headerItemIn 0.4s ease-out 0.58s both',
+  step4: 'headerItemIn 0.4s ease-out 0.74s both',
+};
+
 export const Header = () => {
   const t = useTranslations('header');
   const { openDrawer } = useDrawer();
@@ -53,13 +61,14 @@ export const Header = () => {
             variant='ghost'
             rounded='full'
             color={{ base: 'gray.600', _hover: 'gray.800' }}
+            animation={APPEAR.step1}
             onClick={handleOpenMenu}
           >
             <LuMenu />
           </IconButton>
         </GridItem>
 
-        <GridItem justifySelf='center' minW={0}>
+        <GridItem justifySelf='center' minW={0} animation={APPEAR.logo}>
           <Link rel='noopener noreferrer' href={'/'}>
             <Image asChild filter='none' alt={'...'} width='200px' _dark={{ filter: 'invert(1)' }}>
               <NextImage src={Logo} alt='...' />
@@ -67,7 +76,7 @@ export const Header = () => {
           </Link>
         </GridItem>
 
-        <GridItem justifySelf='end'>
+        <GridItem justifySelf='end' animation={APPEAR.step1}>
           <AuthModal />
         </GridItem>
       </Grid>
@@ -86,6 +95,7 @@ export const Header = () => {
           display={{ base: 'none', md: 'block' }}
           gridColumn={{ base: '1', md: '1' }}
           gridRow={{ base: '1', md: '1' }}
+          animation={APPEAR.step4}
         >
           <GitHubStars />
         </GridItem>
@@ -96,6 +106,7 @@ export const Header = () => {
           display='flex'
           width={'full'}
           justifyContent={{ base: 'center', md: 'flex-end' }}
+          animation={APPEAR.step4}
         >
           <HStack gap={2}>
             {isPomodoroPage && (
@@ -117,7 +128,7 @@ export const Header = () => {
         >
           <HStack gap={0} maxW='100%'>
             <Tooltip openDelay={100} closeDelay={100} content={t('learn')}>
-              <Box as='span' display='inline-flex'>
+              <Box as='span' display='inline-flex' animation={APPEAR.step3}>
                 <Link
                   href={'/learn'}
                   aria-label='Learn Formula 1'
@@ -138,7 +149,7 @@ export const Header = () => {
             </Tooltip>
 
             <Tooltip openDelay={100} closeDelay={100} content='Stream Overlay'>
-              <Box as='span' display='inline-flex'>
+              <Box as='span' display='inline-flex' animation={APPEAR.step2}>
                 <Link
                   href={'/stream-overlay'}
                   aria-label='Stream overlay for OBS'
@@ -158,9 +169,11 @@ export const Header = () => {
               </Box>
             </Tooltip>
 
-            <LocaleSwitch />
+            <Box as='span' display='inline-flex' animation={APPEAR.step1}>
+              <LocaleSwitch />
+            </Box>
 
-            <Center paddingX={{ base: 1, md: 3 }} flexShrink={1} minW={0}>
+            <Center paddingX={{ base: 1, md: 3 }} flexShrink={1} minW={0} animation={APPEAR.logo}>
               <Link rel='noopener noreferrer' href={'/'}>
                 <Image
                   asChild
@@ -180,13 +193,13 @@ export const Header = () => {
             </Center>
 
             <Tooltip openDelay={100} closeDelay={100} content={t('theme')}>
-              <Box as='span' display='inline-flex'>
+              <Box as='span' display='inline-flex' animation={APPEAR.step1}>
                 <ToggleThemeMode />
               </Box>
             </Tooltip>
 
             <Tooltip openDelay={100} closeDelay={100} content={'Community'}>
-              <Box as='span' display='inline-flex'>
+              <Box as='span' display='inline-flex' animation={APPEAR.step2}>
                 <IconButton
                   variant={'ghost'}
                   rounded='full'
@@ -201,7 +214,7 @@ export const Header = () => {
             </Tooltip>
 
             <Tooltip openDelay={100} closeDelay={100} content={t('leaderboard')}>
-              <Box as='span' display='inline-flex'>
+              <Box as='span' display='inline-flex' animation={APPEAR.step3}>
                 <Link
                   href={'/leaderboard'}
                   aria-label='Leaderboard'

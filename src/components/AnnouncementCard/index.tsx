@@ -8,6 +8,7 @@ import tinycolor from 'tinycolor2';
 import { useTranslations } from 'next-intl';
 import useSessionStore from '@/stores/Session.store';
 import useSettingsStore from '@/stores/Settings.store';
+import useConsentStore, { hasCookieConsent } from '@/stores/Consent.store';
 
 const OWNER = 'srteerra';
 const REPO = 'pitmydoro';
@@ -24,7 +25,33 @@ interface Release {
 
 const dismissedKey = (tag: string) => `pmd-announcement-${tag}`;
 
+const dismissalStore = (): Storage | null => {
+  try {
+    return hasCookieConsent() ? localStorage : sessionStorage;
+  } catch {
+    return null;
+  }
+};
+
+const isDismissed = (tag: string) => {
+  try {
+    return dismissalStore()?.getItem(dismissedKey(tag)) === 'dismissed';
+  } catch {
+    return false;
+  }
+};
+
+const markDismissed = (tag: string) => {
+  try {
+    dismissalStore()?.setItem(dismissedKey(tag), 'dismissed');
+  } catch {
+    return;
+  }
+};
+
 const readCache = (): Release | null => {
+  if (!hasCookieConsent()) return null;
+
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
@@ -37,6 +64,8 @@ const readCache = (): Release | null => {
 };
 
 const writeCache = (release: Release) => {
+  if (!hasCookieConsent()) return;
+
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), release }));
   } catch {
@@ -84,12 +113,15 @@ export const AnnouncementCard = () => {
 
   const [release, setRelease] = useState<Release | null>(null);
   const [open, setOpen] = useState(false);
+  const consentStatus = useConsentStore((state) => state.status);
 
   useEffect(() => {
+    if (consentStatus === 'pending') return;
+
     const apply = (parsed: Release) => {
       if (!parsed.tag) return;
       setRelease(parsed);
-      if (localStorage.getItem(dismissedKey(parsed.tag)) !== 'dismissed') {
+      if (!isDismissed(parsed.tag)) {
         setOpen(true);
       }
     };
@@ -109,12 +141,12 @@ export const AnnouncementCard = () => {
         apply(parsed);
       })
       .catch(() => undefined);
-  }, []);
+  }, [consentStatus]);
 
-  if (!open || !release) return null;
+  if (!open || !release || consentStatus === 'pending') return null;
 
   const handleClose = () => {
-    localStorage.setItem(dismissedKey(release.tag), 'dismissed');
+    markDismissed(release.tag);
     setOpen(false);
   };
 
@@ -127,6 +159,7 @@ export const AnnouncementCard = () => {
       position='fixed'
       bottom={{ base: 4, md: 6 }}
       right={{ base: 4, md: 6 }}
+      animation='fadeSlideUp 0.5s ease-out'
       zIndex={1000}
       maxW={{ base: 'calc(100vw - 2rem)', md: '320px' }}
       w='full'

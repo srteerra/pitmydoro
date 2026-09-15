@@ -11,17 +11,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'meta.pomodoro' });
 
   return {
-    title: t('title'),
+    title: { absolute: t('title') },
     description: t('description'),
     icons: './favicon.ico',
     openGraph: {
       title: t('title'),
       description: t('description'),
-      url: 'https://pitmydoro.com',
+      url: 'https://www.pitmydoro.com',
       siteName: 'Pit My Doro',
       images: [
         {
-          url: 'https://pitmydoro.com/images/cover.png',
+          url: 'https://www.pitmydoro.com/images/cover.png',
           width: 1200,
           height: 630,
         },

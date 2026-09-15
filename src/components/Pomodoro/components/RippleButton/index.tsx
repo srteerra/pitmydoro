@@ -8,6 +8,7 @@ interface RippleButtonProps {
   buttonColor?: string;
   spanColor?: string;
   textColor?: string;
+  borderColor?: string;
   [key: string]: any;
 }
 
@@ -65,14 +66,19 @@ const rippleButton = defineSlotRecipe({
 });
 
 export const RippleButton: React.FC<RippleButtonProps> = (props) => {
-  const { size, isActive, children, buttonColor, spanColor, textColor, ...rest } = props;
+  const { size, isActive, children, buttonColor, spanColor, textColor, borderColor, ...rest } =
+    props;
 
   const recipe = useSlotRecipe({ recipe: rippleButton });
   const styles = recipe({ size });
-  const dynamicButtonStyles = { background: buttonColor || styles.button.background };
+  const dynamicButtonStyles = {
+    background: buttonColor || styles.button.background,
+    ...(borderColor ? { border: `1px solid ${borderColor}` } : {}),
+  };
   const dynamicSpanStyles = {
     background: spanColor || styles.span.background,
     color: textColor || styles.span.color,
+    ...(borderColor ? { border: `1px solid ${borderColor}` } : {}),
   };
 
   return (

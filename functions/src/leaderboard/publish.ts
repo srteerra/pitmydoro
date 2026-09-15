@@ -2,7 +2,7 @@ import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { PeriodRange, PeriodType } from './periods';
 import { RankedEntry } from './aggregate';
 
-export const SNAPSHOT_VERSION = 2;
+export const SNAPSHOT_VERSION = 3;
 
 export interface LeaderboardSnapshot {
   periodId: string;
