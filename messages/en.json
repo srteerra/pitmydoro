@@ -928,6 +928,8 @@
     "focusTime": "Focus time",
     "updated": "updated {time}",
     "nextRefresh": "next refresh in {time}",
+    "nextRefreshHelp": "Refresh schedule",
+    "nextRefreshSchedule": "Scheduled update: {time} UTC",
     "sealed": "Final",
     "empty": "No results for this period yet.",
     "error": "Couldn't load the leaderboard. Try again later.",
@@ -1133,7 +1135,6 @@
         "analyticsProvider": "<strong>Google Analytics for Firebase</strong> (Google LLC): optional usage analytics, active only with your consent, as described in the analytics section below.",
         "google": "<strong>Google Sign-In</strong> (Google LLC): used when you choose to sign in with a Google account. Google provides your email address, name and profile picture to the App, and handles the credentials itself, which are never seen or stored by Pitmydoro.",
         "vercel": "<strong>Vercel</strong> (Vercel Inc.): hosting and delivery of the application. It processes technical data such as your IP address and request logs in order to serve the site.",
-        "sentry": "<strong>Sentry</strong> (Functional Software, Inc.): error and crash monitoring, used to detect and fix faults in the App.",
         "policies": "Each provider processes data under its own privacy policy, which governs its practices. We recommend reviewing them if you want to know how they handle data on their side.",
         "responsibility": "The Operator does not control the internal practices of these providers and accepts no liability for their acts, omissions, outages or security incidents."
       },
@@ -1147,16 +1148,11 @@
         "control": "You may decline non-essential cookies from the banner shown on your first visit, and you may clear stored data at any time from your browser settings. Clearing it will sign you out and reset local preferences."
       },
       "analytics": {
-        "title": "7. ANALYTICS AND ERROR MONITORING",
-        "intro": "Two optional tools help us understand how the App behaves in the real world. Neither is used for advertising, and neither is used to build a commercial profile of you.",
-        "analyticsTitle": "Usage analytics",
+        "title": "7. USAGE ANALYTICS",
+        "intro": "One optional tool helps us understand how the App behaves in the real world. It is not used for advertising, and it is not used to build a commercial profile of you.",
         "analytics": "With your consent, the App enables Google Analytics for Firebase. It records aggregated usage events such as screens viewed, features opened and sessions started, together with technical attributes like device type, browser, language and an approximate region derived from your IP address.",
         "analyticsPurpose": "<strong>Its only purpose is to find points of improvement:</strong> which features are actually used and which are ignored, where people abandon a flow, which screens fail to do their job, and which problems are worth fixing first. It tells us what to build and repair next, nothing else.",
-        "analyticsConsent": "Analytics is disabled by default and is only activated if you accept cookies. If you decline, or later clear your stored data, collection stays off and the App keeps working exactly the same.",
-        "errorsTitle": "Error monitoring",
-        "errors": "The App uses Sentry to detect crashes and errors. When something fails, Sentry receives a technical report containing the error message and stack trace, the URL where it happened, the browser and operating system, and a technical identifier used to group repeated occurrences.",
-        "errorsPurpose": "These reports exist solely to detect, reproduce and fix faults, and to protect the service against abuse. They are not used to track your browsing, to measure your activity or for any commercial purpose.",
-        "errorsScope": "Error reports may incidentally include technical context from the page where the failure occurred. We do not deliberately send the content of your tasks, notes or profile to this service, which is another reason not to store sensitive information in those fields."
+        "analyticsConsent": "Analytics is disabled by default and is only activated if you accept cookies. If you decline, or later clear your stored data, collection stays off and the App keeps working exactly the same."
       },
       "sharing": {
         "title": "8. WHEN DATA MAY BE DISCLOSED",

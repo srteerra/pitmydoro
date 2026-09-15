@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
+import { BadgeId, UserBadges } from '@/interfaces/Badge.interface';
 
 export type LeaderboardPeriodType = 'weekly' | 'monthly';
 
@@ -9,6 +10,8 @@ export interface LeaderboardEntry {
   displayName: string;
   photoURL: string | null;
   favoriteFlag: string | null;
+  badges?: UserBadges | null;
+  featuredBadge?: BadgeId | null;
   pomodoroTime: number;
   workTime?: number;
 }

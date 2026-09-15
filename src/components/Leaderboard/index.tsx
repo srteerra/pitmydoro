@@ -13,6 +13,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useLocale, useTranslations } from 'next-intl';
+import { useTheme } from 'next-themes';
+import tinycolor from 'tinycolor2';
 import { leaderboardService } from '@/services/leaderboard.service';
 import {
   CurrentLeaderboards,
@@ -23,6 +25,9 @@ import { timestampUtils } from '@/utils/timestamp.utils';
 import { LeaderboardTable } from '@/components/Leaderboard/LeaderboardTable';
 import { jersey15 } from '@/assets/fonts/Jersey';
 import { InDevelopmentBadge } from '@/components/InDevelopmentBadge';
+import { HelpTip } from '@/components/ui/help-tip';
+import useSessionStore from '@/stores/Session.store';
+import useSettingsStore from '@/stores/Settings.store';
 
 const PERIODS: LeaderboardPeriodType[] = ['weekly', 'monthly'];
 
@@ -42,12 +47,25 @@ const relativeTime = (locale: string, ms: number): string => {
   return formatter.format(Math.round(hours / 24), 'day');
 };
 
-const msUntilNextRefresh = (): number => {
+const nextRefreshAt = (): Date => {
   const now = new Date();
-  const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0);
 
-  return next - now.getTime();
+  return new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0)
+  );
 };
+
+const msUntilNextRefresh = (): number => nextRefreshAt().getTime() - Date.now();
+
+const formatUtcSchedule = (locale: string, date: Date): string =>
+  new Intl.DateTimeFormat(locale, {
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'UTC',
+  }).format(date);
 
 const formatCountdown = (ms: number): string => {
   const total = Math.max(0, Math.floor(ms / 1000));
@@ -60,6 +78,7 @@ const formatCountdown = (ms: number): string => {
 
 const NextRefresh = () => {
   const t = useTranslations('leaderboard');
+  const locale = useLocale();
   const [remaining, setRemaining] = useState<number | null>(null);
 
   useEffect(() => {
@@ -73,10 +92,38 @@ const NextRefresh = () => {
   if (remaining === null) return null;
 
   return (
-    <Text data-pw-id='leaderboard-next-refresh'>
-      {t('nextRefresh', { time: formatCountdown(remaining) })}
-    </Text>
+    <HStack gap={0.5}>
+      <Text data-pw-id='leaderboard-next-refresh'>
+        {t('nextRefresh', { time: formatCountdown(remaining) })}
+      </Text>
+      <HelpTip
+        placement='top'
+        label={t('nextRefreshHelp')}
+        content={t('nextRefreshSchedule', { time: formatUtcSchedule(locale, nextRefreshAt()) })}
+      />
+    </HStack>
   );
+};
+
+const usePeriodBadgeColors = () => {
+  const { theme } = useTheme();
+  const sessionStatus = useSessionStore((state) => state.status);
+  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
+
+  return useMemo(() => {
+    const base =
+      theme === 'dark'
+        ? tinycolor(currentScuderia?.colors?.primary?.default)
+        : tinycolor(currentScuderia?.colors?.background?.[sessionStatus]);
+
+    return {
+      bg: base
+        .darken(5)
+        .brighten(theme === 'dark' ? 0 : -4)
+        .toString(),
+      color: theme === 'dark' ? 'dark.200' : 'light',
+    };
+  }, [theme, sessionStatus, currentScuderia]);
 };
 
 const formatPeriod = (locale: string, snapshot: LeaderboardSnapshot): string => {
@@ -96,29 +143,40 @@ const PeriodPanel = ({ snapshot }: { snapshot: LeaderboardSnapshot }) => {
   const locale = useLocale();
 
   const updated = relativeTime(locale, timestampUtils.toMillis(snapshot.computedAt));
+  const badgeColors = usePeriodBadgeColors();
 
   return (
     <VStack align='stretch' gap={0}>
-      <HStack gap={3} wrap='wrap' color='fg.muted' fontSize='sm'>
-        <Text>{formatPeriod(locale, snapshot)}</Text>
-        {updated && (
-          <>
-            <Text>·</Text>
-            <Text>{t('updated', { time: updated })}</Text>
-          </>
-        )}
-        {!snapshot.sealed && (
-          <>
-            <Text>·</Text>
-            <NextRefresh />
-          </>
-        )}
-        {snapshot.sealed && (
-          <Badge colorPalette='green' variant='subtle'>
-            {t('sealed')}
+      <Flex
+        gap={3}
+        wrap='wrap'
+        align='center'
+        justify='space-between'
+        color='fg.muted'
+        fontSize='sm'
+      >
+        <HStack gap={3} wrap='wrap'>
+          <Badge
+            data-pw-id='leaderboard-period'
+            bg={badgeColors.bg}
+            color={badgeColors.color}
+            rounded='md'
+            px={2.5}
+            py={1}
+            fontWeight='semibold'
+          >
+            {formatPeriod(locale, snapshot)}
           </Badge>
-        )}
-      </HStack>
+          {updated && <Text>{t('updated', { time: updated })}</Text>}
+          {snapshot.sealed && (
+            <Badge colorPalette='green' variant='subtle'>
+              {t('sealed')}
+            </Badge>
+          )}
+        </HStack>
+
+        {!snapshot.sealed && <NextRefresh />}
+      </Flex>
 
       <LeaderboardTable entries={snapshot.top ?? []} />
     </VStack>

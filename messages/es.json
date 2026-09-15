@@ -929,6 +929,8 @@
     "focusTime": "Tiempo trabajando",
     "updated": "actualizado {time}",
     "nextRefresh": "próxima actualización en {time}",
+    "nextRefreshHelp": "Horario de actualización",
+    "nextRefreshSchedule": "Actualización programada: {time} UTC",
     "sealed": "Final",
     "empty": "Todavía no hay resultados para este periodo.",
     "error": "No se pudo cargar la clasificación. Inténtalo más tarde.",
@@ -1134,7 +1136,6 @@
         "analyticsProvider": "<strong>Google Analytics for Firebase</strong> (Google LLC): analítica de uso opcional, activa únicamente con tu consentimiento, según se describe en la sección de analítica más abajo.",
         "google": "<strong>Inicio de sesión con Google</strong> (Google LLC): se utiliza cuando eliges acceder con una cuenta de Google. Google proporciona a la App tu dirección de correo, nombre y foto de perfil, y gestiona él mismo las credenciales, que Pitmydoro nunca ve ni almacena.",
         "vercel": "<strong>Vercel</strong> (Vercel Inc.): alojamiento y entrega de la aplicación. Trata datos técnicos como tu dirección IP y los registros de peticiones para poder servir el sitio.",
-        "sentry": "<strong>Sentry</strong> (Functional Software, Inc.): monitoreo de errores y fallos, usado para detectar y corregir problemas en la App.",
         "policies": "Cada proveedor trata los datos bajo su propia política de privacidad, que rige sus prácticas. Recomendamos revisarlas si quieres conocer cómo gestionan los datos por su parte.",
         "responsibility": "El Operador no controla las prácticas internas de estos proveedores y no asume responsabilidad alguna por sus actos, omisiones, caídas o incidentes de seguridad."
       },
@@ -1148,16 +1149,11 @@
         "control": "Puedes rechazar las cookies no esenciales desde el aviso que aparece en tu primera visita, y puedes borrar los datos almacenados en cualquier momento desde los ajustes de tu navegador. Al borrarlos se cerrará tu sesión y se restablecerán las preferencias locales."
       },
       "analytics": {
-        "title": "7. ANALÍTICA Y MONITOREO DE ERRORES",
-        "intro": "Dos herramientas opcionales nos ayudan a entender cómo se comporta la App en el mundo real. Ninguna se usa con fines publicitarios ni para construir un perfil comercial tuyo.",
-        "analyticsTitle": "Analítica de uso",
+        "title": "7. ANALÍTICA DE USO",
+        "intro": "Una herramienta opcional nos ayuda a entender cómo se comporta la App en el mundo real. No se usa con fines publicitarios ni para construir un perfil comercial tuyo.",
         "analytics": "Con tu consentimiento, la App activa Google Analytics for Firebase. Registra eventos de uso agregados, como pantallas vistas, funciones abiertas y sesiones iniciadas, junto con atributos técnicos como tipo de dispositivo, navegador, idioma y una región aproximada derivada de tu dirección IP.",
         "analyticsPurpose": "<strong>Su única finalidad es encontrar puntos de mejora:</strong> qué funciones se usan de verdad y cuáles se ignoran, dónde se abandona un flujo, qué pantallas no cumplen su propósito y qué problemas conviene resolver primero. Nos dice qué construir y qué reparar a continuación, nada más.",
-        "analyticsConsent": "La analítica está desactivada por defecto y solo se activa si aceptas las cookies. Si rechazas, o si más adelante borras los datos almacenados, la recopilación permanece apagada y la App sigue funcionando exactamente igual.",
-        "errorsTitle": "Monitoreo de errores",
-        "errors": "La App utiliza Sentry para detectar fallos y errores. Cuando algo falla, Sentry recibe un reporte técnico con el mensaje de error y su traza, la URL donde ocurrió, el navegador y el sistema operativo, y un identificador técnico que sirve para agrupar ocurrencias repetidas.",
-        "errorsPurpose": "Estos reportes existen únicamente para detectar, reproducir y corregir fallos, y para proteger el servicio frente a abusos. No se usan para seguir tu navegación, medir tu actividad ni con ningún fin comercial.",
-        "errorsScope": "Los reportes de error pueden incluir de forma incidental contexto técnico de la página donde ocurrió el fallo. No enviamos deliberadamente el contenido de tus tareas, notas o perfil a este servicio, lo cual es una razón más para no guardar información sensible en esos campos."
+        "analyticsConsent": "La analítica está desactivada por defecto y solo se activa si aceptas las cookies. Si rechazas, o si más adelante borras los datos almacenados, la recopilación permanece apagada y la App sigue funcionando exactamente igual."
       },
       "sharing": {
         "title": "8. CUÁNDO SE PUEDEN DIVULGAR LOS DATOS",

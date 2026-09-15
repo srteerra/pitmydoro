@@ -6,11 +6,33 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { LeaderboardEntry } from '@/interfaces/Leaderboard.interface';
 import { formatSeconds } from '@/utils/formatSeconds.utils';
+import { resolveFeaturedBadge } from '@/utils/badges.utils';
+import { BadgeFlat } from '@/components/Profile/Badges/BadgeFlat';
+
+const BADGE_SIZE = 16;
 
 const PODIUM: Record<number, string> = {
   1: '#D4AF37',
   2: '#A8A9AD',
   3: '#B08D57',
+};
+
+const EntryBadge = ({ entry }: { entry: LeaderboardEntry }) => {
+  const t = useTranslations('badges');
+
+  const badge = resolveFeaturedBadge(entry.badges, entry.featuredBadge);
+
+  if (!badge) return null;
+
+  return (
+    <BadgeFlat
+      data-pw-id={`leaderboard-badge-${badge.id}`}
+      aria-label={t(`${badge.id}.name`)}
+      size={BADGE_SIZE}
+      color={badge.color}
+      glyph={badge.glyph}
+    />
+  );
 };
 
 const RankBadge = ({ rank }: { rank: number }) => {
@@ -81,6 +103,7 @@ export const LeaderboardTable = ({ entries }: Props) => {
                 <Text fontWeight='semibold' truncate>
                   {entry.displayName}
                 </Text>
+                <EntryBadge entry={entry} />
                 {entry.favoriteFlag && <Text fontSize='sm'>{entry.favoriteFlag}</Text>}
               </HStack>
               <Text fontSize='xs' color='fg.muted' truncate>
