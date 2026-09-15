@@ -164,7 +164,9 @@
     "keepEditing": "Seguir editando",
     "cancel": "Cancelar",
     "changesDiscarded": "Cambios descartados",
-    "focusedTime": "Tiempo enfocado"
+    "focusedTime": "Tiempo enfocado",
+    "notFoundHint": "Revisa que esté bien escrito, o puede que el perfil haya sido eliminado.",
+    "notFoundLeaderboard": "Ver la clasificación"
   },
   "badges": {
     "dialogTitle": "Insignia",
@@ -430,9 +432,13 @@
     }
   },
   "footer": {
-    "madeWith": "Hecho con ❤️ por @srteerra",
+    "madeWith": "Hecho con ❤️ por <author>Terra</author>",
     "disclaimer": "Este sitio no está afiliado con FIA, Formula 1, ni con sus equipos o pilotos.",
-    "license": "Código abierto · Licencia GPL-3.0"
+    "license": "Código abierto · Licencia GPL-3.0",
+    "terms": "Términos y Condiciones",
+    "privacy": "Política de Privacidad",
+    "version": "Versión {version}",
+    "support": "Apoya el proyecto"
   },
   "header": {
     "learn": "Aprende más",
@@ -876,19 +882,19 @@
     "ogTitle": "Pit My Doro – Temporizador Pomodoro estilo F1",
     "ogDescription": "Pitmydoro, una forma distinta de usar el método Pomodoro: enfócate, descansa y avanza a tu ritmo, sin presiones.",
     "terms": {
-      "title": "Términos y Condiciones – PitMyDoro",
+      "title": "Términos y Condiciones",
       "description": "Consulta los Términos y Condiciones de PitMyDoro, que regulan el uso de la aplicación y sus servicios."
     },
     "privacy": {
-      "title": "Política de Privacidad – PitMyDoro",
+      "title": "Política de Privacidad",
       "description": "Conoce cómo PitMyDoro recopila, utiliza y protege tus datos personales."
     },
     "cookies": {
-      "title": "Aviso de Cookies – PitMyDoro",
+      "title": "Aviso de Cookies",
       "description": "Detalles sobre el uso de cookies y cómo administrar tus preferencias."
     },
     "legal": {
-      "title": "Aviso Legal – PitMyDoro",
+      "title": "Aviso Legal",
       "description": "Aviso legal e identificación del responsable de PitMyDoro."
     },
     "pomodoro": {
@@ -896,11 +902,11 @@
       "description": "Usa PitMyDoro para concentrarte con un temporizador Pomodoro dinámico inspirado en la Fórmula 1."
     },
     "learn": {
-      "title": "Aprende Fórmula 1 – Guía para principiantes | Pit My Doro",
+      "title": "Aprende Fórmula 1 – Guía para principiantes",
       "description": "¿Nuevo en la Fórmula 1? Aprende lo básico en minutos: cómo funcionan el campeonato y el fin de semana de carrera, la duración, las reglas, las paradas en boxes, los compuestos de neumáticos y los términos de F1 que todo aficionado debería conocer."
     },
     "leaderboard": {
-      "title": "Ranking – Pit My Doro",
+      "title": "Ranking",
       "description": "Descubre quién acumuló más tiempo de concentración esta semana y este mes en Pit My Doro."
     }
   },
@@ -927,5 +933,276 @@
     "empty": "Todavía no hay resultados para este periodo.",
     "error": "No se pudo cargar la clasificación. Inténtalo más tarde.",
     "metricNotice": "La métrica ha cambiado: a partir del 13 de sept solo cuenta el tiempo de pomodoros completados. La tabla por mes queda deshabilitada hasta octubre."
+  },
+  "cookieConsent": {
+    "title": "Cookies",
+    "description": "Las cookies nos ayudan a mejorar tu experiencia y nuestra app",
+    "learnMore": "Saber más",
+    "accept": "Aceptar cookies",
+    "decline": "Solo necesarias"
+  },
+  "terms": {
+    "agreement": "ACUERDO",
+    "title": "Términos y Condiciones",
+    "lastUpdated": "Última actualización: 14 de septiembre de 2026",
+    "intro": "Bienvenido a Pitmydoro. Al acceder o usar esta aplicación aceptas íntegramente estos Términos y Condiciones. Si no estás de acuerdo con alguna parte de ellos, no uses el servicio.",
+    "finalNotice": "Si no estás de acuerdo con alguno de los puntos anteriores, por favor no uses esta aplicación. Y si ya cuentas con una cuenta y tus datos ya están en Pitmydoro, por favor sigue las instrucciones del <deletion>punto 10, Conservación y eliminación de tus datos</deletion> para solicitar la eliminación absoluta y permanente de tus datos si así lo deseas.",
+    "sections": {
+      "definitions": {
+        "title": "1. DEFINICIONES",
+        "items": {
+          "app": "<strong>App:</strong> Pitmydoro, un temporizador Pomodoro de código abierto operado por un desarrollador independiente.",
+          "operator": "<strong>Operador:</strong> La persona física que desarrolla y mantiene la App. Pitmydoro no es una empresa ni actúa como tal.",
+          "user": "<strong>Usuario:</strong> Cualquier persona que acceda o use la App, con o sin cuenta.",
+          "content": "<strong>Contenido:</strong> Todo el texto, gráficos, funcionalidades y demás material disponible en la App.",
+          "userContent": "<strong>Contenido del Usuario:</strong> Todo lo que introduces en la App, incluidos títulos de tareas, notas, campos de perfil y nombres visibles."
+        }
+      },
+      "eligibility": {
+        "title": "2. REQUISITOS DE USO",
+        "description": "Debes tener al menos 13 años para usar la App, y como mínimo la edad requerida para consentir el tratamiento de datos en tu país. Al usar la App confirmas que cumples este requisito."
+      },
+      "usage": {
+        "title": "3. USO PERMITIDO",
+        "commitments": "Te comprometes a:",
+        "legalUse": "Usar la App únicamente con fines lícitos y personales.",
+        "noCopy": "Respetar los términos de la licencia de código abierto que cubre el código fuente.",
+        "noAbuse": "No dañar, sobrecargar, extraer masivamente ni interferir con el funcionamiento de la App o su infraestructura.",
+        "prohibited": "Queda expresamente prohibido:",
+        "fraudulentUse": "Usar la App con fines fraudulentos, difamatorios, ofensivos, de acoso o ilegales.",
+        "unauthorizedAccess": "Intentar acceder a cuentas, datos o sistemas que no te pertenecen.",
+        "manipulation": "Manipular estadísticas, rachas o posiciones en la tabla de clasificación por medios automatizados o artificiales."
+      },
+      "accounts": {
+        "title": "4. CUENTAS DE USUARIO",
+        "description": "Al crear una cuenta aceptas proporcionar información veraz y mantener tus credenciales seguras. Eres el único responsable de toda actividad realizada desde tu cuenta.",
+        "suspension": "El Operador podrá suspender, restringir o eliminar cualquier cuenta que incumpla estos Términos, perjudique a otros usuarios o deba retirarse por motivos legales o de seguridad, con o sin aviso previo."
+      },
+      "userContent": {
+        "title": "5. TU CONTENIDO",
+        "description": "Conservas la titularidad de tu Contenido del Usuario. Eres el único responsable de lo que introduces en la App y confirmas que tienes derecho a hacerlo.",
+        "warning": "No introduzcas información confidencial, sensible, regulada o protegida de cualquier otro modo. Los títulos de tareas, las notas y los campos de perfil no están diseñados para almacenar secretos, credenciales ni datos personales de terceros.",
+        "public": "Cierta información es pública por diseño, incluidos tu nombre visible, foto de perfil, insignias y posición en la clasificación. No uses esos campos para nada que no quieras que se vea públicamente."
+      },
+      "availability": {
+        "title": "6. DISPONIBILIDAD Y CAMBIOS",
+        "description": "La App se ofrece de forma gratuita y está en desarrollo activo. Las funcionalidades pueden añadirse, modificarse, restringirse o eliminarse en cualquier momento, sin aviso previo y sin responsabilidad alguna.",
+        "noUptime": "No se promete ni garantiza ningún nivel de disponibilidad, tiempo de actividad, rendimiento ni conservación de datos. El servicio puede interrumpirse, suspenderse o descontinuarse por completo en cualquier momento."
+      },
+      "data": {
+        "title": "7. ESTADÍSTICAS, REPORTES Y COPIAS",
+        "accuracy": "Los temporizadores, estadísticas, rachas, reportes y clasificaciones se proporcionan únicamente con carácter informativo. Pueden estar incompletos, retrasados, reiniciados, recalculados o ser inexactos, y no deben utilizarse con fines profesionales, académicos, médicos, laborales ni de facturación.",
+        "metrics": "El Operador podrá cambiar la definición o el cálculo de cualquier métrica, incluso de forma retroactiva, lo que puede alterar o reiniciar cifras históricas y clasificaciones.",
+        "backups": "Eres responsable de conservar tus propias copias de aquello que te importe. El Operador no garantiza que los datos se conserven, se puedan recuperar, exportar ni restaurar."
+      },
+      "leaderboard": {
+        "title": "8. INTEGRIDAD DE LA CLASIFICACIÓN",
+        "automatic": "Las posiciones de la clasificación se calculan automáticamente a partir de la actividad registrada por la App. No existe intervención manual en los rankings: ninguna posición se asigna, ajusta, impulsa ni elimina a mano, y ningún usuario es favorecido ni penalizado de forma arbitraria.",
+        "monitoring": "La actividad registrada está sujeta a comprobaciones automáticas de coherencia. Las cifras imposibles, generadas artificialmente o incoherentes con el uso normal de un temporizador pueden marcarse como anomalía.",
+        "warning": "Si se detecta una anomalía en tus datos, podrás recibir un aviso por correo electrónico o directamente en tu panel de notificaciones dentro de la App, de modo que tengas la oportunidad de corregir la conducta.",
+        "suspension": "Si la conducta continúa tras ese aviso, tu cuenta podrá ser suspendida de forma temporal o permanente, y las cifras afectadas podrán recalcularse o retirarse de la clasificación."
+      },
+      "payments": {
+        "title": "9. AUSENCIA DE PAGOS",
+        "free": "Pitmydoro es completamente gratuito. No existen planes de pago, membresías, suscripciones, niveles premium ni contenido de pago, y ninguna funcionalidad está bloqueada tras un pago.",
+        "noProcessing": "La App no procesa pagos, no opera ni integra ninguna pasarela de pago, y no recopila, almacena ni tiene acceso a datos bancarios, números de tarjeta ni ninguna otra información financiera.",
+        "warning": "<strong>Ten cuidado:</strong> si algún sitio, mensaje o página te pide dinero, datos de tarjeta o información bancaria a cambio de acceso, funcionalidades, membresías o ventajas dentro de Pitmydoro, no somos nosotros. No pagues ni compartas tus datos.",
+        "report": "Puedes reportar cualquier intento de este tipo a la dirección de contacto que aparece al final de estos Términos."
+      },
+      "donations": {
+        "title": "10. DONATIVOS Y BENEFICIOS PARA CONTRIBUIDORES",
+        "voluntary": "Los donativos son totalmente voluntarios y se aceptan a través de <bmc>Buy Me a Coffee</bmc>. Existen para ayudar a cubrir los gastos de funcionamiento del proyecto, como el dominio, los servicios de terceros y el mantenimiento.",
+        "noFunctional": "Donar no desbloquea funcionalidad. Todos los usuarios tienen acceso exactamente a las mismas funciones, donen o no. Lo que desbloquea una contribución es puramente visual.",
+        "badge": "Para recibir tu insignia de contribuidor, añade el correo de tu cuenta o tu nombre de usuario de Pitmydoro como mensaje al donar, para poder asociar la contribución a tu cuenta. La insignia es solo decorativa, y puedes mostrarla en tu perfil y junto a tu nombre en la clasificación.",
+        "exclusive": "Los contribuidores también acceden a contenido visual exclusivo, como artworks y otros extras cosméticos, ofrecidos únicamente como agradecimiento. Consulta el apartado de Community de la App para conocer los beneficios disponibles en cada momento.",
+        "previous": "Si donaste anteriormente y nunca recibiste tu insignia ni ninguno de estos beneficios, escribe a <mail>{email}</mail> y se te habilitarán. Hazlo sin pena: Pitmydoro lo hace de todo corazón y quiere que cada contribuidor reciba lo que le corresponde."
+      },
+      "intellectual": {
+        "title": "11. PROPIEDAD INTELECTUAL",
+        "description": "El código fuente se publica bajo su licencia de código abierto y puede utilizarse conforme a los términos de esa licencia. El nombre, el logotipo y los elementos de marca de Pitmydoro no están cubiertos por dicha licencia y no pueden usarse para sugerir respaldo o afiliación."
+      },
+      "f1": {
+        "title": "12. AUSENCIA DE AFILIACIÓN",
+        "description": "Pitmydoro es un proyecto independiente de aficionados. No está afiliado, respaldado, patrocinado ni asociado con la Fórmula 1, la FIA, ni con ninguno de sus equipos, pilotos, patrocinadores o titulares de derechos. Todas las marcas relacionadas pertenecen a sus respectivos titulares y se mencionan únicamente de forma descriptiva."
+      },
+      "thirdParties": {
+        "title": "13. SERVICIOS DE TERCEROS",
+        "description": "La App se apoya en infraestructura de terceros y puede enlazar a sitios de terceros. El Operador no controla esos servicios y no asume responsabilidad alguna por su contenido, disponibilidad, seguridad, políticas o prácticas. Su uso corre por tu cuenta y riesgo y se rige por sus propios términos."
+      },
+      "changes": {
+        "title": "14. CAMBIOS EN ESTOS TÉRMINOS",
+        "description": "Estos Términos pueden actualizarse en cualquier momento. La fecha de revisión que aparece al inicio de esta página indica la versión vigente. Seguir usando la App tras un cambio constituye la aceptación de los Términos actualizados."
+      },
+      "limitation": {
+        "title": "15. EXCLUSIÓN Y LIMITACIÓN DE RESPONSABILIDAD",
+        "intro": "LA APP SE PROPORCIONA “TAL CUAL” Y “SEGÚN DISPONIBILIDAD”, SIN GARANTÍAS DE NINGÚN TIPO, YA SEAN EXPRESAS, IMPLÍCITAS O LEGALES.",
+        "noWarranty": "En la máxima medida permitida por la ley aplicable, el Operador rechaza toda garantía, incluida cualquier garantía implícita de comerciabilidad, idoneidad para un fin determinado, exactitud y no infracción, y no garantiza que la App funcione de forma ininterrumpida, puntual, segura ni libre de errores.",
+        "notResponsible": "En la máxima medida permitida por la ley aplicable, el Operador no será responsable por:",
+        "damage": "Cualquier daño directo, indirecto, incidental, especial, consecuente, ejemplar o punitivo derivado del uso o de la imposibilidad de uso de la App.",
+        "loss": "Cualquier pérdida, corrupción, alteración o divulgación no autorizada de datos, tareas, notas, estadísticas, rachas, reportes o acceso a la cuenta.",
+        "interruption": "Cualquier interrupción, suspensión, degradación, descontinuación o cierre definitivo del servicio.",
+        "thirdParty": "Cualquier acto, omisión, fallo o incidente de seguridad de un proveedor externo, incluidos los servicios de autenticación, alojamiento y base de datos.",
+        "decisions": "Cualquier decisión, resultado, pérdida de productividad, ingresos, oportunidades o reputación derivada de confiar en la App o en las cifras que muestra.",
+        "cap": "Cuando la responsabilidad no pueda excluirse por ley, la responsabilidad total y agregada del Operador se limita al importe total que hayas pagado por usar la App, que en un servicio gratuito es cero."
+      },
+      "indemnity": {
+        "title": "16. INDEMNIZACIÓN",
+        "description": "Aceptas indemnizar y mantener indemne al Operador frente a cualquier reclamación, demanda, pérdida, responsabilidad o gasto, incluidos honorarios legales razonables, derivados de tu uso de la App, de tu Contenido del Usuario o del incumplimiento de estos Términos, de la ley aplicable o de derechos de terceros."
+      },
+      "termination": {
+        "title": "17. TERMINACIÓN",
+        "description": "Puedes dejar de usar la App y solicitar la eliminación de tu cuenta en cualquier momento, según se describe en la Política de Privacidad. El Operador puede suspender o cancelar el acceso en cualquier momento, con o sin causa ni aviso. Las secciones que por su naturaleza deban sobrevivir a la terminación, incluidas las exclusiones de garantía, las limitaciones de responsabilidad y la indemnización, permanecerán vigentes."
+      },
+      "severability": {
+        "title": "18. DIVISIBILIDAD",
+        "description": "Si alguna disposición de estos Términos resultara inválida o inexigible, dicha disposición se limitará o eliminará en la medida mínima necesaria, y el resto de las disposiciones conservarán plena vigencia y efecto."
+      },
+      "law": {
+        "title": "19. LEY APLICABLE Y JURISDICCIÓN",
+        "law": "Estos Términos, así como cualquier controversia o reclamación derivada de ellos, de su objeto o de su formación, se rigen e interpretan conforme a las leyes de los Estados Unidos Mexicanos, sin atender a sus normas sobre conflicto de leyes.",
+        "jurisdiction": "Cualquier controversia derivada de o relacionada con estos Términos o con el uso de la App se someterá a los tribunales competentes de los Estados Unidos Mexicanos. Renuncias expresamente a cualquier otro fuero que pudiera corresponderte por razón de tu domicilio presente o futuro.",
+        "consumer": "Si la legislación de tu país de residencia te reconoce derechos de consumidor de carácter imperativo que no puedan renunciarse por acuerdo, nada de lo previsto en esta sección te priva de esos derechos ni de la protección de los tribunales que dicha legislación te reserve.",
+        "language": "Estos Términos se publican en inglés y en español. En caso de discrepancia, inconsistencia o diferencia de interpretación entre ambas versiones, prevalecerá la versión en español."
+      },
+      "contact": {
+        "title": "20. CONTACTO",
+        "info": "Si tienes dudas sobre estos Términos y Condiciones, escribe a:"
+      }
+    }
+  },
+  "privacy": {
+    "agreement": "PRIVACIDAD",
+    "title": "Política de Privacidad",
+    "lastUpdated": "Última actualización: 14 de septiembre de 2026",
+    "intro": "Esta Política de Privacidad explica qué datos recopila Pitmydoro, por qué los recopila, cómo se tratan y qué puedes hacer al respecto.",
+    "finalNotice": "Si no estás de acuerdo con alguno de los puntos anteriores, por favor no uses esta aplicación. Y si ya cuentas con una cuenta y tus datos ya están en Pitmydoro, por favor sigue las instrucciones del <deletion>punto 10, Conservación y eliminación de tus datos</deletion> para solicitar la eliminación absoluta y permanente de tus datos si así lo deseas.",
+    "summary": "En resumen: Pitmydoro guarda lo mínimo necesario para que funcionen tu temporizador, tus tareas y tus estadísticas. Tus datos nunca se venden. Puedes solicitar su eliminación completa y permanente en cualquier momento.",
+    "sections": {
+      "controller": {
+        "title": "1. QUIÉN OPERA PITMYDORO",
+        "description": "Pitmydoro es un proyecto independiente de código abierto mantenido por un desarrollador individual. No lo opera una empresa ni cuenta con un departamento dedicado a la protección de datos. Todas las consultas sobre privacidad se atienden a través de la dirección de contacto indicada al final de esta política."
+      },
+      "dataCollection": {
+        "title": "2. QUÉ DATOS RECOPILAMOS",
+        "description": "La App funciona sin cuenta. Si decides iniciar sesión, se recopilan las siguientes categorías de datos:",
+        "account": {
+          "title": "Datos de cuenta",
+          "description": "Proporcionados por ti o por el proveedor de inicio de sesión que elijas:",
+          "email": "Dirección de correo electrónico, usada para identificar tu cuenta y verificar las solicitudes de eliminación.",
+          "profile": "Nombre visible, nombre de usuario, foto de perfil, bandera de país e insignias.",
+          "tokens": "Identificadores de autenticación y tokens de sesión emitidos por el proveedor de inicio de sesión."
+        },
+        "activity": {
+          "title": "Datos de actividad",
+          "description": "Generados conforme usas la App:",
+          "sessions": "Sesiones Pomodoro, descansos, pausas e interrupciones, con sus duraciones.",
+          "tasks": "Tareas, estimaciones, estado de finalización y notas adhesivas.",
+          "stats": "Estadísticas diarias, rachas, reportes y posiciones en la clasificación.",
+          "settings": "Preferencias como duraciones del temporizador, tema, idioma, sonido y notificaciones."
+        },
+        "technical": {
+          "title": "Datos técnicos",
+          "description": "Recopilados automáticamente por la infraestructura que sirve la App, principalmente para seguridad, prevención de abusos y diagnóstico:",
+          "device": "Tipo de navegador, tipo de dispositivo y sistema operativo.",
+          "network": "Dirección IP y región aproximada derivada de ella.",
+          "logs": "Registros de peticiones y errores, con marcas de tiempo."
+        },
+        "noSensitive": "Pitmydoro no solicita ni está diseñado para almacenar categorías especiales de datos como información de salud, biométrica, financiera o de identificación oficial. No introduzcas ese tipo de información, ni ningún otro dato sensible, credencial, contraseña o secreto, en ningún campo de la aplicación, incluidos títulos de tareas, descripciones, notas, notas adhesivas, campos de perfil, nombres visibles ni cualquier otro campo de texto libre."
+      },
+      "purpose": {
+        "title": "3. PARA QUÉ LOS USAMOS",
+        "description": "Los datos se usan únicamente para:",
+        "operate": "Operar el temporizador, guardar tus tareas y calcular tus estadísticas.",
+        "account": "Crear y mantener tu cuenta y conservar tu sesión iniciada.",
+        "features": "Ofrecer las funciones que solicitas, como perfiles, clasificaciones, reportes y overlays para streaming.",
+        "secure": "Proteger el servicio frente a abusos, fraude, manipulación e incidentes de seguridad.",
+        "improve": "Entender de forma agregada cómo se usa la App, encontrar puntos de mejora y decidir qué construir o corregir a continuación.",
+        "legal": "Cumplir con las obligaciones legales aplicables.",
+        "noSale": "Tus datos no se venden, alquilan ni intercambian, y no se usan para perfilado publicitario."
+      },
+      "access": {
+        "title": "4. ADMINISTRACIÓN Y ACCESO",
+        "description": "Los datos que almacenas en Pitmydoro residen en infraestructura de terceros administrada por cuenta del servicio. Operar, mantener, depurar, asegurar y dar soporte a la App requiere acceso administrativo a esa infraestructura, lo que puede implicar el acceso a los registros almacenados, incluidos los datos de cuenta y de actividad.",
+        "scope": "Dicho acceso se limita a lo necesario para operar el servicio, investigar fallos, atender solicitudes de soporte o eliminación, prevenir abusos o cumplir con la ley.",
+        "warning": "Al usar la App reconoces y aceptas lo anterior. Debes tratar todo lo que introduzcas como información almacenada en sistemas que no controlas, y eres el único responsable de lo que decidas introducir."
+      },
+      "processors": {
+        "title": "5. PROVEEDORES DE SERVICIO",
+        "description": "Pitmydoro se apoya en proveedores externos para alojar la aplicación, autenticar usuarios y almacenar datos. Estos proveedores tratan los datos por cuenta del servicio, bajo sus propios términos de seguridad y privacidad, y pueden almacenarlos en servidores ubicados fuera de tu país.",
+        "list": "Se utilizan los siguientes proveedores:",
+        "firebase": "<strong>Google Firebase</strong> (Google LLC): autenticación, base de datos, almacenamiento de archivos y funciones programadas en servidor. Tus datos de cuenta, de actividad y tus estadísticas se almacenan en Cloud Firestore, los archivos que subas como fotos de perfil se almacenan en Cloud Storage for Firebase, y el procesamiento en segundo plano se ejecuta en Cloud Functions.",
+        "analyticsProvider": "<strong>Google Analytics for Firebase</strong> (Google LLC): analítica de uso opcional, activa únicamente con tu consentimiento, según se describe en la sección de analítica más abajo.",
+        "google": "<strong>Inicio de sesión con Google</strong> (Google LLC): se utiliza cuando eliges acceder con una cuenta de Google. Google proporciona a la App tu dirección de correo, nombre y foto de perfil, y gestiona él mismo las credenciales, que Pitmydoro nunca ve ni almacena.",
+        "vercel": "<strong>Vercel</strong> (Vercel Inc.): alojamiento y entrega de la aplicación. Trata datos técnicos como tu dirección IP y los registros de peticiones para poder servir el sitio.",
+        "sentry": "<strong>Sentry</strong> (Functional Software, Inc.): monitoreo de errores y fallos, usado para detectar y corregir problemas en la App.",
+        "policies": "Cada proveedor trata los datos bajo su propia política de privacidad, que rige sus prácticas. Recomendamos revisarlas si quieres conocer cómo gestionan los datos por su parte.",
+        "responsibility": "El Operador no controla las prácticas internas de estos proveedores y no asume responsabilidad alguna por sus actos, omisiones, caídas o incidentes de seguridad."
+      },
+      "cookies": {
+        "title": "6. COOKIES Y ALMACENAMIENTO LOCAL",
+        "description": "La App usa cookies y almacenamiento local del navegador con los siguientes fines:",
+        "essential": "<strong>Esenciales:</strong> mantener tu sesión iniciada, conservar tu sesión activa y evitar sesiones simultáneas en varias pestañas. Son necesarias para que la App funcione.",
+        "preference": "<strong>Preferencias:</strong> recordar tus ajustes, como tema, idioma, duraciones del temporizador y opciones de sonido.",
+        "consent": "<strong>Consentimiento:</strong> registrar si aceptaste o rechazaste las cookies, para no volver a preguntártelo.",
+        "analytics": "<strong>Analítica:</strong> solo si aceptas, identificadores usados por Google Analytics for Firebase para medir el uso de forma agregada. Nunca se establecen si rechazas.",
+        "control": "Puedes rechazar las cookies no esenciales desde el aviso que aparece en tu primera visita, y puedes borrar los datos almacenados en cualquier momento desde los ajustes de tu navegador. Al borrarlos se cerrará tu sesión y se restablecerán las preferencias locales."
+      },
+      "analytics": {
+        "title": "7. ANALÍTICA Y MONITOREO DE ERRORES",
+        "intro": "Dos herramientas opcionales nos ayudan a entender cómo se comporta la App en el mundo real. Ninguna se usa con fines publicitarios ni para construir un perfil comercial tuyo.",
+        "analyticsTitle": "Analítica de uso",
+        "analytics": "Con tu consentimiento, la App activa Google Analytics for Firebase. Registra eventos de uso agregados, como pantallas vistas, funciones abiertas y sesiones iniciadas, junto con atributos técnicos como tipo de dispositivo, navegador, idioma y una región aproximada derivada de tu dirección IP.",
+        "analyticsPurpose": "<strong>Su única finalidad es encontrar puntos de mejora:</strong> qué funciones se usan de verdad y cuáles se ignoran, dónde se abandona un flujo, qué pantallas no cumplen su propósito y qué problemas conviene resolver primero. Nos dice qué construir y qué reparar a continuación, nada más.",
+        "analyticsConsent": "La analítica está desactivada por defecto y solo se activa si aceptas las cookies. Si rechazas, o si más adelante borras los datos almacenados, la recopilación permanece apagada y la App sigue funcionando exactamente igual.",
+        "errorsTitle": "Monitoreo de errores",
+        "errors": "La App utiliza Sentry para detectar fallos y errores. Cuando algo falla, Sentry recibe un reporte técnico con el mensaje de error y su traza, la URL donde ocurrió, el navegador y el sistema operativo, y un identificador técnico que sirve para agrupar ocurrencias repetidas.",
+        "errorsPurpose": "Estos reportes existen únicamente para detectar, reproducir y corregir fallos, y para proteger el servicio frente a abusos. No se usan para seguir tu navegación, medir tu actividad ni con ningún fin comercial.",
+        "errorsScope": "Los reportes de error pueden incluir de forma incidental contexto técnico de la página donde ocurrió el fallo. No enviamos deliberadamente el contenido de tus tareas, notas o perfil a este servicio, lo cual es una razón más para no guardar información sensible en esos campos."
+      },
+      "sharing": {
+        "title": "8. CUÁNDO SE PUEDEN DIVULGAR LOS DATOS",
+        "description": "Tus datos solo podrán divulgarse en las siguientes circunstancias:",
+        "providers": "A los proveedores de servicio descritos arriba, estrictamente para operar la App.",
+        "legal": "Cuando lo exija una obligación legal válida, una orden judicial o un requerimiento de autoridad competente.",
+        "security": "Para investigar, prevenir o responder ante fraude, abusos o incidentes de seguridad.",
+        "rights": "Para establecer, ejercer o defender reclamaciones legales.",
+        "public": "Cierta información es pública por diseño, incluidos tu nombre visible, nombre de usuario, foto de perfil, insignias y posición en la clasificación."
+      },
+      "security": {
+        "title": "9. SEGURIDAD",
+        "description": "Se aplican medidas razonables para proteger los datos almacenados, incluidas reglas de acceso en la base de datos y autenticación gestionada por un proveedor consolidado.",
+        "warning": "Ningún método de transmisión o almacenamiento es completamente seguro. No se garantiza que los datos permanezcan privados, íntegros o disponibles, y el Operador no podrá ser considerado responsable por accesos no autorizados, pérdidas o alteraciones que escapen a su control razonable."
+      },
+      "retention": {
+        "title": "10. CONSERVACIÓN Y ELIMINACIÓN DE TUS DATOS",
+        "description": "Los datos se conservan mientras tu cuenta permanezca activa. Si dejas de usar la App, los datos pueden permanecer almacenados hasta que solicites su eliminación.",
+        "deletion": "Puedes solicitar la eliminación absoluta y permanente de tus datos personales, cuenta, tareas, notas, estadísticas y reportes en cualquier momento y sin coste, escribiendo a <mail>{email}</mail>.",
+        "requirement": "Por motivos de seguridad, la solicitud deberá enviarse desde la misma dirección de correo asociada a tu cuenta de Pitmydoro. Las solicitudes enviadas desde cualquier otra dirección no podrán verificarse y no serán procesadas.",
+        "term": "Las solicitudes verificadas se completan en un plazo máximo de {days} días desde su recepción.",
+        "irreversible": "La eliminación es permanente y no se puede deshacer. Las estadísticas, rachas, reportes e historial de clasificación eliminados no podrán recuperarse.",
+        "exceptions": "Pueden persistir copias residuales durante un breve periodo en las copias de seguridad cifradas rutinarias hasta que caduquen, y podrán conservarse registros cuando una obligación legal así lo exija."
+      },
+      "rights": {
+        "title": "11. TUS DERECHOS",
+        "description": "Según el lugar donde residas, puedes tener derecho a acceder, rectificar, exportar, limitar o eliminar tus datos personales, así como a retirar tu consentimiento. Muchas de estas acciones están disponibles directamente en la App desde tu perfil y tus ajustes.",
+        "exercise": "Para ejercer cualquier derecho que no esté disponible en la App, escribe a la dirección de contacto indicada abajo desde el correo asociado a tu cuenta."
+      },
+      "children": {
+        "title": "12. MENORES",
+        "description": "La App no está dirigida a menores de 13 años, ni a menores de la edad mínima de consentimiento digital en tu país. Las cuentas identificadas como pertenecientes a un menor por debajo de esa edad serán eliminadas."
+      },
+      "international": {
+        "title": "13. TRANSFERENCIAS INTERNACIONALES",
+        "description": "La App se opera desde México y utiliza proveedores con infraestructura global. Al usar el servicio reconoces que tus datos pueden almacenarse y tratarse en países cuyas leyes de protección de datos pueden diferir de las de tu país."
+      },
+      "changes": {
+        "title": "14. CAMBIOS EN ESTA POLÍTICA",
+        "description": "Esta política puede actualizarse en cualquier momento. La fecha de revisión que aparece al inicio de esta página indica la versión vigente. Seguir usando la App tras un cambio constituye la aceptación de la política actualizada."
+      },
+      "contact": {
+        "title": "15. CONTACTO",
+        "info": "Para cualquier duda sobre privacidad o para solicitar la eliminación de tus datos, escribe a:"
+      }
+    }
   }
 }
