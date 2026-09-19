@@ -1,8 +1,19 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { Box, Button, Center, Flex, Heading, HStack, Image, Text, VStack } from '@chakra-ui/react';
-import { LuCalendar, LuMapPin } from 'react-icons/lu';
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  HStack,
+  IconButton,
+  Image,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import { LuCalendar, LuMapPin, LuPencil } from 'react-icons/lu';
 import { FaDiscord, FaInstagram, FaTwitch, FaXTwitter } from 'react-icons/fa6';
 import moment from 'moment/min/moment-with-locales';
 import { useLocale, useTranslations } from 'next-intl';
@@ -15,6 +26,7 @@ import { ShareProfile } from '@/components/Profile/ShareProfile';
 import { ProfileStats } from '@/components/Profile/Stats';
 import { FeaturedBadge } from '@/components/Profile/Badges/FeaturedBadge';
 import { PixelAvatar } from '@/components/Profile/PixelAvatar';
+import { Tooltip } from '@/components/ui/tooltip';
 import { jersey15 } from '@/assets/fonts/Jersey';
 import { useDialog } from '@/contexts/DialogContext';
 import useProfileThemeStore from '@/stores/ProfileTheme.store';
@@ -118,8 +130,32 @@ export const Profile = ({ profile, userId, isOwn = false }: Props) => {
               <PixelAvatar
                 name={profile.displayName || profile.username}
                 color={profileTheme.primary}
+                photoURL={profile.photoURL}
                 size={{ base: 124, sm: 156, md: 184 }}
               />
+
+              {isOwn && (
+                <Tooltip content={t('editProfile')} openDelay={200} closeDelay={100}>
+                  <IconButton
+                    data-pw-id='profile-avatar-edit'
+                    aria-label={t('editProfile')}
+                    onClick={handleEditProfile}
+                    position='absolute'
+                    bottom={{ base: '2px', sm: '5px', md: '8px' }}
+                    right={{ base: '2px', sm: '5px', md: '8px' }}
+                    rounded='full'
+                    size={{ base: 'xs', md: 'sm' }}
+                    bg='bg.panel'
+                    color='fg'
+                    borderWidth='1px'
+                    borderColor='border'
+                    boxShadow='sm'
+                    _hover={{ bg: 'bg.muted' }}
+                  >
+                    <LuPencil />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Box>
 
             <HStack gap={2} pb={2} ml='auto'>

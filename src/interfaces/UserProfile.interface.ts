@@ -11,6 +11,8 @@ export interface UserProfile {
   bio: string;
   location: string;
   favoriteTeam: string | null;
+  photoURL?: string | null;
+  photoSourceURL?: string | null;
   profileTheme?: ProfileTheme;
   profileBackground?: string | null;
   favoriteFlag?: string;
