@@ -76,7 +76,50 @@ body {
   }
 }
 
+@keyframes rippleButtonIn {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.92);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.03);
+  }
+  80% {
+    transform: translateY(1px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes rippleButtonNudge {
+  0%,
+  100% {
+    transform: translateY(-6px);
+  }
+  45% {
+    transform: translateY(-1px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  @keyframes rippleButtonIn {
+    0%,
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes rippleButtonNudge {
+    0%,
+    100% {
+      transform: translateY(-6px);
+    }
+  }
+
   @keyframes fadeSlideUp {
     0%,
     100% {

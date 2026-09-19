@@ -11,6 +11,7 @@ import {
   LegalList,
   LegalPage,
   LegalSection,
+  LegalSubtitle,
   LegalText,
 } from '@/components/Legal';
 import { Link as ChakraLink } from '@chakra-ui/react';
@@ -77,6 +78,13 @@ export default function TermsPage() {
         <LegalText>{t('sections.userContent.description')}</LegalText>
         <LegalText>{t('sections.userContent.warning')}</LegalText>
         <LegalText>{t('sections.userContent.public')}</LegalText>
+
+        <LegalSubtitle>{t('sections.userContent.uploads.title')}</LegalSubtitle>
+        <LegalText>{t('sections.userContent.uploads.rights')}</LegalText>
+        <LegalText>{t('sections.userContent.uploads.consent')}</LegalText>
+        <LegalText>{t('sections.userContent.uploads.responsibility')}</LegalText>
+        <LegalText>{t('sections.userContent.uploads.prohibited')}</LegalText>
+        <LegalCallout>{t('sections.userContent.uploads.moderation')}</LegalCallout>
       </LegalSection>
 
       <LegalSection title={t('sections.availability.title')}>

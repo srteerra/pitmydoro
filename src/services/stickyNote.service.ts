@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { StickyNote } from '@/interfaces/StickyNote.interface';
+import { readLocalJSON } from '@/utils/storage.utils';
 
 const STORAGE_KEY = 'pitmydoro_sticky_notes';
 
@@ -71,10 +72,8 @@ export const stickyNoteService = {
   },
 
   async syncNotes(userId: string) {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return;
-
-    const localNotes: StickyNote[] = JSON.parse(stored)?.state?.notes ?? [];
+    const stored = readLocalJSON<{ state?: { notes?: StickyNote[] } }>(STORAGE_KEY);
+    const localNotes: StickyNote[] = stored?.state?.notes ?? [];
     const pendingNotes = localNotes.filter((note) => !note.isSync && isWorthSyncing(note));
 
     for (const note of pendingNotes) {

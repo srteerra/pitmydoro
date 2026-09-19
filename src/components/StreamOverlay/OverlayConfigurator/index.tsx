@@ -14,6 +14,7 @@ import { overlayService } from '@/services/overlay.service';
 import { buildWidgetUrl, DEFAULT_OVERLAY_CONFIG } from '@/utils/overlay/overlayConfig';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
+import { copyToClipboard } from '@/utils/clipboard.utils';
 
 const SegButton = ({
   active,
@@ -202,13 +203,11 @@ export const OverlayConfigurator = () => {
 
   const handleCopy = async () => {
     if (!widgetUrl) return;
-    try {
-      await navigator.clipboard.writeText(widgetUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
+
+    const copied = await copyToClipboard(widgetUrl);
+    setCopied(copied);
+
+    if (copied) setTimeout(() => setCopied(false), 2000);
   };
 
   return (

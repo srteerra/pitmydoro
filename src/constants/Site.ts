@@ -20,4 +20,4 @@ export const DATA_DELETION_DAYS = 15;
 
 export const DATA_DELETION_ANCHOR = 'data-deletion';
 
-export const LEGAL_LAST_UPDATED = '2026-09-14';
+export const LEGAL_LAST_UPDATED = '2026-09-17';

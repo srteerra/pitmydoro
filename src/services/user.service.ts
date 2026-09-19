@@ -15,6 +15,7 @@ import {
 import { db } from '@/lib/firebase/config';
 import type { User } from 'firebase/auth';
 import { DefaultSettings } from '@/constants/DefaultSettings';
+import { readLocalJSON } from '@/utils/storage.utils';
 import { Settings } from '@/interfaces/Settings.interface';
 import { OverlaySettings } from '@/interfaces/Overlay.interface';
 import { UserProfile } from '@/interfaces/UserProfile.interface';
@@ -107,8 +108,8 @@ export const userService = {
   },
 
   async create(user: User, desiredUsername?: string) {
-    const stored = localStorage.getItem(STORAGE_SETTINGS_KEY);
-    const storedPreferences = stored ? JSON.parse(stored) : DefaultSettings;
+    const storedPreferences =
+      readLocalJSON<typeof DefaultSettings>(STORAGE_SETTINGS_KEY) ?? DefaultSettings;
 
     const [existingProfile, existingUser] = await Promise.all([
       getDoc(doc(db, 'profiles', user.uid)),
