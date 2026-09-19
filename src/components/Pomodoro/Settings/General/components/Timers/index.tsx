@@ -9,6 +9,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { useAlert } from '@/hooks/useAlert';
 import { MAX_DURATION } from '@/constants/DefaultSettings';
 import { useSessionLock } from '@/hooks/useSessionLock';
+import { MdOutlineGrain } from 'react-icons/md';
 
 export const Timers = () => {
   const { handleChangeBreakDuration, handleChangeTireDuration } = useSettings();
@@ -91,6 +92,8 @@ export const Timers = () => {
     [TireTypeEnum.WET]: t('wet'),
   };
 
+  const rainyTires: TireTypeEnum[] = [TireTypeEnum.INTERMEDIATE, TireTypeEnum.WET];
+
   const ICON_SIZE = 50;
   const TOTAL_ICONS = 7;
   const backgroundSize = `${ICON_SIZE * TOTAL_ICONS}px auto`;
@@ -112,16 +115,36 @@ export const Timers = () => {
       >
         {tires.map((tire: TireTypeEnum, idx: number) => (
           <VStack key={idx}>
-            <Box
-              cursor={'pointer'}
-              style={{
-                backgroundImage: "url('./images/tires.webp')",
-                backgroundSize,
-                backgroundPositionX: `-${ICON_SIZE * idx}px`,
-                width: `${ICON_SIZE}px`,
-                height: `${ICON_SIZE}px`,
-              }}
-            />
+            <Box position='relative'>
+              <Box
+                cursor={'pointer'}
+                style={{
+                  backgroundImage: "url('./images/tires.webp')",
+                  backgroundSize,
+                  backgroundPositionX: `-${ICON_SIZE * idx}px`,
+                  width: `${ICON_SIZE}px`,
+                  height: `${ICON_SIZE}px`,
+                }}
+              />
+
+              {rainyTires.includes(tire) && (
+                <Box
+                  data-pw-id={`tire-rain-badge-${idx}`}
+                  position='absolute'
+                  top='-2px'
+                  right='-4px'
+                  padding='2px'
+                  rounded='full'
+                  lineHeight='0'
+                  borderWidth='1px'
+                  borderColor={{ base: 'blackAlpha.200', _dark: 'whiteAlpha.300' }}
+                  bg={{ base: 'white', _dark: 'dark.200' }}
+                  color={{ base: 'blue.600', _dark: 'blue.200' }}
+                >
+                  <MdOutlineGrain size={12} />
+                </Box>
+              )}
+            </Box>
             <Text>{tiresLabel[tire]}</Text>
             <NumberInput.Root
               maxW='70px'

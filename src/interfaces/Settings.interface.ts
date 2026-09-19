@@ -2,6 +2,7 @@ import { TireTypeEnum } from '@/enums/TireType.enum';
 import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { Locale } from '@/i18n/config';
 import { Team } from '@/interfaces/Teams.interface';
+import { RainTrack } from '@/constants/Rain';
 
 export interface TireSettings {
   compound: string;
@@ -27,6 +28,9 @@ export interface Settings {
   autoStartNextTask: boolean;
   enableSounds: boolean;
   volume: number;
+  rainSoundEnabled: boolean;
+  rainVolume: number;
+  rainTrack: RainTrack;
   enableNotifications: boolean;
   earlyAlertSeconds: number;
   mode: PomodoroMode;

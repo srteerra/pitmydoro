@@ -5,6 +5,7 @@ import { DefaultSettings } from '@/constants/DefaultSettings';
 import { PomodoroMode, Settings, TireSettings } from '@/interfaces/Settings.interface';
 import { Locale } from '@/i18n/config';
 import { Team } from '@/interfaces/Teams.interface';
+import { RainTrack } from '@/constants/Rain';
 
 interface SettingsActions {
   setLocale: (locale: Locale) => void;
@@ -23,6 +24,9 @@ interface SettingsActions {
   setIsLongBreakPerTask: (longBreakPerTask: boolean) => void;
   setEnableSounds: (enableSounds: boolean) => void;
   setVolume: (volume: number) => void;
+  setRainSoundEnabled: (rainSoundEnabled: boolean) => void;
+  setRainVolume: (rainVolume: number) => void;
+  setRainTrack: (rainTrack: RainTrack) => void;
   setEnableNotifications: (enableNotifications: boolean) => void;
   setEarlyAlertSeconds: (seconds: number) => void;
   setMinimalSessionDuration: (duration: number) => void;
@@ -46,6 +50,9 @@ const useSettingsStore = create<Settings & SettingsActions>()(
         isLongBreakPerTask: DefaultSettings.isLongBreakPerTask,
         enableSounds: DefaultSettings.enableSounds,
         volume: DefaultSettings.volume,
+        rainSoundEnabled: DefaultSettings.rainSoundEnabled,
+        rainVolume: DefaultSettings.rainVolume,
+        rainTrack: DefaultSettings.rainTrack,
         enableNotifications: DefaultSettings.enableNotifications,
         earlyAlertSeconds: DefaultSettings.earlyAlertSeconds,
         currentScuderia: DefaultSettings.currentScuderia,
@@ -55,6 +62,9 @@ const useSettingsStore = create<Settings & SettingsActions>()(
         setCurrentScuderia: (team) => set(() => ({ currentScuderia: team })),
         setEnableSounds: (enableSounds) => set(() => ({ enableSounds })),
         setVolume: (volume) => set(() => ({ volume })),
+        setRainSoundEnabled: (rainSoundEnabled) => set(() => ({ rainSoundEnabled })),
+        setRainVolume: (rainVolume) => set(() => ({ rainVolume })),
+        setRainTrack: (rainTrack) => set(() => ({ rainTrack })),
         setEnableNotifications: (enableNotifications) => set(() => ({ enableNotifications })),
         setEarlyAlertSeconds: (earlyAlertSeconds) => set(() => ({ earlyAlertSeconds })),
         setLocale: (locale) => set(() => ({ locale })),

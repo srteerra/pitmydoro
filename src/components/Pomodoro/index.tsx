@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Box, Center, Image, Loader, VStack } from '@chakra-ui/react';
 import { TimerSelector } from '@/components/Pomodoro/TimerSelector';
 import { SegmentedControl } from '@/components/ui/segmented-control';
@@ -17,6 +18,12 @@ import useSettingsStore from '@/stores/Settings.store';
 import { usePomodoroStore } from '@/stores/Pomodoro.store';
 import { usePomodoro } from '@/hooks/usePomodoro';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
+import { useTheme } from 'next-themes';
+import { TireTypeEnum } from '@/enums/TireType.enum';
+import { Rain } from '@/components/Rain';
+import { RainSoundControls } from '@/components/Rain/RainSoundControls';
+import { useRainSound } from '@/hooks/useRainSound';
+import { RAIN_LOOKS, RainIntensity } from '@/constants/Rain';
 
 export const Pomodoro = () => {
   const sessionStatus = useSessionStore((state) => state.status);
@@ -29,11 +36,34 @@ export const Pomodoro = () => {
   const settingsT = useTranslations('settings');
   const { changeCompoundTime, confirmInterruptIfRunning } = usePomodoro();
   const { openSettings } = useSettingsDialog();
+  const { theme } = useTheme();
 
   const handleStatusChange = async (value: SessionStatusEnum) => {
     if (!(await confirmInterruptIfRunning())) return;
     setStatus(value);
   };
+
+  const isDarkTheme = theme === 'dark';
+
+  const rainIntensity: RainIntensity | null =
+    mode !== PomodoroMode.F1
+      ? null
+      : selectedTire === TireTypeEnum.WET
+        ? 'wet'
+        : selectedTire === TireTypeEnum.INTERMEDIATE
+          ? 'intermediate'
+          : null;
+
+  useRainSound(rainIntensity);
+
+  const [shownIntensity, setShownIntensity] = useState<RainIntensity | null>(null);
+
+  useEffect(() => {
+    if (rainIntensity) setShownIntensity(rainIntensity);
+  }, [rainIntensity]);
+
+  const rainLook = shownIntensity ? RAIN_LOOKS[shownIntensity] : null;
+  const rainColor = isDarkTheme ? '#dbe9ff' : '#3f4a5e';
 
   const darkenColor = tinycolor(currentScuderia?.colors?.background?.[sessionStatus])
     .darken(80)
@@ -64,6 +94,22 @@ export const Pomodoro = () => {
       margin='auto'
       marginBottom={{ base: '0', md: '50px' }}
     >
+      {rainLook && (
+        <Rain
+          fullscreen
+          present={!!rainIntensity}
+          vignette={rainLook.vignette && !isDarkTheme}
+          color={rainColor}
+          opacity={isDarkTheme ? rainLook.opacity.dark : rainLook.opacity.light}
+          amount={rainLook.amount}
+          speed={rainLook.speed}
+          wind={rainLook.wind}
+          dropLength={rainLook.dropLength}
+        />
+      )}
+
+      <RainSoundControls intensity={rainIntensity} />
+
       <StickyNotes />
 
       <Box

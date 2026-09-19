@@ -3,6 +3,7 @@ import { SessionStatusEnum } from '@/enums/SessionStatus.enum';
 import { PomodoroMode, Settings } from '@/interfaces/Settings.interface';
 import { defaultLocale } from '@/i18n/config';
 import { SCUDERIAS } from '@/constants/Scuderias';
+import { DEFAULT_RAIN_TRACK } from '@/constants/Rain';
 
 export const DefaultSettings: Settings = {
   locale: defaultLocale,
@@ -43,6 +44,9 @@ export const DefaultSettings: Settings = {
   autoStartNextTask: true,
   enableSounds: true,
   volume: 1,
+  rainSoundEnabled: true,
+  rainVolume: 0.25,
+  rainTrack: DEFAULT_RAIN_TRACK,
   enableNotifications: true,
   earlyAlertSeconds: 4,
   minimalSessionDuration: 25,
