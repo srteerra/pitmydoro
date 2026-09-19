@@ -123,7 +123,18 @@
     "bioTooLong": "La biografía debe tener {max} caracteres o menos",
     "bioNoLinks": "No se permiten enlaces en la biografía",
     "bioNoProfanity": "Por favor, elimina el lenguaje inapropiado",
-    "bioPlaceholder": "Este piloto aún no ha compartido una bio.",
+    "bioPlaceholder": "Este usuario aún no ha compartido una bio.",
+    "avatarUpload": "Subir foto",
+    "avatarChange": "Cambiar foto",
+    "avatarRemove": "Quitar foto",
+    "avatarRemoveTitle": "¿Quitar tu foto?",
+    "avatarRemoveText": "Tu perfil volverá al avatar por defecto.",
+    "avatarUpdated": "Foto de perfil actualizada",
+    "avatarRemoved": "Foto de perfil eliminada",
+    "avatarUploadError": "No se pudo subir tu foto, inténtalo de nuevo",
+    "avatarRemoveError": "No se pudo quitar tu foto, inténtalo de nuevo",
+    "avatarInvalidType": "Usa una imagen PNG, JPG o WebP",
+    "avatarTooLarge": "La imagen debe pesar {max} MB o menos",
     "stats": "Estadísticas",
     "daily": "Diario",
     "weekly": "Semanal",
@@ -276,7 +287,12 @@
       "tasksHint": "💡 Comienza a añadir tareas para organizar tu sesión de trabajo...",
       "manualPomodorosWarning": "Esto solo ajusta el contador de la tarea. Tus reportes y tiempo de enfoque cuentan solo sesiones reales completadas."
     },
-    "sessionInOtherTab": "Ya tienes una sesión activa en otra pestaña o ventana."
+    "sessionInOtherTab": "Ya tienes una sesión activa en otra pestaña o ventana.",
+    "rainSoundMute": "Silenciar lluvia",
+    "rainSoundUnmute": "Activar lluvia",
+    "rainSoundVolume": "Volumen de la lluvia",
+    "rainSoundTrack": "Sonido de lluvia",
+    "rainTrackLabel": "Lluvia"
   },
   "stickyNotes": {
     "open": "Abrir nota {label}",
@@ -946,7 +962,7 @@
   "terms": {
     "agreement": "ACUERDO",
     "title": "Términos y Condiciones",
-    "lastUpdated": "Última actualización: 14 de septiembre de 2026",
+    "lastUpdated": "Última actualización: 17 de septiembre de 2026",
     "intro": "Bienvenido a Pitmydoro. Al acceder o usar esta aplicación aceptas íntegramente estos Términos y Condiciones. Si no estás de acuerdo con alguna parte de ellos, no uses el servicio.",
     "finalNotice": "Si no estás de acuerdo con alguno de los puntos anteriores, por favor no uses esta aplicación. Y si ya cuentas con una cuenta y tus datos ya están en Pitmydoro, por favor sigue las instrucciones del <deletion>punto 10, Conservación y eliminación de tus datos</deletion> para solicitar la eliminación absoluta y permanente de tus datos si así lo deseas.",
     "sections": {
@@ -957,7 +973,7 @@
           "operator": "<strong>Operador:</strong> La persona física que desarrolla y mantiene la App. Pitmydoro no es una empresa ni actúa como tal.",
           "user": "<strong>Usuario:</strong> Cualquier persona que acceda o use la App, con o sin cuenta.",
           "content": "<strong>Contenido:</strong> Todo el texto, gráficos, funcionalidades y demás material disponible en la App.",
-          "userContent": "<strong>Contenido del Usuario:</strong> Todo lo que introduces en la App, incluidos títulos de tareas, notas, campos de perfil y nombres visibles."
+          "userContent": "<strong>Contenido del Usuario:</strong> Todo lo que introduces o subes a la App, incluidos títulos de tareas, notas, campos de perfil, nombres visibles y cualquier imagen o vídeo que subas, como tu foto de perfil."
         }
       },
       "eligibility": {
@@ -984,7 +1000,15 @@
         "title": "5. TU CONTENIDO",
         "description": "Conservas la titularidad de tu Contenido del Usuario. Eres el único responsable de lo que introduces en la App y confirmas que tienes derecho a hacerlo.",
         "warning": "No introduzcas información confidencial, sensible, regulada o protegida de cualquier otro modo. Los títulos de tareas, las notas y los campos de perfil no están diseñados para almacenar secretos, credenciales ni datos personales de terceros.",
-        "public": "Cierta información es pública por diseño, incluidos tu nombre visible, foto de perfil, insignias y posición en la clasificación. No uses esos campos para nada que no quieras que se vea públicamente."
+        "public": "Cierta información es pública por diseño, incluidos tu nombre visible, foto de perfil, insignias y posición en la clasificación. No uses esos campos para nada que no quieras que se vea públicamente.",
+        "uploads": {
+          "title": "Imágenes y vídeos que subes",
+          "rights": "Cuando subes una imagen o un vídeo a la App, incluida tu foto de perfil, confirmas que eres su titular o que cuentas con todos los derechos y licencias necesarios para subirlo y hacerlo público, y que con ello no infringes derechos de autor, marcas, derechos de imagen ni ningún otro derecho de terceros.",
+          "consent": "Si en lo que subes aparece o resulta identificable una persona, confirmas que tienes su consentimiento explícito para subirlo y mostrarlo públicamente, y el consentimiento de un progenitor o tutor legal cuando esa persona sea menor de edad.",
+          "responsibility": "Eres el único responsable de todo lo que subas y de cualquier reclamación, queja o daño que se derive de ello. Al subirlo concedes al Operador una licencia no exclusiva, mundial y gratuita para almacenar, reproducir, redimensionar y mostrar ese contenido con el único fin de operar la App y mostrarlo donde la App está diseñada para mostrarlo, como tu perfil, la cabecera, las estadísticas de tareas y la clasificación. Esta licencia termina cuando eliminas el contenido o tu cuenta.",
+          "prohibited": "No subas contenido ilegal, sexual, violento, de odio, acosador o engañoso, que suplante a otra persona o marca, que contenga datos personales de terceros, o que no tengas derecho a compartir.",
+          "moderation": "El Operador puede eliminar cualquier contenido subido en cualquier momento y sin aviso previo."
+        }
       },
       "availability": {
         "title": "6. DISPONIBILIDAD Y CAMBIOS",
@@ -1075,7 +1099,7 @@
   "privacy": {
     "agreement": "PRIVACIDAD",
     "title": "Política de Privacidad",
-    "lastUpdated": "Última actualización: 14 de septiembre de 2026",
+    "lastUpdated": "Última actualización: 17 de septiembre de 2026",
     "intro": "Esta Política de Privacidad explica qué datos recopila Pitmydoro, por qué los recopila, cómo se tratan y qué puedes hacer al respecto.",
     "finalNotice": "Si no estás de acuerdo con alguno de los puntos anteriores, por favor no uses esta aplicación. Y si ya cuentas con una cuenta y tus datos ya están en Pitmydoro, por favor sigue las instrucciones del <deletion>punto 10, Conservación y eliminación de tus datos</deletion> para solicitar la eliminación absoluta y permanente de tus datos si así lo deseas.",
     "summary": "En resumen: Pitmydoro guarda lo mínimo necesario para que funcionen tu temporizador, tus tareas y tus estadísticas. Tus datos nunca se venden. Puedes solicitar su eliminación completa y permanente en cualquier momento.",
@@ -1092,6 +1116,7 @@
           "description": "Proporcionados por ti o por el proveedor de inicio de sesión que elijas:",
           "email": "Dirección de correo electrónico, usada para identificar tu cuenta y verificar las solicitudes de eliminación.",
           "profile": "Nombre visible, nombre de usuario, foto de perfil, bandera de país e insignias.",
+          "uploads": "Las imágenes que subes, como tu foto de perfil. Se redimensionan y se almacenan en Firebase Storage bajo tu cuenta, y son de lectura pública para poder mostrarse en tu perfil y en el resto de la App.",
           "tokens": "Identificadores de autenticación y tokens de sesión emitidos por el proveedor de inicio de sesión."
         },
         "activity": {

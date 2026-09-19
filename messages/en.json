@@ -122,7 +122,18 @@
     "bioTooLong": "Bio must be {max} characters or less",
     "bioNoLinks": "Links are not allowed in your bio",
     "bioNoProfanity": "Please remove inappropriate language",
-    "bioPlaceholder": "This racer hasn't shared a bio yet.",
+    "bioPlaceholder": "This user hasn't shared a bio yet.",
+    "avatarUpload": "Upload photo",
+    "avatarChange": "Change photo",
+    "avatarRemove": "Remove photo",
+    "avatarRemoveTitle": "Remove your photo?",
+    "avatarRemoveText": "Your profile will go back to the default avatar.",
+    "avatarUpdated": "Profile photo updated",
+    "avatarRemoved": "Profile photo removed",
+    "avatarUploadError": "Couldn't upload your photo, try again",
+    "avatarRemoveError": "Couldn't remove your photo, try again",
+    "avatarInvalidType": "Use a PNG, JPG or WebP image",
+    "avatarTooLarge": "The image must be {max} MB or less",
     "stats": "Stats",
     "daily": "Daily",
     "weekly": "Weekly",
@@ -275,7 +286,12 @@
       "tasksHint": "💡 Start adding tasks to organize your work session...",
       "manualPomodorosWarning": "This only adjusts the task counter. Your reports and focus time count only real completed sessions."
     },
-    "sessionInOtherTab": "A session is already running in another tab or window."
+    "sessionInOtherTab": "A session is already running in another tab or window.",
+    "rainSoundMute": "Mute rain",
+    "rainSoundUnmute": "Unmute rain",
+    "rainSoundVolume": "Rain volume",
+    "rainSoundTrack": "Rain sound",
+    "rainTrackLabel": "Rain"
   },
   "stickyNotes": {
     "open": "Open {label} note",
@@ -945,7 +961,7 @@
   "terms": {
     "agreement": "AGREEMENT",
     "title": "Terms & Conditions",
-    "lastUpdated": "Last updated: September 14, 2026",
+    "lastUpdated": "Last updated: September 17, 2026",
     "intro": "Welcome to Pitmydoro. By accessing or using this application you agree to these Terms & Conditions in full. If you do not agree with any part of them, do not use the service.",
     "finalNotice": "If you do not agree with any of the points above, please do not use this application. And if you already have an account and your data is already in Pitmydoro, please follow the instructions in <deletion>section 10, Retention and deletion of your data</deletion> to request the absolute and permanent deletion of your data if you wish.",
     "sections": {
@@ -956,7 +972,7 @@
           "operator": "<strong>Operator:</strong> The individual who develops and maintains the App. Pitmydoro is not a company and does not act as one.",
           "user": "<strong>User:</strong> Any person who accesses or uses the App, with or without an account.",
           "content": "<strong>Content:</strong> All text, graphics, features and other material available in the App.",
-          "userContent": "<strong>User Content:</strong> Anything you enter into the App, including task titles, notes, profile fields and display names."
+          "userContent": "<strong>User Content:</strong> Anything you enter into or upload to the App, including task titles, notes, profile fields, display names and any image or video you upload, such as your profile photo."
         }
       },
       "eligibility": {
@@ -983,7 +999,15 @@
         "title": "5. YOUR CONTENT",
         "description": "You keep ownership of your User Content. You are solely responsible for what you enter into the App and you confirm that you have the right to do so.",
         "warning": "Do not enter confidential, sensitive, regulated or otherwise protected information into the App. Task titles, notes and profile fields are not designed to store secrets, credentials or personal data of third parties.",
-        "public": "Some information is public by design, including your display name, profile picture, badges and leaderboard position. Do not use these fields for anything you would not want to be seen publicly."
+        "public": "Some information is public by design, including your display name, profile picture, badges and leaderboard position. Do not use these fields for anything you would not want to be seen publicly.",
+        "uploads": {
+          "title": "Images and video you upload",
+          "rights": "When you upload an image or a video to the App, including your profile photo, you confirm that you own it or hold every right and licence needed to upload it and to make it public, and that doing so infringes no copyright, trademark, image right or other right of any third party.",
+          "consent": "If a person appears in or is identifiable from what you upload, you confirm that you have their explicit consent to upload it and to display it publicly, and that you have the consent of a parent or legal guardian where that person is a minor.",
+          "responsibility": "You are solely responsible for everything you upload and for any claim, complaint or damage arising from it. By uploading you grant the Operator a non-exclusive, worldwide, royalty-free licence to store, reproduce, resize and display that content solely to operate the App and to show it where the App is designed to show it, such as your profile, the header, task statistics and the leaderboard. This licence ends when you delete the content or your account.",
+          "prohibited": "Do not upload content that is illegal, sexual, violent, hateful, harassing, deceptive, impersonates another person or brand, contains personal data of third parties, or that you do not have the right to share.",
+          "moderation": "The Operator may remove any uploaded content at any time and without prior notice."
+        }
       },
       "availability": {
         "title": "6. AVAILABILITY AND CHANGES",
@@ -1074,7 +1098,7 @@
   "privacy": {
     "agreement": "PRIVACY",
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: September 14, 2026",
+    "lastUpdated": "Last updated: September 17, 2026",
     "intro": "This Privacy Policy explains what data Pitmydoro collects, why it is collected, how it is handled and what you can do about it.",
     "finalNotice": "If you do not agree with any of the points above, please do not use this application. And if you already have an account and your data is already in Pitmydoro, please follow the instructions in <deletion>section 10, Retention and deletion of your data</deletion> to request the absolute and permanent deletion of your data if you wish.",
     "summary": "In short: Pitmydoro stores the minimum needed to run your timer, your tasks and your statistics. Your data is never sold. You can request its complete and permanent deletion at any time.",
@@ -1091,6 +1115,7 @@
           "description": "Provided by you or by your chosen sign-in provider:",
           "email": "Email address, used to identify your account and to verify deletion requests.",
           "profile": "Display name, username, profile picture, country flag and badges.",
+          "uploads": "Images you upload, such as your profile photo. They are resized and stored in Firebase Storage under your account, and are publicly readable so they can be shown on your profile and across the App.",
           "tokens": "Authentication identifiers and session tokens issued by the sign-in provider."
         },
         "activity": {
