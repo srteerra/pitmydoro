@@ -6,6 +6,7 @@ const routes: { path: string; priority: number; changeFrequency: 'daily' | 'week
     { path: '', priority: 1, changeFrequency: 'daily' },
     { path: '/leaderboard', priority: 0.9, changeFrequency: 'daily' },
     { path: '/learn', priority: 0.8, changeFrequency: 'weekly' },
+    { path: '/credits', priority: 0.4, changeFrequency: 'weekly' },
     { path: '/terms', priority: 0.3, changeFrequency: 'yearly' },
     { path: '/privacy', priority: 0.3, changeFrequency: 'yearly' },
   ];

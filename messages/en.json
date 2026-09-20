@@ -453,7 +453,8 @@
     "terms": "Terms & Conditions",
     "privacy": "Privacy Policy",
     "version": "Version {version}",
-    "support": "Support the project"
+    "support": "Support the project",
+    "credits": "Credits & Contributions"
   },
   "header": {
     "learn": "Learn more",
@@ -923,6 +924,10 @@
     "leaderboard": {
       "title": "Leaderboard",
       "description": "See who logged the most focus time this week and this month on Pit My Doro."
+    },
+    "credits": {
+      "title": "Credits & Contributions",
+      "description": "Credits for the sounds, art and open source contributions behind PitMyDoro, and how to contribute to the project."
     }
   },
   "streak": {
@@ -1223,6 +1228,44 @@
         "title": "15. CONTACT",
         "info": "For any privacy question or to request deletion of your data, write to:"
       }
+    }
+  },
+  "credits": {
+    "hero": {
+      "title": "Credits & Contributions",
+      "subtitle": "The people and work behind PitMyDoro.",
+      "intro": "PitMyDoro is built with open source software, free sound libraries and original art. Everything used here is credited below."
+    },
+    "sounds": {
+      "title": "Rain sounds",
+      "intro": "The rain tracks you can play during a session come from Pixabay.",
+      "attribution": "Sound effect by <authorLink>{author}</authorLink> from <sourceLink>{source}</sourceLink>"
+    },
+    "tracks": {
+      "rain1": "Rain 1",
+      "rain2": "Rain 2",
+      "rain3": "Rain 3",
+      "rainInt": "Intermediate rain"
+    },
+    "art": {
+      "title": "Art & design",
+      "intro": "Original illustrations and assets made for the app."
+    },
+    "links": {
+      "instagram": "Instagram",
+      "github": "GitHub",
+      "website": "Website"
+    },
+    "contributors": {
+      "title": "Contributors",
+      "intro": "Everyone who has landed a commit in the repository. Thanks for making PitMyDoro better.",
+      "empty": "Contributors could not be loaded right now.",
+      "marqueeLabel": "Project contributors",
+      "tooltip": "{login} · {count, plural, one {# contribution} other {# contributions}}"
+    },
+    "contribute": {
+      "cta": "I want to contribute",
+      "hint": "Read the contribution guidelines before opening your first pull request."
     }
   }
 }

@@ -454,7 +454,8 @@
     "terms": "Términos y Condiciones",
     "privacy": "Política de Privacidad",
     "version": "Versión {version}",
-    "support": "Apoya el proyecto"
+    "support": "Apoya el proyecto",
+    "credits": "Créditos y Contribuciones"
   },
   "header": {
     "learn": "Aprende más",
@@ -924,6 +925,10 @@
     "leaderboard": {
       "title": "Ranking",
       "description": "Descubre quién acumuló más tiempo de concentración esta semana y este mes en Pit My Doro."
+    },
+    "credits": {
+      "title": "Créditos y Contribuciones",
+      "description": "Créditos de los sonidos, el arte y las contribuciones de código abierto detrás de PitMyDoro, y cómo contribuir al proyecto."
     }
   },
   "streak": {
@@ -1224,6 +1229,44 @@
         "title": "15. CONTACTO",
         "info": "Para cualquier duda sobre privacidad o para solicitar la eliminación de tus datos, escribe a:"
       }
+    }
+  },
+  "credits": {
+    "hero": {
+      "title": "Créditos y Contribuciones",
+      "subtitle": "Las personas y el trabajo detrás de PitMyDoro.",
+      "intro": "PitMyDoro está hecho con software de código abierto, librerías de sonido libres y arte original. Todo lo que se usa aquí está acreditado abajo."
+    },
+    "sounds": {
+      "title": "Sonidos de lluvia",
+      "intro": "Las pistas de lluvia que puedes reproducir durante una sesión vienen de Pixabay.",
+      "attribution": "Efecto de sonido de <authorLink>{author}</authorLink> desde <sourceLink>{source}</sourceLink>"
+    },
+    "tracks": {
+      "rain1": "Lluvia 1",
+      "rain2": "Lluvia 2",
+      "rain3": "Lluvia 3",
+      "rainInt": "Lluvia intermedia"
+    },
+    "art": {
+      "title": "Arte y diseño",
+      "intro": "Ilustraciones y recursos originales hechos para la app."
+    },
+    "links": {
+      "instagram": "Instagram",
+      "github": "GitHub",
+      "website": "Sitio web"
+    },
+    "contributors": {
+      "title": "Contribuidores",
+      "intro": "Todas las personas que han aportado un commit al repositorio. Gracias por hacer mejor a PitMyDoro.",
+      "empty": "No se pudieron cargar los contribuidores en este momento.",
+      "marqueeLabel": "Contribuidores del proyecto",
+      "tooltip": "{login} · {count, plural, one {# contribución} other {# contribuciones}}"
+    },
+    "contribute": {
+      "cta": "Quiero contribuir",
+      "hint": "Lee los lineamientos de contribución antes de abrir tu primer pull request."
     }
   }
 }
