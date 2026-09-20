@@ -109,7 +109,10 @@ export const RainSoundControls = ({ intensity }: Props) => {
       position='fixed'
       height='0'
       width='100vw'
-      bottom={{ base: 4, md: 6 }}
+      bottom={{
+        base: 'calc(1rem + var(--cookie-consent-offset, 0px))',
+        md: 'calc(1.5rem + var(--cookie-consent-offset, 0px))',
+      }}
       left={{ base: 4, md: 1 }}
       zIndex={1000}
       pointerEvents='none'

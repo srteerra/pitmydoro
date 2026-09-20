@@ -32,8 +32,8 @@ const storagePathFromURL = (url: string | null | undefined): string | null => {
   }
 };
 
-const removePath = async (path: string | null) => {
-  if (!path || !MANAGED_FOLDERS.some((folder) => path.startsWith(`${folder}/`))) return;
+const removePath = async (userId: string, path: string | null) => {
+  if (!path || !MANAGED_FOLDERS.some((folder) => path.startsWith(`${folder}/${userId}/`))) return;
 
   try {
     await deleteObject(ref(storage, path));
@@ -46,7 +46,7 @@ const clearAvatars = async (userId: string, keep?: string) => {
   await Promise.all(
     AVATAR_EXTENSIONS.map((extension) => avatarPath(userId, extension))
       .filter((path) => path !== keep)
-      .map(removePath)
+      .map((path) => removePath(userId, path))
   );
 };
 
@@ -79,7 +79,7 @@ export const avatarService = {
     await clearAvatars(userId, path);
 
     const previousPath = storagePathFromURL(previousPhotoURL);
-    if (previousPath && previousPath !== path) await removePath(previousPath);
+    if (previousPath && previousPath !== path) await removePath(userId, previousPath);
 
     return { photoURL };
   },
@@ -92,6 +92,6 @@ export const avatarService = {
     });
 
     await clearAvatars(userId);
-    await removePath(storagePathFromURL(currentPhotoURL));
+    await removePath(userId, storagePathFromURL(currentPhotoURL));
   },
 };

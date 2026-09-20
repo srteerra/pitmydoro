@@ -637,7 +637,7 @@ test.describe('Sessions without an active task', () => {
 
   const POMODORO_FAILURE = /Error (starting|pausing|resuming|completing|interrupting|switching) /;
   const ENVIRONMENT_NOISE =
-    /FirebaseError|Failed to fetch|NetworkError|Load failed|status of \d{3}/;
+    /FirebaseError|Failed to fetch|NetworkError|Load failed|status of \d{3}|auth\.pitmydoro\.com/;
 
   const collectErrors = (page: Page) => {
     const errors: string[] = [];
