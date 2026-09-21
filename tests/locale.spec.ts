@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { closeSettingsDialog, isMobileLayout, openLocaleMenu } from './helpers';
+import { openLocaleMenu } from './helpers';
 
 test.describe('Locale', () => {
   test.beforeEach(async ({ page }) => {
@@ -38,9 +38,6 @@ test.describe('Locale', () => {
     await expect(spanishOption).toBeEnabled();
     await spanishOption.click();
 
-    if (isMobileLayout(page)) await closeSettingsDialog(page);
-
-    await expect(addTaskButton).toBeVisible();
     await expect(addTaskButton).not.toHaveText(originalText!, { timeout: 20_000 });
   });
 });

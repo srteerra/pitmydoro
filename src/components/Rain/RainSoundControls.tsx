@@ -1,15 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Box,
-  createListCollection,
-  HStack,
-  IconButton,
-  Presence,
-  Slider,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, createListCollection, HStack, IconButton, Presence, Slider, VStack, } from '@chakra-ui/react';
 import { LuVolume2, LuVolumeX } from 'react-icons/lu';
 import { MdOutlineGrain } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
@@ -202,7 +194,6 @@ export const RainSoundControls = ({ intensity }: Props) => {
             value={[enabled ? draft : 0]}
             disabled={!enabled}
             onValueChange={({ value }) => handleVolumeChange(value[0])}
-            onValueChangeEnd={({ value }) => handleVolumeChange(value[0])}
           >
             <Slider.Label srOnly>{t('rainSoundVolume')}</Slider.Label>
             <Slider.Control>
