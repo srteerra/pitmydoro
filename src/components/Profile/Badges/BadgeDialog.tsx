@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Box, Button, Center, Flex, Spinner, Text, VStack } from '@chakra-ui/react';
 import { LuArrowLeft, LuLock } from 'react-icons/lu';
@@ -8,13 +8,17 @@ import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 import tinycolor from 'tinycolor2';
 import { BadgeDefinition } from '@/interfaces/Badge.interface';
+import { BadgeFlat } from '@/components/Profile/Badges/BadgeFlat';
+import { supportsWebGL } from '@/utils/webgl.utils';
+
+const MEDAL_HEIGHT = { base: '240px', md: '280px' };
 
 const BadgeMedal = dynamic(
   () => import('@/components/Profile/Badges/BadgeMedal').then((mod) => mod.BadgeMedal),
   {
     ssr: false,
     loading: () => (
-      <Center h={{ base: '240px', md: '280px' }}>
+      <Center h={MEDAL_HEIGHT}>
         <Spinner />
       </Center>
     ),
@@ -31,6 +35,9 @@ export const BadgeDialog = ({ badge, locked = false, onBack }: Props) => {
   const t = useTranslations('badges');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const [webgl, setWebgl] = useState<boolean | null>(null);
+
+  useEffect(() => setWebgl(supportsWebGL()), []);
 
   const glowColor = locked ? tinycolor(badge.color).desaturate(88) : tinycolor(badge.color);
   const glow = glowColor.setAlpha(isDark ? 0.22 : 0.16).toRgbString();
@@ -44,12 +51,32 @@ export const BadgeDialog = ({ badge, locked = false, onBack }: Props) => {
         overflow='hidden'
         bg={`radial-gradient(circle at 50% 45%, ${glow}, transparent 68%)`}
       >
-        <BadgeMedal
-          color={badge.color}
-          glyph={badge.glyph}
-          label={t(`${badge.id}.name`)}
-          locked={locked}
-        />
+        {webgl === null && (
+          <Center h={MEDAL_HEIGHT}>
+            <Spinner />
+          </Center>
+        )}
+
+        {webgl === true && (
+          <BadgeMedal
+            color={badge.color}
+            glyph={badge.glyph}
+            label={t(`${badge.id}.name`)}
+            locked={locked}
+          />
+        )}
+
+        {webgl === false && (
+          <Center
+            data-pw-id='badge-medal-flat'
+            data-locked={locked}
+            h={MEDAL_HEIGHT}
+            role='img'
+            aria-label={t(`${badge.id}.name`)}
+          >
+            <BadgeFlat size={168} glyph={badge.glyph} color={badge.color} muted={locked} />
+          </Center>
+        )}
 
         {locked && (
           <Flex
@@ -92,9 +119,11 @@ export const BadgeDialog = ({ badge, locked = false, onBack }: Props) => {
         )}
       </VStack>
 
-      <Text fontSize='xs' color='fg.muted' textAlign='center'>
-        {t('dragHint')}
-      </Text>
+      {webgl === true && (
+        <Text fontSize='xs' color='fg.muted' textAlign='center'>
+          {t('dragHint')}
+        </Text>
+      )}
 
       {onBack && (
         <Button

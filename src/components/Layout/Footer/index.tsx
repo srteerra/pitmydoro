@@ -78,6 +78,12 @@ export const Footer = () => {
           </Text>
         </Link>
 
+        <Link href='/credits'>
+          <Text fontSize='sm' color='gray.500' _hover={{ textDecoration: 'underline' }}>
+            {t('credits')}
+          </Text>
+        </Link>
+
         <Link href={GITHUB_REPO_URL} target='_blank' rel='noopener noreferrer'>
           <Flex alignItems='center' gap={2}>
             <Box color='gray.500'>

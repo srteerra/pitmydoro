@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { Box, Text } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Image, Text } from '@chakra-ui/react';
 import tinycolor from 'tinycolor2';
 import { jersey15 } from '@/assets/fonts/Jersey';
 
@@ -12,6 +12,7 @@ interface Props {
   color?: string;
   size?: ResponsiveSize;
   ring?: boolean;
+  photoURL?: string | null;
 }
 
 const PIXEL_GRID =
@@ -42,19 +43,22 @@ export const PixelAvatar = ({
   color = '#8A94A6',
   size = { base: 120, sm: 148, md: 172 },
   ring = true,
+  photoURL = null,
 }: Props) => {
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => setFailed(false), [photoURL]);
+
   const base = tinycolor(color);
   const isDark = base.isDark();
 
   const surface = isDark ? base.clone().lighten(4).toString() : base.clone().saturate(4).toString();
-  const frame = isDark ? base.clone().lighten(24).toString() : base.clone().darken(26).toString();
   const ink = isDark ? base.clone().lighten(54).toString() : base.clone().darken(50).toString();
   const inkShade = isDark
     ? base.clone().lighten(14).toString()
     : base.clone().darken(18).toString();
 
   const boxSize = scale(size, 1);
-  const frameWidth = scale(size, 0.032, 3);
   const ringWidth = scale(size, 0.028, 3);
   const fontSize = scale(size, 0.72);
   const shadowOffset = scale(size, 0.026, 2);
@@ -70,17 +74,27 @@ export const PixelAvatar = ({
       borderRadius='full'
       flexShrink={0}
     >
-      <Box boxSize='full' padding={frameWidth} bg={frame} borderRadius='full'>
-        <Box
-          boxSize='full'
-          bg={surface}
-          backgroundImage={PIXEL_GRID}
-          borderRadius='full'
-          display='flex'
-          alignItems='center'
-          justifyContent='center'
-          overflow='hidden'
-        >
+      <Box
+        boxSize='full'
+        bg={surface}
+        backgroundImage={PIXEL_GRID}
+        borderRadius='full'
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        overflow='hidden'
+      >
+        {photoURL && !failed ? (
+          <Image
+            src={photoURL}
+            alt={name || ''}
+            boxSize='full'
+            objectFit='cover'
+            referrerPolicy='no-referrer'
+            draggable={false}
+            onError={() => setFailed(true)}
+          />
+        ) : (
           <Text
             className={jersey15.className}
             fontSize={fontSize}
@@ -93,7 +107,7 @@ export const PixelAvatar = ({
           >
             {getInitials(name)}
           </Text>
-        </Box>
+        )}
       </Box>
     </Box>
   );

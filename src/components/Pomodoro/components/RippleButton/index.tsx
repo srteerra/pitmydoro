@@ -4,6 +4,7 @@ import React from 'react';
 interface RippleButtonProps {
   size?: 'sm' | 'md';
   isActive?: boolean;
+  introduce?: boolean;
   children: React.ReactNode;
   buttonColor?: string;
   spanColor?: string;
@@ -65,20 +66,35 @@ const rippleButton = defineSlotRecipe({
   },
 });
 
+const INTRO_ANIMATION = 'rippleButtonIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both';
+
+const NUDGE_ANIMATION = 'rippleButtonNudge 0.55s ease-in-out 0.7s 2';
+
 export const RippleButton: React.FC<RippleButtonProps> = (props) => {
-  const { size, isActive, children, buttonColor, spanColor, textColor, borderColor, ...rest } =
-    props;
+  const {
+    size,
+    isActive,
+    introduce,
+    children,
+    buttonColor,
+    spanColor,
+    textColor,
+    borderColor,
+    ...rest
+  } = props;
 
   const recipe = useSlotRecipe({ recipe: rippleButton });
   const styles = recipe({ size });
   const dynamicButtonStyles = {
     background: buttonColor || styles.button.background,
     ...(borderColor ? { border: `1px solid ${borderColor}` } : {}),
+    ...(introduce ? { animation: INTRO_ANIMATION } : {}),
   };
   const dynamicSpanStyles = {
     background: spanColor || styles.span.background,
     color: textColor || styles.span.color,
     ...(borderColor ? { border: `1px solid ${borderColor}` } : {}),
+    ...(introduce ? { animation: NUDGE_ANIMATION } : {}),
   };
 
   return (

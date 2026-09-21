@@ -22,6 +22,7 @@ export const UserMenu = ({ user, onLogout }: Props) => {
   const t = useTranslations('auth');
   const reportsT = useTranslations('reports');
   const username = useUserStore((state) => state.profile?.username);
+  const photoURL = useUserStore((state) => state.profile?.photoURL);
   const { openDrawer } = useDrawer();
   const router = useRouter();
   const getAnchorRect = () => ref.current!.getBoundingClientRect();
@@ -54,7 +55,7 @@ export const UserMenu = ({ user, onLogout }: Props) => {
           <Avatar.Root borderRadius={'full'} size='lg' cursor='pointer' ref={ref}>
             <Avatar.Fallback name={username || user?.email || ''} />
             <Avatar.Image
-              src={user?.photoURL ?? undefined}
+              src={photoURL || user?.photoURL || undefined}
               alt={username || user?.email || ''}
               referrerPolicy='no-referrer'
             />

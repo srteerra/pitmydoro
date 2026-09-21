@@ -24,7 +24,7 @@ import { LuCheck, LuTriangleAlert } from 'react-icons/lu';
 import { Tooltip } from '@/components/ui/tooltip';
 import { FlagPicker } from '@/components/Profile/EditProfile/FlagPicker';
 import { BackgroundPicker } from '@/components/Profile/EditProfile/BackgroundPicker';
-import { PixelAvatar } from '@/components/Profile/PixelAvatar';
+import { AvatarPicker } from '@/components/Profile/EditProfile/AvatarPicker';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import { Socials } from '@/interfaces/Socials.interface';
 import { isValidSocialUrl, normalizeSocialUrl, SocialPlatform } from '@/utils/socials.utils';
@@ -87,23 +87,30 @@ const SOCIAL_INPUTS: {
   },
 ];
 
-const AvatarPreview = ({
+const AvatarField = ({
   control,
   fallback,
   color,
+  userId,
+  photoURL,
+  onPhotoChange,
 }: {
   control: Control<ProfileFields>;
   fallback?: string;
   color?: string;
+  userId?: string;
+  photoURL?: string | null;
+  onPhotoChange: (photo: { photoURL: string | null }) => void;
 }) => {
   const displayName = useWatch({ control, name: 'displayName' });
 
   return (
-    <PixelAvatar
+    <AvatarPicker
+      userId={userId}
       name={normalizeDisplayName(displayName) || fallback}
       color={color}
-      size={{ base: 112 }}
-      ring={false}
+      photoURL={photoURL}
+      onChange={onPhotoChange}
     />
   );
 };
@@ -364,6 +371,11 @@ export const EditProfile = () => {
     }
   };
 
+  const handlePhotoChange = useCallback(
+    (photo: { photoURL: string | null }) => updateLocalProfile({ ...photo, photoSourceURL: null }),
+    [updateLocalProfile]
+  );
+
   const selectedTeam = selected ? (SCUDERIAS.find((team) => team.id === selected) ?? null) : null;
   const profileTheme = selectedTeam ? themeFromTeam(selectedTeam) : DEFAULT_PROFILE_THEME;
 
@@ -481,16 +493,19 @@ export const EditProfile = () => {
           {t('aboutSection')}
         </Text>
 
-        <Flex gap={5} align='flex-start' direction={{ base: 'column', sm: 'row' }}>
-          <Box flexShrink={0} alignSelf={{ base: 'center', sm: 'flex-start' }}>
-            <AvatarPreview
+        <VStack align='stretch' gap={5} w='full'>
+          <Box alignSelf='center'>
+            <AvatarField
               control={control}
               fallback={profile?.username}
               color={profileTheme.primary}
+              userId={uid}
+              photoURL={profile?.photoURL}
+              onPhotoChange={handlePhotoChange}
             />
           </Box>
 
-          <VStack align='stretch' gap={4} flex='1' w='full'>
+          <VStack align='stretch' gap={4} w='full'>
             <Controller
               control={control}
               name='displayName'
@@ -576,7 +591,7 @@ export const EditProfile = () => {
               )}
             />
           </VStack>
-        </Flex>
+        </VStack>
       </VStack>
 
       <Separator />

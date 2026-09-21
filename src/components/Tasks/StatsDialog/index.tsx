@@ -243,6 +243,13 @@ export const StatsDialog = ({ task }: Props) => {
             <DataList.ItemValue display='flex' alignItems='center'>
               <Avatar.Root borderRadius={'full'} size='sm' cursor='pointer'>
                 <Avatar.Fallback name={profile?.username} />
+                {profile?.photoURL && (
+                  <Avatar.Image
+                    src={profile.photoURL}
+                    alt={profile?.username ?? ''}
+                    referrerPolicy='no-referrer'
+                  />
+                )}
               </Avatar.Root>
             </DataList.ItemValue>
           </DataList.Item>

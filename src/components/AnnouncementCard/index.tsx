@@ -168,7 +168,7 @@ export const AnnouncementCard = () => {
       shadow='lg'
       borderWidth='1px'
       borderColor={{ base: 'blackAlpha.200', _dark: 'whiteAlpha.200' }}
-      bg={{ base: 'white', _dark: 'gray.800' }}
+      bg={{ base: 'white', _dark: 'dark.200' }}
     >
       <Flex justify='space-between' align='center' mb={2}>
         <Flex align='center' gap={2}>

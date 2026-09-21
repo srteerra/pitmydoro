@@ -407,6 +407,7 @@ export const Counter = () => {
       </HStack>
 
       <RippleButton
+        introduce
         marginY='20px'
         fontWeight='semibold'
         buttonColor={darkenColor}

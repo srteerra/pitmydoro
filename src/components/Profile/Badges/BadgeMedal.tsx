@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Center, Text } from '@chakra-ui/react';
+import { Box, Center } from '@chakra-ui/react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import tinycolor from 'tinycolor2';
 import { BadgeGlyph } from '@/interfaces/Badge.interface';
+import { BadgeFlat } from '@/components/Profile/Badges/BadgeFlat';
+import { forgetWebGLSupport, supportsWebGL } from '@/utils/webgl.utils';
 
 interface Props {
   color: string;
@@ -88,13 +90,20 @@ export const BadgeMedal = ({ color, glyph, label, locked = false }: Props) => {
     const mount = mountRef.current;
     if (!mount) return;
 
+    if (!supportsWebGL()) {
+      setFailed(true);
+      return;
+    }
+
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let renderer: THREE.WebGLRenderer;
 
     try {
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    } catch {
+    } catch (error) {
+      console.warn('Badge medal falling back to 2D, WebGL is unavailable:', error);
+      forgetWebGLSupport();
       setFailed(true);
       return;
     }
@@ -234,6 +243,15 @@ export const BadgeMedal = ({ color, glyph, label, locked = false }: Props) => {
 
     animate();
 
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      cancelAnimationFrame(frame);
+      forgetWebGLSupport();
+      setFailed(true);
+    };
+
+    renderer.domElement.addEventListener('webglcontextlost', handleContextLost);
+
     const observer = new ResizeObserver(() => {
       const nextWidth = mount.clientWidth || width;
       const nextHeight = mount.clientHeight || height;
@@ -248,6 +266,7 @@ export const BadgeMedal = ({ color, glyph, label, locked = false }: Props) => {
       cancelAnimationFrame(frame);
       clearTimeout(idleTimer);
       observer.disconnect();
+      renderer.domElement.removeEventListener('webglcontextlost', handleContextLost);
       controls.removeEventListener('start', pause);
       controls.removeEventListener('end', resume);
       controls.dispose();
@@ -267,10 +286,14 @@ export const BadgeMedal = ({ color, glyph, label, locked = false }: Props) => {
 
   if (failed) {
     return (
-      <Center h='260px' borderRadius='2xl' bg='bg.muted'>
-        <Text fontSize='sm' color='fg.muted'>
-          {label}
-        </Text>
+      <Center
+        data-pw-id='badge-medal-flat'
+        data-locked={locked}
+        h={{ base: '240px', md: '280px' }}
+        role='img'
+        aria-label={label}
+      >
+        <BadgeFlat size={168} glyph={glyph} color={color} muted={locked} />
       </Center>
     );
   }

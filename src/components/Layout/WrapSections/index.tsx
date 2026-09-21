@@ -9,6 +9,7 @@ import useSessionStore from '@/stores/Session.store';
 import { TiDivider } from '@/components/Layout/WrapSections/components/Divider';
 import { jersey15 } from '@/assets/fonts/Jersey';
 import useSettingsStore from '@/stores/Settings.store';
+import { INFO_SECTION_ID } from '@/constants/Layout';
 
 export const WrapSections = () => {
   const sessionStatus = useSessionStore((state) => state.status);
@@ -25,6 +26,7 @@ export const WrapSections = () => {
 
   return (
     <Container
+      id={INFO_SECTION_ID}
       mt={'42px'}
       py={'80px'}
       px={0}

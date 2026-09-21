@@ -17,6 +17,11 @@ import {
   normalizeDisplayName,
 } from '@/utils/displayName.utils';
 import { buildHeatmap } from '@/utils/statsHeatmap.utils';
+import {
+  AVATAR_ACCEPTED_TYPES,
+  AVATAR_MAX_INPUT_BYTES,
+  validateAvatarFile,
+} from '@/utils/avatarImage.utils';
 import { BADGES } from '@/constants/Badges';
 import { findBadge, isBadgeOwned, resolveBadges, resolveFeaturedBadge } from '@/utils/badges.utils';
 import en from '../messages/en.json';
@@ -471,6 +476,64 @@ test.describe('Featured badge', () => {
       [en, es].forEach((messages) => {
         const value = (messages.badges as unknown as Record<string, string>)[key];
         expect(value?.length ?? 0).toBeGreaterThan(0);
+      });
+    });
+  });
+});
+
+const avatarFile = (type: string, size: number) => ({ type, size }) as unknown as File;
+
+test.describe('Profile avatar uploads', () => {
+  test('accepts the supported image types', () => {
+    AVATAR_ACCEPTED_TYPES.forEach((type) => {
+      expect(validateAvatarFile(avatarFile(type, 1024))).toBeNull();
+    });
+  });
+
+  test('rejects unsupported image types', () => {
+    ['image/gif', 'image/svg+xml', 'video/mp4', 'application/pdf', ''].forEach((type) => {
+      expect(validateAvatarFile(avatarFile(type, 1024))).toBe('type');
+    });
+  });
+
+  test('rejects files over the input limit', () => {
+    expect(validateAvatarFile(avatarFile('image/png', AVATAR_MAX_INPUT_BYTES))).toBeNull();
+    expect(validateAvatarFile(avatarFile('image/png', AVATAR_MAX_INPUT_BYTES + 1))).toBe('size');
+  });
+
+  test('avatar copy is translated in both locales', () => {
+    const keys = [
+      'avatarUpload',
+      'avatarChange',
+      'avatarRemove',
+      'avatarRemoveTitle',
+      'avatarRemoveText',
+      'avatarUpdated',
+      'avatarRemoved',
+      'avatarUploadError',
+      'avatarRemoveError',
+      'avatarInvalidType',
+      'avatarTooLarge',
+    ];
+
+    keys.forEach((key) => {
+      [en, es].forEach((messages) => {
+        const value = (messages.profile as unknown as Record<string, string>)[key];
+        expect(value?.length ?? 0).toBeGreaterThan(0);
+      });
+    });
+  });
+
+  test('the upload rights notice is stated in both locales', () => {
+    const keys = ['title', 'rights', 'consent', 'responsibility', 'prohibited', 'moderation'];
+
+    keys.forEach((key) => {
+      [en, es].forEach((messages) => {
+        const uploads = (
+          messages.terms.sections.userContent as unknown as Record<string, Record<string, string>>
+        ).uploads;
+
+        expect(uploads?.[key]?.length ?? 0).toBeGreaterThan(0);
       });
     });
   });

@@ -9,6 +9,7 @@ import { userService } from '@/services/user.service';
 import { useAuth } from '@/contexts/AuthContext';
 import { DefaultSettings } from '@/constants/DefaultSettings';
 import { PomodoroMode, Settings } from '@/interfaces/Settings.interface';
+import { RainTrack } from '@/constants/Rain';
 import { flushElapsedTime } from '@/utils/accountElapsed.utils';
 import { rebindSprite } from '@/utils/pomodoroEntry.utils';
 import { isSessionLocked } from '@/hooks/useSessionLock';
@@ -32,6 +33,9 @@ export const useSettings = () => {
     setBreaksInterval,
     setEnableSounds,
     setVolume,
+    setRainSoundEnabled,
+    setRainVolume,
+    setRainTrack,
     setSettings,
     setPomodoroMode,
     setEnableNotifications,
@@ -111,6 +115,21 @@ export const useSettings = () => {
   const handleVolumeChange = async (value: number) => {
     setVolume(value);
     if (user) await userService.updatePreferences(user.uid, { volume: value });
+  };
+
+  const handleRainSoundEnabled = async (value: boolean) => {
+    setRainSoundEnabled(value);
+    if (user) await userService.updatePreferences(user.uid, { rainSoundEnabled: value });
+  };
+
+  const handleRainVolumeChange = async (value: number) => {
+    setRainVolume(value);
+    if (user) await userService.updatePreferences(user.uid, { rainVolume: value });
+  };
+
+  const handleRainTrackChange = async (track: RainTrack) => {
+    setRainTrack(track);
+    if (user) await userService.updatePreferences(user.uid, { rainTrack: track });
   };
 
   const handleChangeBreakDuration = async (type: SessionStatusEnum, duration: number) => {
@@ -203,6 +222,9 @@ export const useSettings = () => {
     handleSwitchSounds,
     resetSettings,
     handleVolumeChange,
+    handleRainSoundEnabled,
+    handleRainVolumeChange,
+    handleRainTrackChange,
     handleSwitchNotifications,
     handleEarlyAlertSeconds,
     handleChangeBreakDuration,

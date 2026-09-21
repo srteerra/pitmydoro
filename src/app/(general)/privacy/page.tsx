@@ -37,6 +37,7 @@ export default function PrivacyPage() {
         <LegalList>
           <LegalItem>{t('sections.dataCollection.account.email')}</LegalItem>
           <LegalItem>{t('sections.dataCollection.account.profile')}</LegalItem>
+          <LegalItem>{t('sections.dataCollection.account.uploads')}</LegalItem>
           <LegalItem>{t('sections.dataCollection.account.tokens')}</LegalItem>
         </LegalList>
 

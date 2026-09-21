@@ -3,7 +3,7 @@ import { PeriodRange, unionRange } from './periods';
 
 export const MAX_DAILY_POMODORO_SECONDS = 57_600;
 
-export const TOP_SIZE = 50;
+export const TOP_SIZE = 200;
 
 const BADGES = [
   { id: 'streamer', flag: 'isStreamer' },

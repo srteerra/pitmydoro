@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Task, TaskStatsDelta } from '@/interfaces/Task.interface';
+import { readLocalJSON } from '@/utils/storage.utils';
 
 export const emptyTaskStats = () => ({
   totalWorkTime: 0,
@@ -178,11 +179,8 @@ export const taskService = {
   },
 
   async syncTasks(userId: string) {
-    const stored = localStorage.getItem('pitmydoro_tasks');
-    if (!stored) return;
-
-    const data = JSON.parse(stored);
-    const unsyncTasks = data?.state?.tasks.filter((task: Task) => !task.isSync);
+    const data = readLocalJSON<{ state?: { tasks?: Task[] } }>('pitmydoro_tasks');
+    const unsyncTasks = data?.state?.tasks?.filter((task: Task) => !task.isSync);
     if (!unsyncTasks?.length) return;
 
     for (let i = 0; i < unsyncTasks.length; i++) {
