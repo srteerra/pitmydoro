@@ -18,6 +18,7 @@ import { PixelAvatar } from '@/components/Profile/PixelAvatar';
 import { jersey15 } from '@/assets/fonts/Jersey';
 import { useDialog } from '@/contexts/DialogContext';
 import useProfileThemeStore from '@/stores/ProfileTheme.store';
+import { FlagTooltip } from '@/components/ui/flag-tooltip';
 import { useTheme } from 'next-themes';
 import tinycolor from 'tinycolor2';
 
@@ -222,16 +223,18 @@ export const Profile = ({ profile, userId, isOwn = false }: Props) => {
                 </HStack>
               )}
               {profile.favoriteFlag && (
-                <HStack
-                  paddingX={3}
-                  paddingY={1.5}
-                  borderRadius='full'
-                  bg='bg.muted'
-                  fontSize='md'
-                  flexShrink={0}
-                >
-                  <Text>{profile.favoriteFlag}</Text>
-                </HStack>
+                <FlagTooltip flag={profile.favoriteFlag}>
+                  <HStack
+                    paddingX={3}
+                    paddingY={1.5}
+                    borderRadius='full'
+                    bg='bg.muted'
+                    fontSize='md'
+                    flexShrink={0}
+                  >
+                    <Text>{profile.favoriteFlag}</Text>
+                  </HStack>
+                </FlagTooltip>
               )}
               {memberSince && (
                 <InfoPill

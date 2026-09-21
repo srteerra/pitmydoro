@@ -15,6 +15,7 @@ import {
 import { LuFlag, LuX } from 'react-icons/lu';
 import { useLocale, useTranslations } from 'next-intl';
 import { Tooltip } from '@/components/ui/tooltip';
+import { FlagTooltip } from '@/components/ui/flag-tooltip';
 import { getCountryFlags } from '@/constants/CountryFlags';
 
 interface Props {
@@ -46,11 +47,21 @@ export const FlagPicker = ({ value, onChange }: Props) => {
           lazyMount
           unmountOnExit
         >
-          <Popover.Trigger asChild>
-            <Button variant='outline' rounded='full' minW='60px' fontSize='xl'>
-              {value || <LuFlag />}
-            </Button>
-          </Popover.Trigger>
+          {value ? (
+            <FlagTooltip flag={value} locale={locale}>
+              <Popover.Trigger asChild>
+                <Button variant='outline' rounded='full' minW='60px' fontSize='xl'>
+                  {value}
+                </Button>
+              </Popover.Trigger>
+            </FlagTooltip>
+          ) : (
+            <Popover.Trigger asChild>
+              <Button variant='outline' rounded='full' minW='60px' fontSize='xl'>
+                <LuFlag />
+              </Button>
+            </Popover.Trigger>
+          )}
           <Portal>
             <Popover.Positioner>
               <Popover.Content width='280px'>

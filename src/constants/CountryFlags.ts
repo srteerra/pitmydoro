@@ -12,6 +12,27 @@ const ISO_CODES =
 export const countryFlagEmoji = (code: string): string =>
   code.toUpperCase().replace(/./g, (char) => String.fromCodePoint(127397 + char.charCodeAt(0)));
 
+export const flagEmojiToCountryCode = (emoji: string): string | null => {
+  const codePoints = [...emoji].map((char) => char.codePointAt(0) ?? 0);
+
+  if (codePoints.length !== 2 || codePoints.some((cp) => cp < 127462 || cp > 127487)) {
+    return null;
+  }
+
+  return codePoints.map((cp) => String.fromCharCode(cp - 127397)).join('');
+};
+
+export const flagEmojiToCountryName = (emoji: string, locale: string): string | null => {
+  const code = flagEmojiToCountryCode(emoji);
+  if (!code) return null;
+
+  try {
+    return new Intl.DisplayNames([locale], { type: 'region' }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+};
+
 export const getCountryFlags = (locale: string): CountryFlag[] => {
   let display: Intl.DisplayNames | null = null;
 
