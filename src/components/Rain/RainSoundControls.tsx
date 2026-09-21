@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Box, createListCollection, HStack, IconButton, Presence, Slider, VStack, } from '@chakra-ui/react';
+import {
+  Box,
+  createListCollection,
+  HStack,
+  IconButton,
+  Presence,
+  Slider,
+  VStack,
+} from '@chakra-ui/react';
 import { LuVolume2, LuVolumeX } from 'react-icons/lu';
 import { MdOutlineGrain } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
