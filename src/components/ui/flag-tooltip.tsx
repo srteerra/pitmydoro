@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useLocale } from 'next-intl';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -16,6 +16,7 @@ interface Props {
 export const FlagTooltip = ({ flag, name, locale, children }: Props) => {
   const currentLocale = useLocale();
   const resolvedLocale = locale ?? currentLocale;
+  const [open, setOpen] = useState(false);
   const countryName = useMemo(
     () => name ?? flagEmojiToCountryName(flag, resolvedLocale),
     [name, flag, resolvedLocale]
@@ -24,7 +25,13 @@ export const FlagTooltip = ({ flag, name, locale, children }: Props) => {
   if (!countryName) return children;
 
   return (
-    <Tooltip content={countryName} openDelay={200} closeDelay={50}>
+    <Tooltip
+      content={countryName}
+      open={open}
+      onOpenChange={(e) => setOpen(e.open)}
+      openDelay={200}
+      closeDelay={50}
+    >
       <Box
         as='span'
         tabIndex={0}
@@ -33,6 +40,7 @@ export const FlagTooltip = ({ flag, name, locale, children }: Props) => {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
+          setOpen(true);
         }}
       >
         {children}
