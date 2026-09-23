@@ -8,6 +8,7 @@ import { LeaderboardEntry } from '@/interfaces/Leaderboard.interface';
 import { formatSeconds } from '@/utils/formatSeconds.utils';
 import { resolveFeaturedBadge } from '@/utils/badges.utils';
 import { BadgeFlat } from '@/components/Profile/Badges/BadgeFlat';
+import { FlagTooltip } from '@/components/ui/flag-tooltip';
 
 const BADGE_SIZE = 16;
 
@@ -104,7 +105,11 @@ export const LeaderboardTable = ({ entries }: Props) => {
                   {entry.displayName}
                 </Text>
                 <EntryBadge entry={entry} />
-                {entry.favoriteFlag && <Text fontSize='sm'>{entry.favoriteFlag}</Text>}
+                {entry.favoriteFlag && (
+                  <FlagTooltip flag={entry.favoriteFlag}>
+                    <Text fontSize='sm'>{entry.favoriteFlag}</Text>
+                  </FlagTooltip>
+                )}
               </HStack>
               <Text fontSize='xs' color='fg.muted' truncate>
                 @{entry.username}
