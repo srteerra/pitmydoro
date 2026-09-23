@@ -1,6 +1,6 @@
 import { statSeconds } from '@/utils/statSeconds.utils';
 
-type FormatSeconds = 'duration' | 'clock';
+type FormatSeconds = 'duration' | 'clock' | 'hoursMinutes';
 
 export const formatSeconds = (
   value: number | null | undefined,
@@ -18,6 +18,13 @@ export const formatSeconds = (
     const mm = m.toString().padStart(2, '0');
     const ss = s.toString().padStart(2, '0');
     return h > 0 ? `${h.toString().padStart(2, '0')}:${mm}:${ss}` : `${mm}:${ss}`;
+  }
+
+  if (format === 'hoursMinutes') {
+    const parts: string[] = [];
+    if (h > 0) parts.push(`${h}hr${h === 1 ? '' : 's'}`);
+    if (m > 0 || h === 0) parts.push(`${m}min${m === 1 ? '' : 's'}`);
+    return parts.join(' ');
   }
 
   const parts: string[] = [];
