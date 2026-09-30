@@ -18,6 +18,7 @@ import { useOverlayStore } from '@/stores/Overlay.store';
 import { useTasks } from '@/hooks/useTasks';
 import { useSettings } from '@/hooks/useSettings';
 import { useStickyNotes } from '@/hooks/useStickyNotes';
+import { useProjects } from '@/hooks/useProjects';
 
 interface AuthContextType {
   user: User | null;
@@ -41,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { loadTasks, wipeTasks } = useTasks();
   const { loadConfig, wipeConfig } = useSettings();
   const { loadNotes, wipeNotes } = useStickyNotes();
+  const { loadProjects, wipeProjects } = useProjects();
   const pendingUsername = useRef<string | undefined>(undefined);
   const creationInFlight = useRef<Map<string, Promise<unknown>>>(new Map());
 
@@ -77,7 +79,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           loadConfig(userData?.preferences);
           useOverlayStore.getState().applySettings(userData?.overlay ?? null);
 
-          await Promise.all([loadTasks(user.uid), fetchProfile(user.uid), loadNotes(user.uid)]);
+          await Promise.all([
+            loadTasks(user.uid),
+            fetchProfile(user.uid),
+            loadNotes(user.uid),
+            loadProjects(user.uid),
+          ]);
           void userService.updateLastConnection(user.uid).catch((error) => {
             console.error('Failed to update last connection:', error);
           });
@@ -117,6 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await wipeTasks();
       await wipeConfig();
       await wipeNotes();
+      await wipeProjects();
       clearProfile();
       useOverlayStore.getState().clear();
     });
