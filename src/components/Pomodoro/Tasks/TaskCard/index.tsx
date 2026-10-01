@@ -1,7 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { Task } from '@/interfaces/Task.interface';
 import { HiDotsVertical } from 'react-icons/hi';
-import { MdModeEdit, MdOutlineCheck, MdOutlineRestoreFromTrash } from 'react-icons/md';
+import {
+  MdModeEdit,
+  MdOutlineCheck,
+  MdOutlineRestore,
+  MdOutlineRestoreFromTrash,
+} from 'react-icons/md';
 import { IoIosStats } from 'react-icons/io';
 import { TiTimes } from 'react-icons/ti';
 import { FaCheck } from 'react-icons/fa';
@@ -15,15 +20,20 @@ import { useDrawer } from '@/contexts/DrawerContext';
 import { StatsDialog } from '@/components/Tasks/StatsDialog';
 import { BiStats } from 'react-icons/bi';
 import { useTheme } from 'next-themes';
+import { ProjectPicker } from '@/components/Projects/ProjectPicker';
+import { HelpTip } from '@/components/ui/help-tip';
+import { ProjectIndicator } from '@/components/Projects/ProjectIndicator';
+import { useProjectsStore } from '@/stores/Projects.store';
 
 interface Props {
   task: Task;
   draggableIcon?: React.ReactNode;
   onTaskClick?: (task: Task) => void;
+  archived?: boolean;
 }
 
-export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
-  const { deleteTask, checkTask, handleEditTask } = useTasks();
+export const TaskCard = ({ task, onTaskClick, draggableIcon, archived = false }: Props) => {
+  const { deleteTask, checkTask, handleEditTask, restoreTask } = useTasks();
   const { openDrawer } = useDrawer();
   const ref = useRef<HTMLInputElement | null>(null);
   const [taskTitle, setTaskTitle] = React.useState<string>(task.title);
@@ -34,12 +44,14 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   const t = useTranslations('pomodoro.tasks');
   const [taskPomodoros, setTaskPomodoros] = React.useState<number>(task.estimatedPomodoros);
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [taskProjectId, setTaskProjectId] = React.useState<string | null>(task.projectId ?? null);
   const [taskCompletedPomodoros, setTaskCompletedPomodoros] = React.useState<number>(
     task.totalPomodoros || 0
   );
   const editingTask = useTaskStore((state) => state.editingTask);
   const setEditingTask = useTaskStore((state) => state.setEditingTask);
   const currentTask = useTaskStore((state) => state.currentTask);
+  const groupByProject = useProjectsStore((state) => state.groupByProject);
 
   const isCurrentEditing = React.useMemo(() => {
     return editingTask === task.id;
@@ -66,6 +78,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
       setTaskDescription(task.description);
       setTaskPomodoros(task.estimatedPomodoros);
       setTaskCompletedPomodoros(task.totalPomodoros || 0);
+      setTaskProjectId(task.projectId ?? null);
 
       if (!taskTitle) {
         await deleteTask(task.id);
@@ -79,6 +92,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
       description: taskDescription,
       numberOfPomodoros: taskPomodoros,
       taskCompletedPomodoros,
+      projectId: taskProjectId,
     });
 
     setEditingTask(null);
@@ -111,6 +125,13 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
     }, 100);
   };
 
+  const handleRestoreTask = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    handleMenuClose();
+    await restoreTask(task);
+    toastSuccess(t('successRestoreTask'));
+  };
+
   const handleOnTaskDelete = async () => {
     if (await confirmAlert(t('deleteTaskConfirmTitle'), { type: 'danger' })) {
       await deleteTask(task.id);
@@ -131,6 +152,10 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
   }, []);
 
   useEffect(() => {
+    setTaskProjectId(task.projectId ?? null);
+  }, [task.projectId]);
+
+  useEffect(() => {
     setTaskPomodoros(task.estimatedPomodoros);
     setTaskCompletedPomodoros(task.totalPomodoros || 0);
   }, [task.estimatedPomodoros, task.totalPomodoros]);
@@ -139,6 +164,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
     <Card.Root
       data-pw-id='task-card'
       data-task-id={task.id}
+      position='relative'
       transition={'ease-in 0.2s'}
       bgColor={{
         base: 'white',
@@ -162,11 +188,11 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
             : ''
       }
       flexDirection='row'
-      cursor={isCurrentEditing ? 'auto' : task.completedAt ? 'default' : 'pointer'}
+      cursor={isCurrentEditing ? 'auto' : task.completedAt || archived ? 'default' : 'pointer'}
       overflow='hidden'
       width='100%'
       onClick={() => {
-        if (!isCurrentEditing && !task.completedAt) {
+        if (!isCurrentEditing && !task.completedAt && !archived) {
           onTaskClick?.(task);
           setTaskTitle(task.title);
           setTaskDescription(task.description);
@@ -219,9 +245,11 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                     overflowWrap={'anywhere'}
                     lineClamp='2'
                   >
-                    <Text as={'span'} color={'gray.400'}>
-                      #{task.order}
-                    </Text>{' '}
+                    {!archived && (
+                      <Text as={'span'} color={'gray.400'}>
+                        #{task.order}{' '}
+                      </Text>
+                    )}
                     {task.title}
                   </Text>
                   <Text
@@ -279,46 +307,62 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                       {statsT('seeStats')}
                     </MenuItem>
 
-                    <MenuItem
-                      disabled={!!editingTask}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (editingTask) return;
-                        editTask(task.id);
-                      }}
-                      value='edit'
-                      cursor='pointer'
-                      data-pw-id='task-menu-edit'
-                    >
-                      <MdModeEdit />
-                      {t('editTask')}
-                    </MenuItem>
+                    {archived && (
+                      <MenuItem
+                        onClick={handleRestoreTask}
+                        value='restore'
+                        cursor='pointer'
+                        data-pw-id='task-menu-restore'
+                      >
+                        <MdOutlineRestore />
+                        {t('restoreTask')}
+                      </MenuItem>
+                    )}
 
-                    <MenuItem
-                      onClick={(e) => handleCheckTask(e)}
-                      value='complete'
-                      cursor='pointer'
-                      data-pw-id='task-menu-complete'
-                    >
-                      {task.completedAt ? <TiTimes /> : <MdOutlineCheck />}
-                      {task.completedAt ? t('markAsUncompleted') : t('markAsCompleted')}
-                    </MenuItem>
+                    {!archived && (
+                      <>
+                        <MenuItem
+                          disabled={!!editingTask}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (editingTask) return;
+                            editTask(task.id);
+                          }}
+                          value='edit'
+                          cursor='pointer'
+                          data-pw-id='task-menu-edit'
+                        >
+                          <MdModeEdit />
+                          {t('editTask')}
+                        </MenuItem>
 
-                    <MenuItem
-                      value='delete'
-                      color='danger.fg'
-                      cursor='pointer'
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleMenuClose();
-                        handleOnTaskDelete();
-                      }}
-                      _hover={{ bg: 'danger.subtle', color: 'danger.fg' }}
-                      data-pw-id='task-menu-delete'
-                    >
-                      <MdOutlineRestoreFromTrash />
-                      {t('archiveTask')}
-                    </MenuItem>
+                        <MenuItem
+                          onClick={(e) => handleCheckTask(e)}
+                          value='complete'
+                          cursor='pointer'
+                          data-pw-id='task-menu-complete'
+                        >
+                          {task.completedAt ? <TiTimes /> : <MdOutlineCheck />}
+                          {task.completedAt ? t('markAsUncompleted') : t('markAsCompleted')}
+                        </MenuItem>
+
+                        <MenuItem
+                          value='delete'
+                          color='danger.fg'
+                          cursor='pointer'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleMenuClose();
+                            handleOnTaskDelete();
+                          }}
+                          _hover={{ bg: 'danger.subtle', color: 'danger.fg' }}
+                          data-pw-id='task-menu-delete'
+                        >
+                          <MdOutlineRestoreFromTrash />
+                          {t('archiveTask')}
+                        </MenuItem>
+                      </>
+                    )}
                   </MenuContent>
                 )}
               </MenuRoot>
@@ -327,11 +371,18 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
         </Card.Body>
 
         {isCurrentEditing && (
-          <Card.Footer flexWrap={'wrap'} justifyContent='space-between'>
+          <Card.Footer flexDirection='column' alignItems='stretch' gap={3}>
             <Flex gap={4} alignItems='center'>
-              <Text fontSize={'sm'} fontWeight={'bold'}>
-                {t('noPomodoros')}
-              </Text>
+              <Flex alignItems='center' gap={1}>
+                <Text fontSize={'sm'} fontWeight={'bold'}>
+                  {t('noPomodoros')}
+                </Text>
+                <HelpTip
+                  content={t('noPomodorosHelp')}
+                  label={t('noPomodorosHelp')}
+                  placement='top'
+                />
+              </Flex>
               <NumberInput.Root
                 width='80px'
                 disabled={!!task.completedAt}
@@ -370,12 +421,19 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
               </NumberInput.Root>
             </Flex>
 
-            <Flex gap={2} flex={{ base: '1', sm: '0' }}>
+            <Flex gap={2} alignItems='center' justifyContent='flex-end'>
+              <ProjectPicker
+                flex='1'
+                minWidth={0}
+                value={taskProjectId}
+                onChange={setTaskProjectId}
+                testId='task-project-picker'
+              />
               <IconButton
                 onClick={() => handleOnTaskSubmit(false)}
                 transition={'all 0.3s'}
                 rounded={'lg'}
-                flex={{ base: '1', sm: '0' }}
+                flexShrink={0}
                 bgColor='danger.subtle'
                 color='danger.fg'
                 _hover={{ bgColor: 'danger.muted' }}
@@ -388,7 +446,7 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
                 onClick={() => handleOnTaskSubmit(true)}
                 transition={'all 0.3s'}
                 rounded={'lg'}
-                flex={{ base: '1', sm: '0' }}
+                flexShrink={0}
                 bgColor='success.subtle'
                 color='success.fg'
                 _hover={{ bgColor: 'success.muted' }}
@@ -400,6 +458,8 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon }: Props) => {
           </Card.Footer>
         )}
       </Box>
+
+      {!groupByProject && <ProjectIndicator projectId={task.projectId} />}
     </Card.Root>
   );
 };

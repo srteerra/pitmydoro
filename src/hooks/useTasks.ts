@@ -11,6 +11,8 @@ import { usePomodoroStore } from '@/stores/Pomodoro.store';
 import { flushElapsedTime, rebindRunningPomodoroTask } from '@/utils/accountElapsed.utils';
 import { localDayKey } from '@/utils/streak.utils';
 import { timestampUtils } from '@/utils/timestamp.utils';
+import { findNextInProject } from '@/utils/projects.utils';
+import { useProjectsStore } from '@/stores/Projects.store';
 
 const countCompletedDelta = (isComplete?: boolean, previousCompletedAt?: Timestamp | null) => {
   if (isComplete) return 1;
@@ -78,11 +80,10 @@ export function useTasks() {
     await reorderTasks(remainingTasks);
 
     if (currentTask?.id === id) {
-      const nextTask = _.chain(remainingTasks)
-        .reject('completedAt')
-        .sortBy('order')
-        .first()
-        .value();
+      const nextTask = findNextInProject(
+        _.chain(remainingTasks).reject('completedAt').sortBy('order').value(),
+        useProjectsStore.getState().activeProjectId
+      );
 
       setCurrentTask(nextTask || null);
     }
@@ -109,8 +110,12 @@ export function useTasks() {
       .sortBy('completedAt')
       .value();
 
-    if (isComplete && autoStartNextTask && freshIncompleteTasks.length > 0) {
-      const nextTask = freshIncompleteTasks[0];
+    const nextTask = findNextInProject(
+      freshIncompleteTasks,
+      useProjectsStore.getState().activeProjectId
+    );
+
+    if (isComplete && autoStartNextTask && nextTask) {
       const runningTaskId = usePomodoroStore.getState().currentPomodoro?.task?.id;
 
       setCurrentTask(nextTask);
@@ -151,6 +156,7 @@ export function useTasks() {
       estimatedPomodoros: 1,
       totalPomodoros: 0,
       isSync: false,
+      projectId: useProjectsStore.getState().activeProjectId,
     };
 
     const shifted = tasks.map((t) => (t.archive ? t : { ...t, order: (t.order ?? 0) + 1 }));
@@ -165,6 +171,9 @@ export function useTasks() {
 
     if (!currentTaskEditing) return;
 
+    const projectId =
+      data.projectId !== undefined ? data.projectId : (currentTaskEditing.projectId ?? null);
+
     if (!title) {
       await remove(taskId);
       return;
@@ -177,6 +186,7 @@ export function useTasks() {
         description: description ?? '',
         estimatedPomodoros: numberOfPomodoros ?? currentTaskEditing.estimatedPomodoros,
         totalPomodoros: taskCompletedPomodoros ?? currentTaskEditing.totalPomodoros,
+        projectId,
       };
 
       await create(newTask);
@@ -186,6 +196,7 @@ export function useTasks() {
         description: description ?? currentTaskEditing.description,
         estimatedPomodoros: numberOfPomodoros ?? currentTaskEditing.estimatedPomodoros,
         totalPomodoros: taskCompletedPomodoros ?? currentTaskEditing.totalPomodoros,
+        projectId,
       });
     }
   };
@@ -259,6 +270,60 @@ export function useTasks() {
     await taskService.saveActiveTasksOrder(user.uid, idsToRestore);
   };
 
+  const archiveCompletedTasks = async () => {
+    const completedTasks = activeTasks.filter((task) => !!task.completedAt);
+    if (!completedTasks.length) return 0;
+
+    completedTasks.forEach((task) => removeTask(task.id));
+
+    const { tasks: freshTasks, currentTask: freshCurrentTask } = useTaskStore.getState();
+    const remainingTasks = _.sortBy(
+      freshTasks.filter((task) => !task.archive),
+      'order'
+    );
+
+    if (!freshCurrentTask) {
+      const nextTask = findNextInProject(
+        remainingTasks.filter((task) => !task.completedAt),
+        useProjectsStore.getState().activeProjectId
+      );
+      setCurrentTask(nextTask ?? null);
+    }
+
+    if (!user) return completedTasks.length;
+
+    await Promise.all(
+      completedTasks
+        .filter((task) => task.isSync)
+        .map((task) => taskService.archive(user.uid, task.id))
+    );
+    await taskService.saveActiveTasksOrder(
+      user.uid,
+      remainingTasks.map((task) => task.id)
+    );
+
+    return completedTasks.length;
+  };
+
+  const restoreTask = async (task: Task) => {
+    const currentTasks = useTaskStore.getState().tasks.filter((item) => item.id !== task.id);
+    const activeOrder = _.sortBy(
+      currentTasks.filter((item) => !item.archive),
+      'order'
+    );
+    const restoredTask: Task = { ...task, archive: false, order: activeOrder.length + 1 };
+
+    setTasks([...currentTasks, restoredTask]);
+
+    if (!user || !task.isSync) return;
+
+    await taskService.unarchiveTasks(user.uid, [task.id]);
+    await taskService.saveActiveTasksOrder(user.uid, [
+      ...activeOrder.map((item) => item.id),
+      task.id,
+    ]);
+  };
+
   const wipeTasks = async () => {
     setTasks(tasks.filter((task) => !task.isSync));
   };
@@ -274,6 +339,8 @@ export function useTasks() {
     checkTask: check,
     resetAllTasks,
     undoResetAllTasks,
+    archiveCompletedTasks,
+    restoreTask,
     loadTasks,
     wipeTasks,
     handleAddTask,

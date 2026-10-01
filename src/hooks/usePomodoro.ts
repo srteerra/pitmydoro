@@ -29,6 +29,8 @@ import {
   startPomodoroEntry,
 } from '@/utils/pomodoroEntry.utils';
 import { claimSessionLock, releaseSessionLock } from '@/utils/sessionLock.utils';
+import { findNextInProject } from '@/utils/projects.utils';
+import { useProjectsStore } from '@/stores/Projects.store';
 
 export const usePomodoro = () => {
   const { user } = useAuth();
@@ -316,8 +318,13 @@ export const usePomodoro = () => {
               .sortBy('order')
               .value();
 
-            if (autoStartNextTask && freshIncompleteTasks.length > 0) {
-              await switchTask(freshIncompleteTasks[0], true);
+            const nextTask = findNextInProject(
+              freshIncompleteTasks,
+              useProjectsStore.getState().activeProjectId
+            );
+
+            if (autoStartNextTask && nextTask) {
+              await switchTask(nextTask, true);
             }
 
             if (autoOrderTasks) {
