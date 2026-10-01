@@ -1,16 +1,9 @@
 'use client';
 
-import {
-  ComponentType,
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { Button, CloseButton, Drawer, DrawerContent, Portal, Text } from '@chakra-ui/react';
+import { ComponentType, createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState, } from 'react';
+import { BoxProps, Button, CloseButton, Drawer, DrawerContent, Portal, Text, } from '@chakra-ui/react';
+
+const AUTOFOCUS_SELECTOR = '[data-autofocus]';
 
 type DrawerContent = ComponentType<{ onClose: () => void }> | ReactNode;
 
@@ -27,6 +20,7 @@ export interface DrawerOptions {
   placement?: 'bottom' | 'top' | 'start' | 'end';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
   closeOnInteractOutside?: boolean;
+  background?: BoxProps['bg'];
   onSubmit?: () => void;
 }
 
@@ -54,6 +48,16 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
       setOptions(null);
     }, 200);
   }, [options]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const frame = requestAnimationFrame(() =>
+      contentRef.current?.querySelector<HTMLElement>(AUTOFOCUS_SELECTOR)?.focus()
+    );
+
+    return () => cancelAnimationFrame(frame);
+  }, [isOpen, options]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -111,7 +115,9 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
         onInteractOutside={closeDrawer}
         closeOnInteractOutside={options?.closeOnInteractOutside ?? true}
         preventScroll={false}
-        initialFocusEl={() => contentRef.current}
+        initialFocusEl={() =>
+          contentRef.current?.querySelector<HTMLElement>(AUTOFOCUS_SELECTOR) ?? contentRef.current
+        }
       >
         <Portal>
           <Drawer.Backdrop />
@@ -120,6 +126,7 @@ export function DrawerProvider({ children }: { children: ReactNode }) {
               data-pw-id='drawer'
               ref={contentRef}
               rounded='md'
+              bg={options?.background}
               maxH='100dvh'
               display='flex'
               flexDirection='column'
