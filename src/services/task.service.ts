@@ -6,6 +6,7 @@ import {
   getDoc,
   getDocs,
   increment,
+  limitToLast,
   orderBy,
   query,
   setDoc,
@@ -176,6 +177,18 @@ export const taskService = {
     });
 
     return orderedTasks;
+  },
+
+  async getArchivedTasks(userId: string, maxResults: number): Promise<Task[]> {
+    const archivedQuery = query(
+      collection(db, 'users', userId, 'tasks'),
+      where('archive', '==', true),
+      orderBy('createdAt', 'asc'),
+      limitToLast(maxResults)
+    );
+    const snapshot = await getDocs(archivedQuery);
+
+    return snapshot.docs.map((snap) => ({ ...snap.data(), id: snap.id }) as Task);
   },
 
   async syncTasks(userId: string) {
