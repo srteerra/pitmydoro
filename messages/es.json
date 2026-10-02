@@ -278,6 +278,7 @@
       "markAsUncompleted": "Marcar como incompleta",
       "markAsCompleted": "Marcar como completada",
       "noPomodoros": "No. Pomodoros",
+      "noPomodorosHelp": "Cantidad de pomodoros completados / Pomodoros estimados",
       "successCheckTask": "Tarea marcada como completada",
       "successUncheckTask": "Tarea marcada como incompleta",
       "successUpdateTask": "Tarea actualizada con éxito",
@@ -285,7 +286,28 @@
       "deleteTaskConfirmTitle": "¿Estás seguro de que deseas archivar esta tarea?",
       "deleteTaskConfirmMessage": "Esta acción no se puede deshacer.",
       "tasksHint": "💡 Comienza a añadir tareas para organizar tu sesión de trabajo...",
-      "manualPomodorosWarning": "Esto solo ajusta el contador de la tarea. Tus reportes y tiempo de enfoque cuentan solo sesiones reales completadas."
+      "manualPomodorosWarning": "Esto solo ajusta el contador de la tarea. Tus reportes y tiempo de enfoque cuentan solo sesiones reales completadas.",
+      "views": {
+        "pending": "Pendientes",
+        "completed": "Completadas",
+        "archived": "Archivadas"
+      },
+      "listOptions": "Opciones de la lista",
+      "archiveCompleted": "Archivar completadas",
+      "archiveCompletedConfirm": "¿Archivar todas las tareas completadas?",
+      "archiveCompletedSuccess": "{count, plural, one {# tarea archivada} other {# tareas archivadas}}",
+      "groupByProject": "Agrupar por proyecto",
+      "restoreTask": "Restaurar tarea",
+      "successRestoreTask": "Tarea restaurada",
+      "listLayout": "Vista de la lista",
+      "flatList": "Ver como lista única",
+      "titleInProject": "Enfocado en <bold>{name}</bold>",
+      "empty": {
+        "completed": "No hay tareas completadas",
+        "archived": "No hay tareas archivadas",
+        "completedInProject": "No hay tareas completadas en {name}",
+        "archivedInProject": "No hay tareas archivadas en {name}"
+      }
     },
     "sessionInOtherTab": "Ya tienes una sesión activa en otra pestaña o ventana.",
     "rainSoundMute": "Silenciar lluvia",
@@ -307,7 +329,35 @@
     "emptyNote": "Nota vacía",
     "defaults": {
       "new": "Nueva nota"
-    }
+    },
+    "pin": "Fijar nota",
+    "unpin": "Desfijar nota"
+  },
+  "projects": {
+    "general": "Todos los proyectos",
+    "all": "Proyectos",
+    "add": "Nuevo proyecto",
+    "manage": "Administrar proyectos",
+    "open": "Ver proyecto {name}",
+    "edit": "Editar proyecto",
+    "delete": "Eliminar proyecto",
+    "deleteConfirm": "¿Eliminar este proyecto? Sus tareas y notas se conservan, solo quedan sin asignar.",
+    "namePlaceholder": "Nombre del proyecto",
+    "colorOption": "Usar color {color}",
+    "assign": "Proyecto",
+    "none": "Sin proyecto",
+    "empty": "Aún no hay proyectos. Crea uno para agrupar tareas y notas.",
+    "defaults": {
+      "new": "Nuevo proyecto"
+    },
+    "pin": "Fijar proyecto",
+    "unpin": "Desfijar proyecto",
+    "save": "Guardar cambios",
+    "saved": "Proyecto guardado",
+    "descriptionPlaceholder": "Descripción (opcional)",
+    "backToList": "Volver a proyectos",
+    "description": "Administra tus proyectos y agrupa tus tareas y notas de una manera más organizada.",
+    "noDescription": "Sin descripción"
   },
   "settings": {
     "title": "Ajustes",

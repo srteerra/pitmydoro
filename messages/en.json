@@ -277,6 +277,7 @@
       "markAsUncompleted": "Mark as uncompleted",
       "markAsCompleted": "Mark as completed",
       "noPomodoros": "No. Pomodoros",
+      "noPomodorosHelp": "Completed pomodoros / Estimated pomodoros",
       "successCheckTask": "Task marked as completed",
       "successUncheckTask": "Task marked as uncompleted",
       "successUpdateTask": "Task updated successfully",
@@ -284,7 +285,28 @@
       "deleteTaskConfirmTitle": "Are you sure you want to archive this task?",
       "deleteTaskConfirmMessage": "This action cannot be undone.",
       "tasksHint": "💡 Start adding tasks to organize your work session...",
-      "manualPomodorosWarning": "This only adjusts the task counter. Your reports and focus time count only real completed sessions."
+      "manualPomodorosWarning": "This only adjusts the task counter. Your reports and focus time count only real completed sessions.",
+      "views": {
+        "pending": "Pending",
+        "completed": "Completed",
+        "archived": "Archived"
+      },
+      "listOptions": "Task list options",
+      "archiveCompleted": "Archive completed tasks",
+      "archiveCompletedConfirm": "Archive all completed tasks?",
+      "archiveCompletedSuccess": "{count, plural, one {# task archived} other {# tasks archived}}",
+      "groupByProject": "Group by project",
+      "restoreTask": "Restore task",
+      "successRestoreTask": "Task restored",
+      "listLayout": "List layout",
+      "flatList": "Show as a single list",
+      "titleInProject": "Focusing in <bold>{name}</bold>",
+      "empty": {
+        "completed": "No completed tasks",
+        "archived": "No archived tasks",
+        "completedInProject": "No completed tasks in {name}",
+        "archivedInProject": "No archived tasks in {name}"
+      }
     },
     "sessionInOtherTab": "A session is already running in another tab or window.",
     "rainSoundMute": "Mute rain",
@@ -306,7 +328,35 @@
     "emptyNote": "Empty note",
     "defaults": {
       "new": "New note"
-    }
+    },
+    "pin": "Pin note",
+    "unpin": "Unpin note"
+  },
+  "projects": {
+    "general": "All projects",
+    "all": "Projects",
+    "add": "New project",
+    "manage": "Manage projects",
+    "open": "Show {name} project",
+    "edit": "Edit project",
+    "delete": "Delete project",
+    "deleteConfirm": "Delete this project? Its tasks and notes will be kept, just unassigned.",
+    "namePlaceholder": "Project name",
+    "colorOption": "Use {color} color",
+    "assign": "Project",
+    "none": "No project",
+    "empty": "No projects yet. Create one to group tasks and notes.",
+    "defaults": {
+      "new": "New project"
+    },
+    "pin": "Pin project",
+    "unpin": "Unpin project",
+    "save": "Save changes",
+    "saved": "Project saved",
+    "descriptionPlaceholder": "Description (optional)",
+    "backToList": "Back to projects",
+    "description": "Manage your projects and group your tasks and notes in a more organized way.",
+    "noDescription": "No description"
   },
   "settings": {
     "title": "Settings",
