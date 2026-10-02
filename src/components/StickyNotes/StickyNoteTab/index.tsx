@@ -1,8 +1,11 @@
 'use client';
 
-import { FocusEvent, MouseEvent, ReactNode, useState } from 'react';
+import { FocusEvent, ReactNode, useState } from 'react';
 import { Box, BoxProps, HStack, Text } from '@chakra-ui/react';
-import { StickyNoteColor } from '@/interfaces/StickyNote.interface';
+import { StickyNoteColor, StickyNotePalette } from '@/interfaces/StickyNote.interface';
+import { PinButton } from '@/components/PinButton';
+import { TAB_SLIDE_IN_ANIMATION } from '@/constants/Animations';
+import { DIMMED_TAB_OPACITY, DIMMED_TAB_TRANSITION } from '@/constants/TabColors';
 import {
   STICKY_NOTE_PALETTE,
   STICKY_NOTE_TAB_HEIGHT,
@@ -21,88 +24,119 @@ export interface StickyNoteTabProps extends Omit<
   label?: string;
   ariaLabel?: string;
   color?: StickyNoteColor;
+  palette?: StickyNotePalette;
   height?: number;
   width?: number;
   peek?: number;
   reveal?: number;
   icon?: ReactNode;
   active?: boolean;
+  dimmed?: boolean;
   pullOnHover?: boolean;
   testId?: string;
+  pinned?: boolean;
+  pinLabel?: string;
+  onTogglePin?: () => void;
+  entryDelay?: number;
+  indicator?: ReactNode;
 }
 
 export const StickyNoteTab = ({
   label,
   ariaLabel,
   color = 'yellow',
+  palette: paletteOverride,
   height = STICKY_NOTE_TAB_HEIGHT,
   width = STICKY_NOTE_TAB_WIDTH,
   peek = STICKY_NOTE_TAB_PEEK,
   reveal = STICKY_NOTE_TAB_REVEAL,
   icon,
   active = false,
+  dimmed = false,
   pullOnHover = true,
   testId = 'sticky-note-tab',
+  entryDelay = 0,
+  pinned = false,
+  pinLabel,
+  onTogglePin,
+  indicator,
   ...rest
 }: StickyNoteTabProps) => {
   const [hovered, setHovered] = useState(false);
-  const palette = STICKY_NOTE_PALETTE[color];
+  const palette = paletteOverride ?? STICKY_NOTE_PALETTE[color];
   const pulled = pullOnHover && (hovered || active);
+  const showPin = !!onTogglePin && (hovered || pinned);
 
   return (
     <Box
-      as='button'
-      {...rest}
-      data-pw-id={testId}
-      aria-label={ariaLabel ?? label}
-      aria-expanded={active}
-      onMouseEnter={(event: MouseEvent<HTMLDivElement>) => {
-        setHovered(true);
-        rest.onMouseEnter?.(event);
-      }}
-      onMouseLeave={(event: MouseEvent<HTMLDivElement>) => {
-        setHovered(false);
-        rest.onMouseLeave?.(event);
-      }}
-      onFocus={(event: FocusEvent<HTMLDivElement>) => {
-        setHovered(true);
-        rest.onFocus?.(event);
-      }}
-      onBlur={(event: FocusEvent<HTMLDivElement>) => {
-        setHovered(false);
-        rest.onBlur?.(event);
-      }}
+      className='group'
+      position='relative'
       display='flex'
       alignItems='center'
-      justifyContent='flex-end'
       width={`${width}px`}
       height={`${height}px`}
-      paddingRight='16px'
-      paddingLeft='12px'
-      cursor='pointer'
+      paddingRight={showPin ? '10px' : '0'}
       borderLeftRadius='none'
       borderRightRadius='md'
       transform={`translateX(${pulled ? reveal : peek}px)`}
-      transition={`${pulled ? PULL_TRANSITION : TUCK_TRANSITION}, box-shadow 0.25s ease`}
+      transition={`${pulled ? PULL_TRANSITION : TUCK_TRANSITION}, box-shadow 0.25s ease, ${DIMMED_TAB_TRANSITION}`}
+      opacity={dimmed && !hovered ? DIMMED_TAB_OPACITY : 1}
       willChange='transform'
       bg={{ base: palette.surface, _dark: palette.surfaceDark }}
       color={{ base: palette.text, _dark: palette.textDark }}
       boxShadow='inset 11px 0 11px -16px rgba(0, 0, 0, 0.45), 3px 5px 22px rgba(0, 0, 0, 0.11)'
-      _focusVisible={{
-        outline: '2px solid',
-        outlineColor: { base: palette.accent, _dark: palette.accentDark },
-        outlineOffset: '2px',
+      animation={TAB_SLIDE_IN_ANIMATION}
+      animationDelay={`${entryDelay}ms`}
+      _motionReduce={{ transition: 'none', animation: 'none' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setHovered(true)}
+      onBlur={(event: FocusEvent<HTMLDivElement>) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node)) setHovered(false);
       }}
-      _motionReduce={{ transition: 'none' }}
     >
-      <HStack gap={2} minWidth={0}>
-        {label && (
-          <Text fontSize='sm' fontWeight='semibold' whiteSpace='nowrap' truncate>
-            {label}
-          </Text>
-        )}
-        {icon}
-      </HStack>
+      <Box
+        as='button'
+        {...rest}
+        data-pw-id={testId}
+        aria-label={ariaLabel ?? label}
+        aria-expanded={active}
+        display='flex'
+        alignItems='center'
+        justifyContent='flex-end'
+        flex='1'
+        height='100%'
+        minWidth={0}
+        paddingRight={showPin ? '6px' : '16px'}
+        paddingLeft='12px'
+        cursor='pointer'
+        borderRightRadius='md'
+        _focusVisible={{
+          outline: '2px solid',
+          outlineColor: { base: palette.accent, _dark: palette.accentDark },
+          outlineOffset: '2px',
+        }}
+      >
+        <HStack gap={2} minWidth={0}>
+          {label && (
+            <Text fontSize='sm' fontWeight='semibold' whiteSpace='nowrap' truncate>
+              {label}
+            </Text>
+          )}
+          {icon}
+        </HStack>
+      </Box>
+
+      {onTogglePin && showPin && (
+        <PinButton
+          pinned={pinned}
+          label={pinLabel ?? ''}
+          onToggle={onTogglePin}
+          testId={`${testId}-pin`}
+        />
+      )}
+
+      {indicator}
     </Box>
   );
 };

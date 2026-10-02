@@ -9,6 +9,8 @@ export interface StickyNote {
   content: string;
   order: number;
   isSync?: boolean;
+  projectId?: string | null;
+  pinned?: boolean;
 }
 
 export interface StickyNotePalette {

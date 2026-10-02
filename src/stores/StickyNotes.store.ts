@@ -29,7 +29,11 @@ const dropLegacyDefaults = (notes: StickyNote[]) =>
       LEGACY_DEFAULT_IDS.includes(note.id) ? { ...note, labelKey: 'defaults.new' } : note
     );
 
-export const createStickyNote = (notes: StickyNote[], isSync = false): StickyNote => ({
+export const createStickyNote = (
+  notes: StickyNote[],
+  isSync = false,
+  projectId: string | null = null
+): StickyNote => ({
   id: `sticky-note-${crypto.randomUUID()}`,
   labelKey: 'defaults.new',
   color: 'yellow',
@@ -37,6 +41,7 @@ export const createStickyNote = (notes: StickyNote[], isSync = false): StickyNot
   content: '',
   order: notes.length,
   isSync,
+  projectId,
 });
 
 export const useStickyNotesStore = create<StickyNotesStore>()(

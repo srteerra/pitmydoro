@@ -13,6 +13,12 @@ import { StickyNotePanel } from '@/components/StickyNotes/StickyNotePanel';
 import { StickyNotesList } from '@/components/StickyNotes/StickyNotesList';
 import { StickyNoteEditor } from '@/components/StickyNotes/StickyNoteEditor';
 import { Tooltip } from '@/components/ui/tooltip';
+import { ProjectIndicator } from '@/components/Projects/ProjectIndicator';
+import { useProjectsStore } from '@/stores/Projects.store';
+import { filterByProject } from '@/utils/projects.utils';
+import { sortPinnedFirst } from '@/utils/pin.utils';
+import { useNeutralTabPalette } from '@/hooks/useNeutralTabPalette';
+import { TAB_SLIDE_IN_STAGGER_MS } from '@/constants/Animations';
 import {
   STICKY_NOTE_PANEL_SIZE,
   STICKY_NOTE_STACK_GAP,
@@ -22,9 +28,11 @@ import {
 
 export const StickyNotes = () => {
   const t = useTranslations('stickyNotes');
-  const { toggleNote, openNote, addNote } = useStickyNotes();
+  const { toggleNote, openNote, addNote, updateNote } = useStickyNotes();
   const notes = useStickyNotesStore((state) => state.notes);
   const openIds = useStickyNotesStore((state) => state.openIds);
+  const activeProjectId = useProjectsStore((state) => state.activeProjectId);
+  const neutralPalette = useNeutralTabPalette('stickyNotes');
   const { openDrawer, closeDrawer } = useDrawer();
   const [isDesktop] = useMediaQuery(['(min-width: 64em)'], { fallback: [false] });
   const [mounted, setMounted] = useState(false);
@@ -45,7 +53,10 @@ export const StickyNotes = () => {
     return () => observer.disconnect();
   }, [mounted, isDesktop]);
 
-  const sortedNotes = useMemo(() => [...notes].sort((a, b) => a.order - b.order), [notes]);
+  const sortedNotes = useMemo(
+    () => filterByProject(sortPinnedFirst(notes), activeProjectId),
+    [notes, activeProjectId]
+  );
   const openNotes = useMemo(
     () => sortedNotes.filter((note) => openIds.includes(note.id)),
     [sortedNotes, openIds]
@@ -106,6 +117,7 @@ export const StickyNotes = () => {
           resolveLabel={resolveLabel}
           onSelect={handleSelect}
           onAdd={handleAdd}
+          onTogglePin={(note) => void updateNote(note.id, { pinned: !note.pinned })}
         />
       ),
       placement: isDesktop ? 'end' : 'bottom',
@@ -113,6 +125,24 @@ export const StickyNotes = () => {
       offset: 4,
     });
   };
+
+  const renderNoteTab = (note: StickyNote, index: number) => (
+    <StickyNoteTab
+      key={note.id}
+      label={resolveLabel(note)}
+      ariaLabel={t('open', { label: resolveLabel(note) })}
+      color={note.color}
+      height={note.height}
+      active={openIds.includes(note.id)}
+      indicator={<ProjectIndicator projectId={note.projectId} />}
+      pinned={!!note.pinned}
+      pinLabel={note.pinned ? t('unpin') : t('pin')}
+      testId={`sticky-note-tab-${note.id}`}
+      entryDelay={index * TAB_SLIDE_IN_STAGGER_MS}
+      onClick={() => toggleNote(note.id)}
+      onTogglePin={() => void updateNote(note.id, { pinned: !note.pinned })}
+    />
+  );
 
   if (!mounted) return null;
 
@@ -129,18 +159,7 @@ export const StickyNotes = () => {
         alignItems='flex-end'
         display={{ base: 'none', lg: 'flex' }}
       >
-        {visibleNotes.map((note) => (
-          <StickyNoteTab
-            key={note.id}
-            label={resolveLabel(note)}
-            ariaLabel={t('open', { label: resolveLabel(note) })}
-            color={note.color}
-            height={note.height}
-            active={openIds.includes(note.id)}
-            testId={`sticky-note-tab-${note.id}`}
-            onClick={() => toggleNote(note.id)}
-          />
-        ))}
+        {visibleNotes.map(renderNoteTab)}
 
         {hasOverflow && (
           <Tooltip
@@ -154,6 +173,7 @@ export const StickyNotes = () => {
               ariaLabel={t('showAll')}
               height={STICKY_NOTE_TAB_HEIGHT}
               testId='sticky-note-overflow'
+              entryDelay={visibleNotes.length * TAB_SLIDE_IN_STAGGER_MS}
               onClick={openNotesList}
             />
           </Tooltip>
@@ -167,10 +187,13 @@ export const StickyNotes = () => {
         >
           <StickyNoteTab
             ariaLabel={t('add')}
+            palette={neutralPalette}
+            dimmed
             height={STICKY_NOTE_TAB_HEIGHT}
             icon={<LuPlus />}
             pullOnHover={false}
             testId='sticky-note-add'
+            entryDelay={(visibleNotes.length + 1) * TAB_SLIDE_IN_STAGGER_MS}
             onClick={() => void handleAdd()}
           />
         </Tooltip>

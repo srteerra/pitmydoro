@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import _ from 'lodash';
 import { StickyNote } from '@/interfaces/StickyNote.interface';
 import { createStickyNote, useStickyNotesStore } from '@/stores/StickyNotes.store';
+import { useProjectsStore } from '@/stores/Projects.store';
 import { stickyNoteService } from '@/services/stickyNote.service';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -38,7 +39,11 @@ export function useStickyNotes() {
   }, []);
 
   const addNote = async () => {
-    const note = createStickyNote(useStickyNotesStore.getState().notes, !!user);
+    const note = createStickyNote(
+      useStickyNotesStore.getState().notes,
+      !!user,
+      useProjectsStore.getState().activeProjectId
+    );
     addNoteToStore(note);
 
     if (user) await stickyNoteService.create(note, user.uid);

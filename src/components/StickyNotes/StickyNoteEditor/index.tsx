@@ -2,12 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
-import { Box, HStack, IconButton, Input, Textarea, VStack } from '@chakra-ui/react';
+import { HStack, IconButton, Input, Textarea, VStack } from '@chakra-ui/react';
 import { LuTrash2 } from 'react-icons/lu';
 import { useTranslations } from 'next-intl';
-import { StickyNote, StickyNoteColor } from '@/interfaces/StickyNote.interface';
-import { STICKY_NOTE_COLORS, STICKY_NOTE_PALETTE } from '@/constants/StickyNotes';
+import { StickyNote } from '@/interfaces/StickyNote.interface';
+import { STICKY_NOTE_PALETTE } from '@/constants/StickyNotes';
 import { useStickyNotes } from '@/hooks/useStickyNotes';
+import { ColorSwatches } from '@/components/StickyNotes/ColorSwatches';
+import { ProjectPicker } from '@/components/Projects/ProjectPicker';
 
 interface StickyNoteEditorProps {
   note: StickyNote;
@@ -84,32 +86,21 @@ export const StickyNoteEditor = ({ note, label, onDelete }: StickyNoteEditorProp
         onBlur={() => commit.flush()}
       />
 
-      <HStack justifyContent='space-between'>
-        <HStack gap={1}>
-          {STICKY_NOTE_COLORS.map((color: StickyNoteColor) => (
-            <Box
-              key={color}
-              as='button'
-              aria-label={t('colorOption', { color })}
-              aria-pressed={color === note.color}
-              onClick={() => void updateNote(note.id, { color })}
-              width='18px'
-              height='18px'
-              rounded='full'
-              cursor='pointer'
-              bg={{
-                base: STICKY_NOTE_PALETTE[color].swatch,
-                _dark: STICKY_NOTE_PALETTE[color].surfaceDark,
-              }}
-              borderWidth={color === note.color ? '2px' : '1px'}
-              borderColor={
-                color === note.color
-                  ? { base: palette.text, _dark: palette.textDark }
-                  : { base: 'rgba(0, 0, 0, 0.25)', _dark: 'rgba(255, 255, 255, 0.3)' }
-              }
-            />
-          ))}
-        </HStack>
+      <ColorSwatches
+        value={note.color}
+        palette={palette}
+        getAriaLabel={(color) => t('colorOption', { color })}
+        onChange={(color) => void updateNote(note.id, { color })}
+      />
+
+      <HStack justifyContent='flex-end' gap={2}>
+        <ProjectPicker
+          flex='1'
+          minWidth={0}
+          value={note.projectId ?? null}
+          testId='sticky-note-project-picker'
+          onChange={(projectId) => void updateNote(note.id, { projectId })}
+        />
 
         <IconButton
           data-pw-id='sticky-note-delete'
