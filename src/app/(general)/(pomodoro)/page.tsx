@@ -2,8 +2,6 @@
 
 import { Pomodoro } from '@/components/Pomodoro';
 import React, { useEffect, useState } from 'react';
-import { Loader } from '@/components/Loader';
-import { Router } from 'next/router';
 import { SCUDERIAS } from '@/constants/Scuderias';
 import useSettingsStore from '@/stores/Settings.store';
 import { SimpleTimerSelector } from '@/components/Pomodoro/SimpleTimerSelector';
@@ -11,25 +9,13 @@ import { PomodoroMode } from '@/interfaces/Settings.interface';
 import { Container } from '@chakra-ui/react';
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const mode = useSettingsStore((state) => state.mode);
   const currentScuderia = useSettingsStore((state) => state.currentScuderia);
   const setCurrentScuderia = useSettingsStore((state) => state.setCurrentScuderia);
 
   useEffect(() => {
-    const handleStart = () => setLoading(true);
-    const handleStop = () => setLoading(false);
-
-    handleStop();
-    Router.events.on('routeChangeStart', handleStart);
-    Router.events.on('routeChangeComplete', handleStop);
-    Router.events.on('routeChangeError', handleStop);
-
-    return () => {
-      Router.events.off('routeChangeStart', handleStart);
-      Router.events.off('routeChangeComplete', handleStop);
-      Router.events.off('routeChangeError', handleStop);
-    };
+    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -38,11 +24,14 @@ export default function Home() {
     }
   }, [currentScuderia, setCurrentScuderia]);
 
-  if (loading) return <Loader />;
   return (
     <Container minHeight={'80vh'}>
-      {mode === PomodoroMode.MINIMAL && <SimpleTimerSelector />}
-      <Pomodoro />
+      {mounted && (
+        <>
+          {mode === PomodoroMode.MINIMAL && <SimpleTimerSelector />}
+          <Pomodoro />
+        </>
+      )}
     </Container>
   );
 }

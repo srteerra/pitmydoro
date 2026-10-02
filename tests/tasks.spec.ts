@@ -161,37 +161,41 @@ test.describe('Tasks', () => {
       await addTask(page, 'Completable Task');
     });
 
-    test('should mark a task as completed', async ({ page }) => {
+    async function completeFirstTask(page: any) {
       await openTaskMenu(page);
       await clickMenuItem(page, 'task-menu-complete');
+      await expect(page.getByTestId('task-card')).toHaveCount(0);
+      await page.getByTestId('tasks-view-completed').click();
+      await expect(page.getByTestId('task-card')).toHaveCount(1);
+    }
+
+    test('should mark a task as completed', async ({ page }) => {
+      await completeFirstTask(page);
       const title = page.getByTestId('task-card').first().locator('text=Completable Task');
       await expect(title).toHaveCSS('text-decoration-line', 'line-through');
     });
 
     test('should show "mark as uncompleted" option for a completed task', async ({ page }) => {
-      await openTaskMenu(page);
-      await clickMenuItem(page, 'task-menu-complete');
+      await completeFirstTask(page);
       await openTaskMenu(page);
       await expect(page.getByTestId('task-menu-complete')).toContainText(/uncompleted/i);
     });
 
     test('should unmark a completed task', async ({ page }) => {
-      const title = page.getByTestId('task-card').first().locator('text=Completable Task');
-
-      await openTaskMenu(page);
-      await clickMenuItem(page, 'task-menu-complete');
-      await expect(title).toHaveCSS('text-decoration-line', 'line-through');
+      await completeFirstTask(page);
 
       await openTaskMenu(page);
       await expect(page.getByTestId('task-menu-complete')).toContainText(/uncompleted/i);
       await clickMenuItem(page, 'task-menu-complete');
+      await expect(page.getByTestId('task-card')).toHaveCount(0);
 
+      await page.getByTestId('tasks-view-pending').click();
+      const title = page.getByTestId('task-card').first().locator('text=Completable Task');
       await expect(title).not.toHaveCSS('text-decoration-line', 'line-through');
     });
 
     test('should show default cursor on a completed task', async ({ page }) => {
-      await openTaskMenu(page);
-      await clickMenuItem(page, 'task-menu-complete');
+      await completeFirstTask(page);
       await expect(page.getByTestId('task-card').first()).toHaveCSS('cursor', 'default');
     });
   });

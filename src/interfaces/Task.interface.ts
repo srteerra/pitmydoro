@@ -46,7 +46,7 @@ export interface Task {
   completedAt?: Timestamp | null;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
-  projectId?: string;
+  projectId?: string | null;
   priority?: number;
   deletedAt?: Timestamp;
   archiveAt?: Timestamp;
@@ -64,4 +64,5 @@ export interface EditTask {
   title: string;
   taskCompletedPomodoros: number;
   numberOfPomodoros: number;
+  projectId?: string | null;
 }

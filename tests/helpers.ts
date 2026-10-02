@@ -109,7 +109,16 @@ export const readNotes = (page: Page) =>
     return raw ? (JSON.parse(raw).state?.notes ?? []) : [];
   }, STICKY_NOTES_KEY);
 
-export const clickStickyTab = (tab: Locator) => tab.click({ position: { x: 190, y: 20 } });
+const STICKY_TAB_CLICK_INSET = 20;
+
+export async function clickStickyTab(tab: Locator) {
+  await tab.hover({ position: { x: 190, y: STICKY_TAB_CLICK_INSET } });
+
+  const box = await tab.boundingBox();
+  const x = (box?.width ?? 0) - STICKY_TAB_CLICK_INSET;
+
+  await tab.click({ position: { x, y: STICKY_TAB_CLICK_INSET } });
+}
 
 export async function addStickyNote(page: Page): Promise<Locator> {
   if (!isMobileLayout(page)) {

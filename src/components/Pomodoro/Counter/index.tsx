@@ -16,6 +16,7 @@ import { useAlert } from '@/hooks/useAlert';
 import tinycolor from 'tinycolor2';
 import { useTheme } from 'next-themes';
 import { useSounds } from '@/hooks/useSounds';
+import { useStartButtonColors } from '@/hooks/useStartButtonColors';
 import { jua } from '@/assets/fonts/Jua';
 import { useTaskStore } from '@/stores/Tasks.store';
 import { useTasks } from '@/hooks/useTasks';
@@ -74,30 +75,12 @@ export const Counter = () => {
   const sessionElsewhere = useSessionLockedElsewhere();
   const startBlocked = !currentPomodoro && sessionElsewhere;
 
-  const backButtonColor =
-    theme === 'dark'
-      ? tinycolor(currentScuderia?.colors?.primary?.dark)
-      : tinycolor(currentScuderia?.colors?.background?.[status]);
-
-  const buttonColor =
-    theme === 'dark'
-      ? tinycolor(currentScuderia?.colors?.primary?.default)
-      : tinycolor(currentScuderia?.colors?.background?.[status]);
+  const { buttonColor, spanColor, textColor } = useStartButtonColors();
 
   const counterColor =
     theme === 'dark'
       ? 'white'
       : tinycolor(currentScuderia?.colors?.background?.[status]).darken(5).brighten(-30).toString();
-
-  const darkenColor = backButtonColor
-    .darken(theme === 'dark' ? 15 : 10)
-    .brighten(theme === 'dark' ? 0 : -15)
-    .toString();
-
-  const darkenColorDefault = buttonColor
-    .darken(theme === 'dark' ? 10 : 10)
-    .brighten(theme === 'dark' ? 0 : -5)
-    .toString();
 
   const handleTick = ({ total }: { total: number }) => {
     const isRunning = countdownRef.current?.isStarted() && !countdownRef.current?.isPaused();
@@ -410,9 +393,9 @@ export const Counter = () => {
         introduce
         marginY='20px'
         fontWeight='semibold'
-        buttonColor={darkenColor}
-        spanColor={darkenColorDefault}
-        textColor={theme === 'dark' ? 'dark.200' : 'light'}
+        buttonColor={buttonColor}
+        spanColor={spanColor}
+        textColor={textColor}
         isActive={isActive}
         onClick={isActive ? handlePauseClick : handleStartClick}
         disabled={startBlocked}

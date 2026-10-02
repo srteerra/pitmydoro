@@ -22,6 +22,8 @@ const toDocument = (note: StickyNote) => ({
   height: note.height,
   content: note.content,
   order: note.order,
+  projectId: note.projectId ?? null,
+  pinned: note.pinned ?? false,
 });
 
 const toNote = (id: string, data: Record<string, unknown>): StickyNote => ({
@@ -33,6 +35,8 @@ const toNote = (id: string, data: Record<string, unknown>): StickyNote => ({
   content: (data.content as string) ?? '',
   order: (data.order as number) ?? 0,
   isSync: true,
+  projectId: (data.projectId as string) ?? null,
+  pinned: (data.pinned as boolean) ?? false,
 });
 
 const isWorthSyncing = (note: StickyNote) => !!note.content?.trim() || !!note.label;
@@ -56,6 +60,8 @@ export const stickyNoteService = {
     if (updates.height !== undefined) payload.height = updates.height;
     if (updates.content !== undefined) payload.content = updates.content;
     if (updates.order !== undefined) payload.order = updates.order;
+    if ('projectId' in updates) payload.projectId = updates.projectId ?? null;
+    if (updates.pinned !== undefined) payload.pinned = updates.pinned;
 
     await updateDoc(doc(db, 'users', userId, 'notes', noteId), payload);
   },

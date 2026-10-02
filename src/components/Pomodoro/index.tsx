@@ -10,6 +10,7 @@ import { Tasks } from '@/components/Pomodoro/Tasks';
 import { SpriteAnimation } from '@/components/SpriteAnimation';
 import { FlagSwitcher } from '@/components/Pomodoro/components/FlagSwitcher';
 import { StickyNotes } from '@/components/StickyNotes';
+import { Projects } from '@/components/Projects';
 import { Tab } from '@/components/Pomodoro/Settings';
 import { useSettingsDialog } from '@/hooks/useSettingsDialog';
 import { useTranslations } from 'next-intl';
@@ -24,6 +25,7 @@ import { Rain } from '@/components/Rain';
 import { RainSoundControls } from '@/components/Rain/RainSoundControls';
 import { useRainSound } from '@/hooks/useRainSound';
 import { RAIN_LOOKS, RainIntensity } from '@/constants/Rain';
+import { CAR_ENTRY_ANIMATION } from '@/constants/Animations';
 
 export const Pomodoro = () => {
   const sessionStatus = useSessionStore((state) => state.status);
@@ -112,6 +114,8 @@ export const Pomodoro = () => {
 
       <StickyNotes />
 
+      <Projects />
+
       <Box
         rounded='3xl'
         bg='white'
@@ -178,13 +182,19 @@ export const Pomodoro = () => {
                 transition='transform 0.2s'
                 _hover={{ transform: 'scale(1.05)' }}
               >
-                <SpriteAnimation
-                  src={currentScuderia?.spriteURL as string}
-                  frameHeight={80}
-                  frameWidth={270}
-                  totalFrames={6}
-                  paused={!isActive}
-                />
+                <Box
+                  key={currentScuderia.id}
+                  animation={CAR_ENTRY_ANIMATION}
+                  _motionReduce={{ animation: 'none' }}
+                >
+                  <SpriteAnimation
+                    src={currentScuderia?.spriteURL as string}
+                    frameHeight={80}
+                    frameWidth={270}
+                    totalFrames={6}
+                    paused={!isActive}
+                  />
+                </Box>
               </Box>
             )}
           </Center>
