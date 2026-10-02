@@ -26,7 +26,11 @@ import { TiCogOutline } from 'react-icons/ti';
 import { isDesktopDevice } from '@/utils/device.utils';
 import { useSettingsDialog } from '@/hooks/useSettingsDialog';
 import { useSessionLockedElsewhere } from '@/hooks/useSessionLock';
-import { LOCK_HEARTBEAT_MS, refreshSessionLock, releaseSessionLock, } from '@/utils/sessionLock.utils';
+import {
+  LOCK_HEARTBEAT_MS,
+  refreshSessionLock,
+  releaseSessionLock,
+} from '@/utils/sessionLock.utils';
 import { PomodoroMode } from '@/interfaces/Settings.interface';
 
 export const Counter = () => {
