@@ -19,7 +19,7 @@ import {
 import tinycolor from 'tinycolor2';
 import { type Control, Controller, useForm, useWatch } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
-import { FaDiscord, FaInstagram, FaTwitch, FaXTwitter } from 'react-icons/fa6';
+import { FaDiscord, FaGithub, FaInstagram, FaTwitch, FaXTwitter } from 'react-icons/fa6';
 import { LuCheck, LuTriangleAlert } from 'react-icons/lu';
 import { Tooltip } from '@/components/ui/tooltip';
 import { FlagPicker } from '@/components/Profile/EditProfile/FlagPicker';
@@ -53,6 +53,7 @@ interface ProfileFields {
   twitch: string;
   discord: string;
   twitter: string;
+  github: string;
 }
 
 const SOCIAL_INPUTS: {
@@ -84,6 +85,12 @@ const SOCIAL_INPUTS: {
     label: 'X (Twitter)',
     placeholder: 'https://x.com/username',
     icon: <FaXTwitter />,
+  },
+  {
+    name: 'github',
+    label: 'GitHub',
+    placeholder: 'https://github.com/username',
+    icon: <FaGithub />,
   },
 ];
 
@@ -306,6 +313,7 @@ export const EditProfile = () => {
       twitch: profile?.socials?.twitch || '',
       discord: profile?.socials?.discord || '',
       twitter: profile?.socials?.twitter || '',
+      github: profile?.socials?.github || '',
     },
   });
 
@@ -424,6 +432,7 @@ export const EditProfile = () => {
       twitch: normalizeSocialUrl(data.twitch),
       discord: normalizeSocialUrl(data.discord),
       twitter: normalizeSocialUrl(data.twitter),
+      github: normalizeSocialUrl(data.github),
     };
 
     const nextUsername = data.username.trim().toLowerCase();

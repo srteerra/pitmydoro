@@ -3,4 +3,5 @@ export interface Socials {
   twitch?: string;
   discord?: string;
   twitter?: string;
+  github?: string;
 }

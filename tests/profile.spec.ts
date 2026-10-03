@@ -181,6 +181,55 @@ test.describe('Profile social links', () => {
   });
 });
 
+test.describe('GitHub profile links', () => {
+  test('accepts github.com/username profile urls', () => {
+    expect(isValidSocialUrl('github', 'https://github.com/octocat')).toBe(true);
+    expect(isValidSocialUrl('github', 'http://github.com/octocat')).toBe(true);
+    expect(isValidSocialUrl('github', 'github.com/octocat')).toBe(true);
+    expect(isValidSocialUrl('github', 'www.github.com/octocat')).toBe(true);
+    expect(isValidSocialUrl('github', 'https://github.com/octocat/')).toBe(true);
+    expect(isValidSocialUrl('github', 'https://GitHub.com/Lukas-Cec')).toBe(true);
+  });
+
+  test('rejects other domains and subdomains', () => {
+    expect(isValidSocialUrl('github', 'https://gitlab.com/octocat')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://gist.github.com/octocat')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://github.com.evil.io/octocat')).toBe(false);
+  });
+
+  test('rejects anything other than a single username segment', () => {
+    expect(isValidSocialUrl('github', 'https://github.com/')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://github.com')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://github.com/octocat/repo')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://github.com/octocat/repository/issues')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://github.com/a/b')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://github.com/octocat?tab=repositories')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://github.com/octocat#readme')).toBe(false);
+  });
+
+  test('rejects invalid github usernames', () => {
+    expect(isValidSocialUrl('github', 'https://github.com/-octocat')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://github.com/octocat-')).toBe(false);
+    expect(isValidSocialUrl('github', 'https://github.com/octo--cat')).toBe(false);
+    expect(isValidSocialUrl('github', `https://github.com/${'a'.repeat(40)}`)).toBe(false);
+  });
+
+  test('rejects malformed input', () => {
+    expect(isValidSocialUrl('github', 'not a url')).toBe(false);
+    expect(isValidSocialUrl('github', 'octocat')).toBe(false);
+  });
+
+  test('treats an empty value as valid so the field stays optional', () => {
+    expect(isValidSocialUrl('github', undefined)).toBe(true);
+    expect(isValidSocialUrl('github', '')).toBe(true);
+    expect(isValidSocialUrl('github', '   ')).toBe(true);
+  });
+
+  test('normalizes github urls without a protocol', () => {
+    expect(normalizeSocialUrl('github.com/octocat')).toBe('https://github.com/octocat');
+  });
+});
+
 test.describe('Profile timestamps', () => {
   test('reads millis from every shape the profile can carry', () => {
     expect(timestampUtils.toMillis(undefined)).toBe(0);
