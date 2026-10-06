@@ -296,11 +296,8 @@
       "archiveCompleted": "Archivar completadas",
       "archiveCompletedConfirm": "¿Archivar todas las tareas completadas?",
       "archiveCompletedSuccess": "{count, plural, one {# tarea archivada} other {# tareas archivadas}}",
-      "groupByProject": "Agrupar por proyecto",
       "restoreTask": "Restaurar tarea",
       "successRestoreTask": "Tarea restaurada",
-      "listLayout": "Vista de la lista",
-      "flatList": "Ver como lista única",
       "titleInProject": "Enfocado en <bold>{name}</bold>",
       "empty": {
         "completed": "No hay tareas completadas",
@@ -1004,8 +1001,7 @@
     "nextRefreshSchedule": "Actualización programada: {time} UTC",
     "sealed": "Final",
     "empty": "Todavía no hay resultados para este periodo.",
-    "error": "No se pudo cargar la clasificación. Inténtalo más tarde.",
-    "metricNotice": "La métrica ha cambiado: a partir del 13 de sept solo cuenta el tiempo de pomodoros completados. La tabla por mes queda deshabilitada hasta octubre."
+    "error": "No se pudo cargar la clasificación. Inténtalo más tarde."
   },
   "cookieConsent": {
     "title": "Cookies",
