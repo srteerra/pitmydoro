@@ -14,7 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { LuCalendar, LuMapPin, LuPencil } from 'react-icons/lu';
-import { FaDiscord, FaInstagram, FaTwitch, FaXTwitter } from 'react-icons/fa6';
+import { FaDiscord, FaGithub, FaInstagram, FaTwitch, FaXTwitter } from 'react-icons/fa6';
 import moment from 'moment/min/moment-with-locales';
 import { useLocale, useTranslations } from 'next-intl';
 import { timestampUtils } from '@/utils/timestamp.utils';
@@ -89,6 +89,7 @@ export const Profile = ({ profile, userId, isOwn = false }: Props) => {
     { key: 'twitch', label: 'Twitch', icon: <FaTwitch />, url: profile.socials?.twitch },
     { key: 'discord', label: 'Discord', icon: <FaDiscord />, url: profile.socials?.discord },
     { key: 'twitter', label: 'X', icon: <FaXTwitter />, url: profile.socials?.twitter },
+    { key: 'github', label: 'GitHub', icon: <FaGithub />, url: profile.socials?.github },
   ].filter((social) => !!social.url);
 
   useEffect(() => {
