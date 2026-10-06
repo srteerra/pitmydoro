@@ -57,14 +57,14 @@ const TaskSection = ({
 
 export const TaskList = (props: TaskListProps) => {
   const projects = useProjectsStore((state) => state.projects);
-  const groupByProject = useProjectsStore((state) => state.groupByProject);
+  const hasProjects = projects.length > 0;
 
   const groups = useMemo(
-    () => (groupByProject ? groupItemsByProject(props.tasks, projects) : []),
-    [groupByProject, props.tasks, projects]
+    () => (hasProjects ? groupItemsByProject(props.tasks, projects) : []),
+    [hasProjects, props.tasks, projects]
   );
 
-  if (!groupByProject) return <TaskSection {...props} sectionTasks={props.tasks} />;
+  if (!hasProjects) return <TaskSection {...props} sectionTasks={props.tasks} />;
 
   return (
     <VStack data-pw-id='task-groups' gap={5} width='100%' align='stretch'>

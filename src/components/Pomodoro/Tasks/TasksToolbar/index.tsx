@@ -1,13 +1,11 @@
 'use client';
 
-import { Group, HStack, IconButton, SegmentGroup, Text } from '@chakra-ui/react';
-import { LuList, LuTag } from 'react-icons/lu';
+import { HStack, IconButton, SegmentGroup, Text } from '@chakra-ui/react';
 import { HiDotsVertical } from 'react-icons/hi';
 import { MdOutlineRestoreFromTrash } from 'react-icons/md';
 import { useTranslations } from 'next-intl';
 import { TaskViewEnum } from '@/enums/TaskView.enum';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
-import { useProjectsStore } from '@/stores/Projects.store';
 
 interface TasksToolbarProps {
   view: TaskViewEnum;
@@ -25,8 +23,6 @@ export const TasksToolbar = ({
   onArchiveCompleted,
 }: TasksToolbarProps) => {
   const t = useTranslations('pomodoro.tasks');
-  const groupByProject = useProjectsStore((state) => state.groupByProject);
-  const setGroupByProject = useProjectsStore((state) => state.setGroupByProject);
 
   const views = [
     { value: TaskViewEnum.PENDING, label: t('views.pending'), count: pendingCount },
@@ -36,29 +32,6 @@ export const TasksToolbar = ({
 
   return (
     <HStack data-pw-id='tasks-toolbar' width='100%' gap={2} marginBottom={4}>
-      <Group attached flexShrink={0} role='group' aria-label={t('listLayout')}>
-        <IconButton
-          data-pw-id='tasks-layout-list'
-          aria-label={t('flatList')}
-          aria-pressed={!groupByProject}
-          size='sm'
-          variant={groupByProject ? 'ghost' : 'subtle'}
-          onClick={() => setGroupByProject(false)}
-        >
-          <LuList />
-        </IconButton>
-        <IconButton
-          data-pw-id='tasks-layout-grouped'
-          aria-label={t('groupByProject')}
-          aria-pressed={groupByProject}
-          size='sm'
-          variant={groupByProject ? 'subtle' : 'ghost'}
-          onClick={() => setGroupByProject(true)}
-        >
-          <LuTag />
-        </IconButton>
-      </Group>
-
       <SegmentGroup.Root
         size='sm'
         flex='1'
