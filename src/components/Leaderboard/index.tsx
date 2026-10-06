@@ -6,7 +6,11 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import tinycolor from 'tinycolor2';
 import { leaderboardService } from '@/services/leaderboard.service';
-import { CurrentLeaderboards, LeaderboardPeriodType, LeaderboardSnapshot, } from '@/interfaces/Leaderboard.interface';
+import {
+  CurrentLeaderboards,
+  LeaderboardPeriodType,
+  LeaderboardSnapshot,
+} from '@/interfaces/Leaderboard.interface';
 import { timestampUtils } from '@/utils/timestamp.utils';
 import { LeaderboardTable } from '@/components/Leaderboard/LeaderboardTable';
 import { jersey15 } from '@/assets/fonts/Jersey';
