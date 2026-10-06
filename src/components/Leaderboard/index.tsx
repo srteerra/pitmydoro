@@ -1,17 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Alert,
-  Badge,
-  Container,
-  Flex,
-  HStack,
-  Spinner,
-  Tabs,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Badge, Container, Flex, HStack, Spinner, Tabs, Text, VStack } from '@chakra-ui/react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import tinycolor from 'tinycolor2';
@@ -24,14 +14,11 @@ import {
 import { timestampUtils } from '@/utils/timestamp.utils';
 import { LeaderboardTable } from '@/components/Leaderboard/LeaderboardTable';
 import { jersey15 } from '@/assets/fonts/Jersey';
-import { InDevelopmentBadge } from '@/components/InDevelopmentBadge';
 import { HelpTip } from '@/components/ui/help-tip';
 import useSessionStore from '@/stores/Session.store';
 import useSettingsStore from '@/stores/Settings.store';
 
 const PERIODS: LeaderboardPeriodType[] = ['weekly', 'monthly'];
-
-const DISABLED_PERIODS: LeaderboardPeriodType[] = ['monthly'];
 
 const relativeTime = (locale: string, ms: number): string => {
   if (!ms) return '';
@@ -235,28 +222,11 @@ export const Leaderboard = () => {
           >
             {t('title')}
           </Text>
-          <InDevelopmentBadge />
         </Flex>
         <Text fontSize={{ base: 'md', md: 'lg' }} color='fg.muted'>
           {t('subtitle')}
         </Text>
       </VStack>
-
-      <Alert.Root
-        status='warning'
-        variant='subtle'
-        rounded='lg'
-        mb={{ base: 8, md: 10 }}
-        data-pw-id='leaderboard-notice'
-      >
-        <Alert.Indicator />
-        <Alert.Content>
-          <Alert.Description fontSize='sm'>{t('notice')}</Alert.Description>
-          <Text data-pw-id='leaderboard-metric-notice' fontSize='xs' opacity={0.8} mt={1}>
-            {t('metricNotice')}
-          </Text>
-        </Alert.Content>
-      </Alert.Root>
 
       {loading && (
         <Flex data-pw-id='leaderboard-loading' justify='center' align='center' minH='12rem'>
@@ -274,12 +244,7 @@ export const Leaderboard = () => {
         <Tabs.Root defaultValue='weekly' variant='line'>
           <Tabs.List>
             {PERIODS.map((period) => (
-              <Tabs.Trigger
-                key={period}
-                data-pw-id={`leaderboard-tab-${period}`}
-                value={period}
-                disabled={DISABLED_PERIODS.includes(period)}
-              >
+              <Tabs.Trigger key={period} data-pw-id={`leaderboard-tab-${period}`} value={period}>
                 {t(period)}
               </Tabs.Trigger>
             ))}

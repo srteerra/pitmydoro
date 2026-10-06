@@ -22,8 +22,6 @@ import { BiStats } from 'react-icons/bi';
 import { useTheme } from 'next-themes';
 import { ProjectPicker } from '@/components/Projects/ProjectPicker';
 import { HelpTip } from '@/components/ui/help-tip';
-import { ProjectIndicator } from '@/components/Projects/ProjectIndicator';
-import { useProjectsStore } from '@/stores/Projects.store';
 
 interface Props {
   task: Task;
@@ -51,7 +49,6 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon, archived = false }:
   const editingTask = useTaskStore((state) => state.editingTask);
   const setEditingTask = useTaskStore((state) => state.setEditingTask);
   const currentTask = useTaskStore((state) => state.currentTask);
-  const groupByProject = useProjectsStore((state) => state.groupByProject);
 
   const isCurrentEditing = React.useMemo(() => {
     return editingTask === task.id;
@@ -458,8 +455,6 @@ export const TaskCard = ({ task, onTaskClick, draggableIcon, archived = false }:
           </Card.Footer>
         )}
       </Box>
-
-      {!groupByProject && <ProjectIndicator projectId={task.projectId} />}
     </Card.Root>
   );
 };

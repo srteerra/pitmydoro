@@ -6,14 +6,12 @@ import { PROJECT_DEFAULT_COLOR, PROJECTS_STORAGE_KEY } from '@/constants/Project
 interface ProjectsStore {
   projects: Project[];
   activeProjectId: string | null;
-  groupByProject: boolean;
 
   setProjects: (projects: Project[]) => void;
   addProject: (project: Project) => void;
   updateProject: (id: string, updates: Partial<Project>) => void;
   removeProject: (id: string) => void;
   setActiveProject: (id: string | null) => void;
-  setGroupByProject: (enabled: boolean) => void;
 }
 
 export const createProject = (projects: Project[], isSync = false): Project => ({
@@ -30,7 +28,6 @@ export const useProjectsStore = create<ProjectsStore>()(
     (set) => ({
       projects: [],
       activeProjectId: null,
-      groupByProject: false,
 
       setProjects: (projects) =>
         set((state) => ({
@@ -56,8 +53,6 @@ export const useProjectsStore = create<ProjectsStore>()(
         })),
 
       setActiveProject: (id) => set({ activeProjectId: id }),
-
-      setGroupByProject: (enabled) => set({ groupByProject: enabled }),
     }),
     {
       name: PROJECTS_STORAGE_KEY,
@@ -65,7 +60,6 @@ export const useProjectsStore = create<ProjectsStore>()(
       partialize: (state) => ({
         projects: state.projects,
         activeProjectId: state.activeProjectId,
-        groupByProject: state.groupByProject,
       }),
     }
   )

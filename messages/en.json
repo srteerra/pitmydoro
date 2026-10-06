@@ -295,11 +295,8 @@
       "archiveCompleted": "Archive completed tasks",
       "archiveCompletedConfirm": "Archive all completed tasks?",
       "archiveCompletedSuccess": "{count, plural, one {# task archived} other {# tasks archived}}",
-      "groupByProject": "Group by project",
       "restoreTask": "Restore task",
       "successRestoreTask": "Task restored",
-      "listLayout": "List layout",
-      "flatList": "Show as a single list",
       "titleInProject": "Focusing in <bold>{name}</bold>",
       "empty": {
         "completed": "No completed tasks",
@@ -1003,8 +1000,7 @@
     "nextRefreshSchedule": "Scheduled update: {time} UTC",
     "sealed": "Final",
     "empty": "No results for this period yet.",
-    "error": "Couldn't load the leaderboard. Try again later.",
-    "metricNotice": "The metric has changed: from Sept 13 only time from completed pomodoros counts. The monthly table stays disabled until October."
+    "error": "Couldn't load the leaderboard. Try again later."
   },
   "cookieConsent": {
     "title": "Cookies",
