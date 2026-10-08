@@ -10,7 +10,7 @@ import useSettingsStore from '@/stores/Settings.store';
 import { usePomodoro } from '@/hooks/usePomodoro';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
 import { FaFlag } from 'react-icons/fa';
-import { LuTimerReset } from 'react-icons/lu';
+import { LuMaximize2, LuTimerReset } from 'react-icons/lu';
 import { useTranslations } from 'next-intl';
 import { useAlert } from '@/hooks/useAlert';
 import tinycolor from 'tinycolor2';
@@ -26,6 +26,7 @@ import { TiCogOutline } from 'react-icons/ti';
 import { isDesktopDevice } from '@/utils/device.utils';
 import { useSettingsDialog } from '@/hooks/useSettingsDialog';
 import { useSessionLockedElsewhere } from '@/hooks/useSessionLock';
+import { useSimpleDisplay } from '@/hooks/useSimpleDisplay';
 import {
   LOCK_HEARTBEAT_MS,
   refreshSessionLock,
@@ -39,6 +40,7 @@ export const Counter = () => {
   const { confirmAlert, toastWithAction, toastError } = useAlert();
   const { resetAllTasks, undoResetAllTasks } = useTasks();
   const { openSettings } = useSettingsDialog();
+  const { isSimpleDisplay, enterSimpleDisplay, exitSimpleDisplay } = useSimpleDisplay();
   const { open, onOpen, onClose } = useDisclosure();
   const { playSound, resumeSound, radioSound } = useSounds();
   const pomodoroT = useTranslations('pomodoro');
@@ -286,6 +288,47 @@ export const Counter = () => {
     };
   }, [flushElapsed, flushCheckpoint]);
 
+  useEffect(() => {
+    if (!isSimpleDisplay) return;
+
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    };
+  }, [isSimpleDisplay]);
+
+  useEffect(() => {
+    if (!isSimpleDisplay) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        exitSimpleDisplay();
+        return;
+      }
+
+      const target = event.target as HTMLElement;
+      if (event.code !== 'Space' || event.repeat) return;
+      if (target.closest('input, textarea, button, [contenteditable="true"]')) return;
+
+      event.preventDefault();
+      void (isActive ? handlePauseClick() : handleStartClick());
+    };
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) exitSimpleDisplay();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  });
+
   return (
     <React.Fragment>
       <HStack
@@ -294,9 +337,9 @@ export const Counter = () => {
         padding={{ base: '0 4px', md: '0 20px' }}
         gap={1}
         display='flex'
-        justifyContent='space-between'
+        justifyContent={isSimpleDisplay ? 'center' : 'space-between'}
       >
-        <Box flex={1} display='flex' justifyContent='flex-end'>
+        <Box flex={1} display={isSimpleDisplay ? 'none' : 'flex'} justifyContent='flex-end'>
           <MenuRoot
             open={open}
             unmountOnExit={true}
@@ -362,7 +405,10 @@ export const Counter = () => {
               return (
                 <Text
                   fontWeight='bold'
-                  style={{ fontSize: '5rem' }}
+                  lineHeight={isSimpleDisplay ? 1 : undefined}
+                  style={{
+                    fontSize: isSimpleDisplay ? 'clamp(4rem, min(24vw, 30vh), 18rem)' : '5rem',
+                  }}
                   data-pw-id={'timer-label'}
                   color={theme === 'dark' ? 'white' : counterColor}
                   className={jua.className}
@@ -374,7 +420,13 @@ export const Counter = () => {
           />
         </Center>
 
-        <Box flex={1} display='flex' justifyContent='flex-start'>
+        <Box
+          flex={1}
+          display={isSimpleDisplay ? 'none' : 'flex'}
+          flexDirection={{ base: 'column', md: 'row' }}
+          alignItems='flex-start'
+          justifyContent='flex-start'
+        >
           <IconButton
             data-pw-id='settings-button'
             onClick={() => openSettings()}
@@ -386,11 +438,23 @@ export const Counter = () => {
           >
             <TiCogOutline />
           </IconButton>
+
+          <IconButton
+            data-pw-id='simple-display-button'
+            onClick={enterSimpleDisplay}
+            variant='ghost'
+            size='lg'
+            rounded='full'
+            aria-label={pomodoroT('enterSimpleDisplay')}
+          >
+            <LuMaximize2 />
+          </IconButton>
         </Box>
       </HStack>
 
       <RippleButton
         introduce
+        display={isSimpleDisplay ? 'none' : undefined}
         marginY='20px'
         fontWeight='semibold'
         buttonColor={buttonColor}
@@ -406,7 +470,7 @@ export const Counter = () => {
         {isActive ? pomodoroT('pauseTimer') : pomodoroT('startTimer')}
       </RippleButton>
 
-      {startBlocked && (
+      {startBlocked && !isSimpleDisplay && (
         <Text
           data-pw-id='session-elsewhere-warning'
           fontSize='sm'
@@ -417,7 +481,7 @@ export const Counter = () => {
         </Text>
       )}
 
-      <Center>
+      <Center display={isSimpleDisplay ? 'none' : undefined}>
         <Flex
           gap={3}
           flexWrap='wrap'
