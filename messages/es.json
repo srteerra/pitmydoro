@@ -263,6 +263,8 @@
     "boxDescriptionFocus": "Hora de volver a enfocarse.",
     "pausedTitle": "En pausa",
     "interruptAccept": "¿Deseas interrumpir la sesión actual?",
+    "enterSimpleDisplay": "Vista simple",
+    "exitSimpleDisplay": "Salir de la vista simple",
     "simpleTimer": {
       "description": "Sesión de <session></session>, descanso corto de <shortBreak></shortBreak> y descanso largo de <longBreak></longBreak>.",
       "minutes": "{count, plural, one {min} other {mins}}"
