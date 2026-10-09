@@ -13,7 +13,9 @@
     "shell": "npm run build && firebase functions:shell",
     "deploy:dev": "npm run build && firebase deploy --only functions --project dev",
     "deploy:prod": "npm run build && firebase deploy --only functions --project prod",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "npm run build && firebase emulators:exec --only firestore --project demo-pitmydoro 'node --test test/leaderboard.test.mjs'",
+    "seed:emulator": "npm run build && FIRESTORE_EMULATOR_HOST=${FIRESTORE_EMULATOR_HOST:-127.0.0.1:8080} FIREBASE_AUTH_EMULATOR_HOST=${FIREBASE_AUTH_EMULATOR_HOST:-127.0.0.1:9099} node scripts/seed-emulator.mjs"
   },
   "dependencies": {
     "firebase-admin": "^13.0.2",

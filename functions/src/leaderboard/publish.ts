@@ -1,8 +1,9 @@
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { PeriodRange, PeriodType } from './periods';
 import { RankedEntry } from './aggregate';
+import { ConstructorEntry } from './constructors';
 
-export const SNAPSHOT_VERSION = 3;
+export const SNAPSHOT_VERSION = 4;
 
 export interface LeaderboardSnapshot {
   periodId: string;
@@ -11,16 +12,22 @@ export interface LeaderboardSnapshot {
   to: string;
   metric: 'pomodoroTime';
   top: RankedEntry[];
+  constructors: ConstructorEntry[];
   participants: number;
   sealed: boolean;
   computedAt: Timestamp;
   version: number;
 }
 
+export interface SnapshotStandings {
+  top: RankedEntry[];
+  constructors: ConstructorEntry[];
+  participants: number;
+}
+
 export const buildSnapshot = (
   range: PeriodRange,
-  top: RankedEntry[],
-  participants: number,
+  { top, constructors, participants }: SnapshotStandings,
   sealed: boolean
 ): LeaderboardSnapshot => ({
   periodId: range.id,
@@ -29,6 +36,7 @@ export const buildSnapshot = (
   to: range.to,
   metric: 'pomodoroTime',
   top,
+  constructors,
   participants,
   sealed,
   computedAt: Timestamp.now(),
