@@ -26,6 +26,9 @@ import { ShareProfile } from '@/components/Profile/ShareProfile';
 import { ProfileStats } from '@/components/Profile/Stats';
 import { FeaturedBadge } from '@/components/Profile/Badges/FeaturedBadge';
 import { PixelAvatar } from '@/components/Profile/PixelAvatar';
+import { FollowActions } from '@/components/Profile/Follow/FollowActions';
+import { FollowStats } from '@/components/Profile/Follow/FollowStats';
+import { useFollow } from '@/hooks/useFollow';
 import { Tooltip } from '@/components/ui/tooltip';
 import { jersey15 } from '@/assets/fonts/Jersey';
 import { useDialog } from '@/contexts/DialogContext';
@@ -63,6 +66,7 @@ export const Profile = ({ profile, userId, isOwn = false }: Props) => {
   const { theme } = useTheme();
   const { openDialog } = useDialog();
   const setTheme = useProfileThemeStore((state) => state.setTheme);
+  const follow = useFollow(isOwn ? undefined : userId, profile.followersCount ?? 0);
   moment.locale(locale);
 
   const team = resolveTeam(profile.favoriteTeam);
@@ -163,6 +167,17 @@ export const Profile = ({ profile, userId, isOwn = false }: Props) => {
             <HStack gap={2} pb={2} ml='auto'>
               <ShareProfile username={profile.username} displayName={profile.displayName} />
 
+              {!isOwn && (
+                <FollowActions
+                  isFollowing={follow.isFollowing}
+                  isFavorite={follow.isFavorite}
+                  loading={follow.loading}
+                  pending={follow.pending}
+                  onToggleFollow={follow.toggleFollow}
+                  onToggleFavorite={follow.toggleFavorite}
+                />
+              )}
+
               {isOwn && (
                 <Button
                   data-pw-id='profile-edit-button'
@@ -205,6 +220,11 @@ export const Profile = ({ profile, userId, isOwn = false }: Props) => {
               >
                 @{profile.username}
               </Text>
+
+              <FollowStats
+                followersCount={isOwn ? (profile.followersCount ?? 0) : follow.followersCount}
+                followingCount={profile.followingCount ?? 0}
+              />
             </Box>
 
             <Text
