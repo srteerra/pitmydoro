@@ -1000,7 +1000,28 @@
     "nextRefreshSchedule": "Scheduled update: {time} UTC",
     "sealed": "Final",
     "empty": "No results for this period yet.",
-    "error": "Couldn't load the leaderboard. Try again later."
+    "error": "Couldn't load the leaderboard. Try again later.",
+    "scopes": {
+      "global": "Global",
+      "friends": "Friends"
+    },
+    "friends": {
+      "subtitle": "You vs the people you follow and marked as favorites.",
+      "favorites": "{count}/{max} favorites",
+      "hint": "Follow people and mark them as favorites ⭐ from their profile to compete with them.",
+      "empty": "No focus time logged in this period yet.",
+      "error": "Couldn't load your friends ranking. Try again later."
+    },
+    "boards": {
+      "users": "Users",
+      "constructors": "Constructors"
+    },
+    "constructors": {
+      "subtitle": "Constructors' Championship: every driver's focus time adds up for their favorite team.",
+      "team": "Team",
+      "drivers": "{count, plural, one {# driver} other {# drivers}}",
+      "empty": "No team has scored yet in this period. Pick your favorite team in your profile!"
+    }
   },
   "cookieConsent": {
     "title": "Cookies",
@@ -1312,6 +1333,28 @@
     "contribute": {
       "cta": "I want to contribute",
       "hint": "Read the contribution guidelines before opening your first pull request."
+    }
+  },
+  "social": {
+    "follow": "Follow",
+    "following": "Following",
+    "followers": "{count, plural, one {follower} other {followers}}",
+    "followingCount": "following",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites",
+    "signInToFollow": "Sign in to follow other users",
+    "favoritesLimit": "You can have up to {max} favorites",
+    "actionError": "Something went wrong, try again"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "empty": "You're all caught up",
+    "messages": {
+      "follow": "{name} started following you",
+      "comment": "{name} commented on your post",
+      "reaction": "{name} reacted to your post",
+      "system": "News from Pit My Doro"
     }
   }
 }
