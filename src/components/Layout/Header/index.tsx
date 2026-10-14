@@ -11,6 +11,7 @@ import { AuthModal } from '@/components/Auth/AuthModal';
 import GitHubStars from '@/components/GithubStars';
 import { LuBookText, LuMegaphone, LuMenu, LuMonitorPlay, LuTrophy } from 'react-icons/lu';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
+import { ToggleSimpleDisplay } from '@/components/Layout/Toggles/SimpleDisplay';
 import { Tooltip } from '@/components/ui/tooltip';
 import { useTranslations } from 'next-intl';
 import { useDrawer } from '@/contexts/DrawerContext';
@@ -28,6 +29,7 @@ const APPEAR = {
 
 export const Header = () => {
   const t = useTranslations('header');
+  const pomodoroT = useTranslations('pomodoro');
   const { openDrawer } = useDrawer();
   const { guardLink } = useTimerGuard();
   const pathname = usePathname();
@@ -109,6 +111,13 @@ export const Header = () => {
           animation={APPEAR.step4}
         >
           <HStack gap={2}>
+            {isPomodoroPage && (
+              <Tooltip openDelay={100} closeDelay={100} content={pomodoroT('enterSimpleDisplay')}>
+                <Box as='span' display='inline-flex'>
+                  <ToggleSimpleDisplay />
+                </Box>
+              </Tooltip>
+            )}
             {isPomodoroPage && (
               <Tooltip openDelay={100} closeDelay={100} content={t('minimalMode')}>
                 <Box as='span' display='inline-flex'>

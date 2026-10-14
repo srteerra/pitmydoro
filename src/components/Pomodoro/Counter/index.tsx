@@ -10,7 +10,7 @@ import useSettingsStore from '@/stores/Settings.store';
 import { usePomodoro } from '@/hooks/usePomodoro';
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '@/components/ui/menu';
 import { FaFlag } from 'react-icons/fa';
-import { LuMaximize2, LuTimerReset } from 'react-icons/lu';
+import { LuTimerReset } from 'react-icons/lu';
 import { useTranslations } from 'next-intl';
 import { useAlert } from '@/hooks/useAlert';
 import tinycolor from 'tinycolor2';
@@ -40,7 +40,7 @@ export const Counter = () => {
   const { confirmAlert, toastWithAction, toastError } = useAlert();
   const { resetAllTasks, undoResetAllTasks } = useTasks();
   const { openSettings } = useSettingsDialog();
-  const { isSimpleDisplay, enterSimpleDisplay, exitSimpleDisplay } = useSimpleDisplay();
+  const { isSimpleDisplay, exitSimpleDisplay } = useSimpleDisplay();
   const { open, onOpen, onClose } = useDisclosure();
   const { playSound, resumeSound, radioSound } = useSounds();
   const pomodoroT = useTranslations('pomodoro');
@@ -420,13 +420,7 @@ export const Counter = () => {
           />
         </Center>
 
-        <Box
-          flex={1}
-          display={isSimpleDisplay ? 'none' : 'flex'}
-          flexDirection={{ base: 'column', md: 'row' }}
-          alignItems='flex-start'
-          justifyContent='flex-start'
-        >
+        <Box flex={1} display={isSimpleDisplay ? 'none' : 'flex'} justifyContent='flex-start'>
           <IconButton
             data-pw-id='settings-button'
             onClick={() => openSettings()}
@@ -437,17 +431,6 @@ export const Counter = () => {
             aria-label={settingsT('title')}
           >
             <TiCogOutline />
-          </IconButton>
-
-          <IconButton
-            data-pw-id='simple-display-button'
-            onClick={enterSimpleDisplay}
-            variant='ghost'
-            size='lg'
-            rounded='full'
-            aria-label={pomodoroT('enterSimpleDisplay')}
-          >
-            <LuMaximize2 />
           </IconButton>
         </Box>
       </HStack>
