@@ -122,7 +122,6 @@
     "bioTooLong": "Bio must be {max} characters or less",
     "bioNoLinks": "Links are not allowed in your bio",
     "bioNoProfanity": "Please remove inappropriate language",
-    "bioPlaceholder": "This user hasn't shared a bio yet.",
     "avatarUpload": "Upload photo",
     "avatarChange": "Change photo",
     "avatarRemove": "Remove photo",
