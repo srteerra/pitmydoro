@@ -98,6 +98,27 @@ bun dev
 
 The application will be available at `http://localhost:3000`
 
+### Running with Firebase Emulators (recommended)
+
+You don't need access to the real Firebase project to work on Pitmydoro. One command starts local Firebase emulators (Firestore, Auth and Storage), fills them with realistic sample data and runs the app against them.
+
+**Extra prerequisites:**
+
+- **Java 21+** (the emulators run on Java)
+- **Firebase CLI**: `npm install -g firebase-tools` (no login needed)
+- Functions dependencies: `npm --prefix functions install`
+
+```bash
+bun run dev:emulator
+```
+
+- App: `http://localhost:3000` · Emulator UI: `http://localhost:4000`
+- Sign in with the demo account: **`demo@pitmydoro.dev` / `pitmydoro`**
+- Sample data: ~50 users with stats, favorite teams, follows, notifications and a computed leaderboard
+- It uses the `demo-pitmydoro` project, so it **never** touches real Firebase data
+- `Ctrl+C` stops everything and saves the emulator data in `.emulator-data/`. Delete that folder to start fresh
+- To restart without regenerating the sample data: `bun run dev:emulator -- --skip-seed`
+
 ---
 
 ## Development Workflow
@@ -790,6 +811,27 @@ bun dev
 ```
 
 La aplicación estará disponible en `http://localhost:3000`
+
+### Ejecutar con los Emuladores de Firebase (recomendado)
+
+No necesitas acceso al proyecto real de Firebase para trabajar en Pitmydoro. Un solo comando levanta los emuladores locales de Firebase (Firestore, Auth y Storage), los llena con datos de ejemplo realistas y ejecuta la app contra ellos.
+
+**Requisitos adicionales:**
+
+- **Java 21+** (los emuladores corren sobre Java)
+- **Firebase CLI**: `npm install -g firebase-tools` (no requiere login)
+- Dependencias de functions: `npm --prefix functions install`
+
+```bash
+bun run dev:emulator
+```
+
+- App: `http://localhost:3000` · UI de los emuladores: `http://localhost:4000`
+- Inicia sesión con la cuenta demo: **`demo@pitmydoro.dev` / `pitmydoro`**
+- Datos de ejemplo: ~50 usuarios con estadísticas, escuderías favoritas, follows, notificaciones y un leaderboard calculado
+- Usa el proyecto `demo-pitmydoro`, así que **nunca** toca datos reales de Firebase
+- `Ctrl+C` detiene todo y guarda los datos del emulador en `.emulator-data/`. Borra esa carpeta para empezar de cero
+- Para reiniciar sin regenerar los datos de ejemplo: `bun run dev:emulator -- --skip-seed`
 
 ---
 

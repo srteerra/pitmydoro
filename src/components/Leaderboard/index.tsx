@@ -1,178 +1,72 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Badge, Container, Flex, HStack, Spinner, Tabs, Text, VStack } from '@chakra-ui/react';
-import { useLocale, useTranslations } from 'next-intl';
-import { useTheme } from 'next-themes';
-import tinycolor from 'tinycolor2';
+import { Container, Flex, SegmentGroup, Spinner, Tabs, Text, VStack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
+import { IconType } from 'react-icons';
+import { LuCarFront, LuUsers } from 'react-icons/lu';
 import { leaderboardService } from '@/services/leaderboard.service';
 import {
   CurrentLeaderboards,
   LeaderboardPeriodType,
   LeaderboardSnapshot,
 } from '@/interfaces/Leaderboard.interface';
-import { timestampUtils } from '@/utils/timestamp.utils';
 import { LeaderboardTable } from '@/components/Leaderboard/LeaderboardTable';
+import { ConstructorsTable } from '@/components/Leaderboard/ConstructorsTable';
+import { PeriodPanel } from '@/components/Leaderboard/PeriodPanel';
+import { FriendsPanel } from '@/components/Leaderboard/FriendsPanel';
 import { jersey15 } from '@/assets/fonts/Jersey';
-import { HelpTip } from '@/components/ui/help-tip';
-import useSessionStore from '@/stores/Session.store';
-import useSettingsStore from '@/stores/Settings.store';
+import { useAuth } from '@/contexts/AuthContext';
+import { useFriendsLeaderboard } from '@/hooks/useFriendsLeaderboard';
+import { LeaderboardScopeEnum } from '@/enums/LeaderboardScope.enum';
+import { LeaderboardBoardEnum } from '@/enums/LeaderboardBoard.enum';
 
 const PERIODS: LeaderboardPeriodType[] = ['weekly', 'monthly'];
 
-const relativeTime = (locale: string, ms: number): string => {
-  if (!ms) return '';
+const BOARDS: LeaderboardBoardEnum[] = [
+  LeaderboardBoardEnum.USERS,
+  LeaderboardBoardEnum.CONSTRUCTORS,
+];
 
-  const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
-  const minutes = Math.round((ms - Date.now()) / 60_000);
-
-  if (Math.abs(minutes) < 60) return formatter.format(minutes, 'minute');
-
-  const hours = Math.round(minutes / 60);
-  if (Math.abs(hours) < 24) return formatter.format(hours, 'hour');
-
-  return formatter.format(Math.round(hours / 24), 'day');
+const BOARD_ICONS: Record<LeaderboardBoardEnum, IconType> = {
+  [LeaderboardBoardEnum.USERS]: LuUsers,
+  [LeaderboardBoardEnum.CONSTRUCTORS]: LuCarFront,
 };
 
-const nextRefreshAt = (): Date => {
-  const now = new Date();
+const SCOPES: LeaderboardScopeEnum[] = [LeaderboardScopeEnum.GLOBAL, LeaderboardScopeEnum.FRIENDS];
 
-  return new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0, 0)
-  );
-};
-
-const msUntilNextRefresh = (): number => nextRefreshAt().getTime() - Date.now();
-
-const formatUtcSchedule = (locale: string, date: Date): string =>
-  new Intl.DateTimeFormat(locale, {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    timeZone: 'UTC',
-  }).format(date);
-
-const formatCountdown = (ms: number): string => {
-  const total = Math.max(0, Math.floor(ms / 1000));
-  const hours = Math.floor(total / 3600);
-  const minutes = Math.floor((total % 3600) / 60);
-  const seconds = total % 60;
-
-  return [hours, minutes, seconds].map((unit) => String(unit).padStart(2, '0')).join(':');
-};
-
-const NextRefresh = () => {
-  const t = useTranslations('leaderboard');
-  const locale = useLocale();
-  const [remaining, setRemaining] = useState<number | null>(null);
-
-  useEffect(() => {
-    setRemaining(msUntilNextRefresh());
-
-    const interval = setInterval(() => setRemaining(msUntilNextRefresh()), 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  if (remaining === null) return null;
+const ScopeSwitch = ({
+  scope,
+  onChange,
+}: {
+  scope: LeaderboardScopeEnum;
+  onChange: (scope: LeaderboardScopeEnum) => void;
+}) => {
+  const t = useTranslations('leaderboard.scopes');
 
   return (
-    <HStack gap={0.5}>
-      <Text data-pw-id='leaderboard-next-refresh'>
-        {t('nextRefresh', { time: formatCountdown(remaining) })}
-      </Text>
-      <HelpTip
-        placement='top'
-        label={t('nextRefreshHelp')}
-        content={t('nextRefreshSchedule', { time: formatUtcSchedule(locale, nextRefreshAt()) })}
-      />
-    </HStack>
+    <SegmentGroup.Root
+      size='sm'
+      value={scope}
+      onValueChange={(details) => onChange(details.value as LeaderboardScopeEnum)}
+    >
+      <SegmentGroup.Indicator />
+      {SCOPES.map((item) => (
+        <SegmentGroup.Item
+          key={item}
+          value={item}
+          cursor='pointer'
+          data-pw-id={`leaderboard-scope-${item}`}
+        >
+          <SegmentGroup.ItemText>{t(item)}</SegmentGroup.ItemText>
+          <SegmentGroup.ItemHiddenInput />
+        </SegmentGroup.Item>
+      ))}
+    </SegmentGroup.Root>
   );
 };
 
-const usePeriodBadgeColors = () => {
-  const { theme } = useTheme();
-  const sessionStatus = useSessionStore((state) => state.status);
-  const currentScuderia = useSettingsStore((state) => state.currentScuderia);
-
-  return useMemo(() => {
-    const base =
-      theme === 'dark'
-        ? tinycolor(currentScuderia?.colors?.primary?.default)
-        : tinycolor(currentScuderia?.colors?.background?.[sessionStatus]);
-
-    return {
-      bg: base
-        .darken(5)
-        .brighten(theme === 'dark' ? 0 : -4)
-        .toString(),
-      color: theme === 'dark' ? 'dark.200' : 'light',
-    };
-  }, [theme, sessionStatus, currentScuderia]);
-};
-
-const formatPeriod = (locale: string, snapshot: LeaderboardSnapshot): string => {
-  const formatter = new Intl.DateTimeFormat(locale, {
-    day: 'numeric',
-    month: 'short',
-    timeZone: 'UTC',
-  });
-
-  return `${formatter.format(new Date(`${snapshot.from}T00:00:00Z`))} – ${formatter.format(
-    new Date(`${snapshot.to}T00:00:00Z`)
-  )}`;
-};
-
-const PeriodPanel = ({ snapshot }: { snapshot: LeaderboardSnapshot }) => {
-  const t = useTranslations('leaderboard');
-  const locale = useLocale();
-
-  const updated = relativeTime(locale, timestampUtils.toMillis(snapshot.computedAt));
-  const badgeColors = usePeriodBadgeColors();
-
-  return (
-    <VStack align='stretch' gap={0}>
-      <Flex
-        gap={3}
-        wrap='wrap'
-        align='center'
-        justify='space-between'
-        color='fg.muted'
-        fontSize='sm'
-      >
-        <HStack gap={3} wrap='wrap'>
-          <Badge
-            data-pw-id='leaderboard-period'
-            bg={badgeColors.bg}
-            color={badgeColors.color}
-            rounded='md'
-            px={2.5}
-            py={1}
-            fontWeight='semibold'
-          >
-            {formatPeriod(locale, snapshot)}
-          </Badge>
-          {updated && <Text>{t('updated', { time: updated })}</Text>}
-          {snapshot.sealed && (
-            <Badge colorPalette='green' variant='subtle'>
-              {t('sealed')}
-            </Badge>
-          )}
-        </HStack>
-
-        {!snapshot.sealed && <NextRefresh />}
-      </Flex>
-
-      <LeaderboardTable entries={snapshot.top ?? []} />
-    </VStack>
-  );
-};
-
-export const Leaderboard = () => {
-  const t = useTranslations('leaderboard');
-
+const useCurrentLeaderboards = () => {
   const [data, setData] = useState<CurrentLeaderboards | null>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
@@ -205,6 +99,74 @@ export const Leaderboard = () => {
     [data]
   );
 
+  return { data, snapshots, loading, failed };
+};
+
+const BoardTabs = ({
+  board,
+  onChange,
+}: {
+  board: LeaderboardBoardEnum;
+  onChange: (board: LeaderboardBoardEnum) => void;
+}) => {
+  const t = useTranslations('leaderboard.boards');
+
+  return (
+    <Tabs.Root
+      value={board}
+      onValueChange={(details) => onChange(details.value as LeaderboardBoardEnum)}
+      variant='enclosed'
+      size='sm'
+    >
+      <Tabs.List>
+        {BOARDS.map((item) => {
+          const Icon = BOARD_ICONS[item];
+          return (
+            <Tabs.Trigger key={item} value={item} data-pw-id={`leaderboard-board-${item}`}>
+              <Icon />
+              {t(item)}
+            </Tabs.Trigger>
+          );
+        })}
+      </Tabs.List>
+    </Tabs.Root>
+  );
+};
+
+const subtitleKey = (board: LeaderboardBoardEnum, isFriendsScope: boolean) => {
+  if (board === LeaderboardBoardEnum.CONSTRUCTORS) return 'constructors.subtitle';
+  return isFriendsScope ? 'friends.subtitle' : 'subtitle';
+};
+
+export const Leaderboard = () => {
+  const t = useTranslations('leaderboard');
+  const { user } = useAuth();
+  const [board, setBoard] = useState<LeaderboardBoardEnum>(LeaderboardBoardEnum.USERS);
+  const [scope, setScope] = useState<LeaderboardScopeEnum>(LeaderboardScopeEnum.GLOBAL);
+  const isUsersBoard = board === LeaderboardBoardEnum.USERS;
+  const isFriendsScope = isUsersBoard && !!user && scope === LeaderboardScopeEnum.FRIENDS;
+  const friends = useFriendsLeaderboard(isFriendsScope);
+  const { data, snapshots, loading, failed } = useCurrentLeaderboards();
+
+  const renderPeriod = (period: LeaderboardPeriodType) => {
+    if (isFriendsScope && user) {
+      return <FriendsPanel period={period} viewerUid={user.uid} {...friends} />;
+    }
+
+    const snapshot = snapshots[period];
+    if (!snapshot) return <Text color='fg.muted'>{t('empty')}</Text>;
+
+    return (
+      <PeriodPanel snapshot={snapshot}>
+        {isUsersBoard ? (
+          <LeaderboardTable entries={snapshot.top ?? []} highlightUid={user?.uid} />
+        ) : (
+          <ConstructorsTable entries={snapshot.constructors ?? []} />
+        )}
+      </PeriodPanel>
+    );
+  };
+
   return (
     <Container
       maxW='3xl'
@@ -224,39 +186,39 @@ export const Leaderboard = () => {
           </Text>
         </Flex>
         <Text fontSize={{ base: 'md', md: 'lg' }} color='fg.muted'>
-          {t('subtitle')}
+          {t(subtitleKey(board, isFriendsScope))}
         </Text>
+        <BoardTabs board={board} onChange={setBoard} />
       </VStack>
 
-      {loading && (
+      {!isFriendsScope && loading && (
         <Flex data-pw-id='leaderboard-loading' justify='center' align='center' minH='12rem'>
           <Spinner />
         </Flex>
       )}
 
-      {!loading && (failed || !data) && (
+      {!isFriendsScope && !loading && (failed || !data) && (
         <Flex data-pw-id='leaderboard-error' justify='center' align='center' minH='12rem'>
           <Text color='fg.muted'>{failed ? t('error') : t('empty')}</Text>
         </Flex>
       )}
 
-      {!loading && !failed && data && (
+      {(isFriendsScope || (!loading && !failed && data)) && (
         <Tabs.Root defaultValue='weekly' variant='line'>
-          <Tabs.List>
-            {PERIODS.map((period) => (
-              <Tabs.Trigger key={period} data-pw-id={`leaderboard-tab-${period}`} value={period}>
-                {t(period)}
-              </Tabs.Trigger>
-            ))}
-          </Tabs.List>
+          <Flex align='center' justify='space-between' gap={3}>
+            <Tabs.List flex={1}>
+              {PERIODS.map((period) => (
+                <Tabs.Trigger key={period} data-pw-id={`leaderboard-tab-${period}`} value={period}>
+                  {t(period)}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+            {isUsersBoard && user && <ScopeSwitch scope={scope} onChange={setScope} />}
+          </Flex>
 
           {PERIODS.map((period) => (
             <Tabs.Content key={period} value={period} pt={4}>
-              {snapshots[period] ? (
-                <PeriodPanel snapshot={snapshots[period]} />
-              ) : (
-                <Text color='fg.muted'>{t('empty')}</Text>
-              )}
+              {renderPeriod(period)}
             </Tabs.Content>
           ))}
         </Tabs.Root>

@@ -1,9 +1,12 @@
 import { getFirestore, QueryDocumentSnapshot } from 'firebase-admin/firestore';
 import { PeriodRange, unionRange } from './periods';
+import { ProfileMap } from './profiles';
 
 export const MAX_DAILY_POMODORO_SECONDS = 57_600;
 
 export const TOP_SIZE = 200;
+
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 const BADGES = [
   { id: 'streamer', flag: 'isStreamer' },
@@ -57,6 +60,16 @@ export interface PeriodTotals {
   totals: Map<string, number>;
 }
 
+export const cappedDailySeconds = (value: unknown): number => {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) return 0;
+  return Math.min(value, MAX_DAILY_POMODORO_SECONDS);
+};
+
+const ownerId = (doc: QueryDocumentSnapshot): string | null => {
+  const profileRef = doc.ref.parent.parent;
+  return profileRef?.parent.id === 'profiles' ? profileRef.id : null;
+};
+
 export const aggregate = async (ranges: PeriodRange[]): Promise<PeriodTotals[]> => {
   const buckets: PeriodTotals[] = ranges.map((range) => ({
     range,
@@ -67,21 +80,20 @@ export const aggregate = async (ranges: PeriodRange[]): Promise<PeriodTotals[]> 
 
   const stream = getFirestore()
     .collectionGroup('dailyStats')
-    .where('utcDate', '>=', from)
-    .where('utcDate', '<=', to)
+    .where('date', '>=', from)
+    .where('date', '<=', to)
     .stream();
 
   for await (const chunk of stream) {
     const doc = chunk as unknown as QueryDocumentSnapshot;
-    const uid = doc.ref.parent.parent?.id;
+    const uid = ownerId(doc);
     if (!uid) continue;
 
-    const date = doc.get('utcDate');
-    if (typeof date !== 'string') continue;
+    const date = doc.get('date');
+    if (typeof date !== 'string' || !DATE_PATTERN.test(date)) continue;
 
-    const pomodoroTime = doc.get('pomodoroTime');
-    if (typeof pomodoroTime !== 'number' || !Number.isFinite(pomodoroTime)) continue;
-    if (pomodoroTime <= 0 || pomodoroTime > MAX_DAILY_POMODORO_SECONDS) continue;
+    const pomodoroTime = cappedDailySeconds(doc.get('pomodoroTime'));
+    if (pomodoroTime === 0) continue;
 
     for (const bucket of buckets) {
       if (date < bucket.range.from || date > bucket.range.to) continue;
@@ -92,32 +104,23 @@ export const aggregate = async (ranges: PeriodRange[]): Promise<PeriodTotals[]> 
   return buckets;
 };
 
-export const rank = async (
+export const rank = (
   totals: Map<string, number>,
+  profiles: ProfileMap,
   limit: number = TOP_SIZE
-): Promise<{ top: RankedEntry[]; participants: number }> => {
+): { top: RankedEntry[]; participants: number } => {
   const sorted = [...totals.entries()]
     .filter(([, pomodoroTime]) => pomodoroTime > 0)
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
-  const participants = sorted.length;
-  if (participants === 0) return { top: [], participants };
-
-  const db = getFirestore();
-  const candidates = sorted.slice(0, limit * 2);
-  const snaps = await db.getAll(...candidates.map(([uid]) => db.collection('profiles').doc(uid)));
-  const profiles = new Map(snaps.map((snap) => [snap.id, snap]));
-
   const top: RankedEntry[] = [];
 
-  for (const [uid, pomodoroTime] of candidates) {
+  for (const [uid, pomodoroTime] of sorted) {
     if (top.length >= limit) break;
 
     const profile = profiles.get(uid);
-    if (!profile?.exists) continue;
-
-    const username = profile.get('username');
-    if (typeof username !== 'string' || username.length === 0) continue;
+    const username = profile?.get('username');
+    if (!profile || typeof username !== 'string' || username.length === 0) continue;
 
     const displayName = profile.get('displayName');
     const photoURL = profile.get('photoURL');
@@ -139,5 +142,5 @@ export const rank = async (
     });
   }
 
-  return { top, participants };
+  return { top, participants: sorted.length };
 };

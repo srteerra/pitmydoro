@@ -1000,7 +1000,28 @@
     "nextRefreshSchedule": "Actualización programada: {time} UTC",
     "sealed": "Final",
     "empty": "Todavía no hay resultados para este periodo.",
-    "error": "No se pudo cargar la clasificación. Inténtalo más tarde."
+    "error": "No se pudo cargar la clasificación. Inténtalo más tarde.",
+    "scopes": {
+      "global": "Global",
+      "friends": "Amigos"
+    },
+    "friends": {
+      "subtitle": "Tú vs las personas que sigues y tienes en favoritos.",
+      "favorites": "{count}/{max} favoritos",
+      "hint": "Sigue a otras personas y márcalas como favoritas ⭐ desde su perfil para competir con ellas.",
+      "empty": "Aún no hay tiempo de enfoque en este periodo.",
+      "error": "No se pudo cargar el ranking de amigos. Inténtalo más tarde."
+    },
+    "boards": {
+      "users": "Usuarios",
+      "constructors": "Constructores"
+    },
+    "constructors": {
+      "subtitle": "Campeonato de Constructores: el tiempo de enfoque de cada piloto suma para su equipo favorito.",
+      "team": "Equipo",
+      "drivers": "{count, plural, one {# piloto} other {# pilotos}}",
+      "empty": "Ningún equipo ha sumado tiempo en este periodo. ¡Elige tu equipo favorito en tu perfil!"
+    }
   },
   "cookieConsent": {
     "title": "Cookies",
@@ -1312,6 +1333,28 @@
     "contribute": {
       "cta": "Quiero contribuir",
       "hint": "Lee los lineamientos de contribución antes de abrir tu primer pull request."
+    }
+  },
+  "social": {
+    "follow": "Seguir",
+    "following": "Siguiendo",
+    "followers": "{count, plural, one {seguidor} other {seguidores}}",
+    "followingCount": "siguiendo",
+    "addFavorite": "Agregar a favoritos",
+    "removeFavorite": "Quitar de favoritos",
+    "signInToFollow": "Inicia sesión para seguir a otros usuarios",
+    "favoritesLimit": "Puedes tener hasta {max} favoritos",
+    "actionError": "Algo salió mal, inténtalo de nuevo"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAllRead": "Marcar todo como leído",
+    "empty": "Estás al día",
+    "messages": {
+      "follow": "{name} comenzó a seguirte",
+      "comment": "{name} comentó tu publicación",
+      "reaction": "{name} reaccionó a tu publicación",
+      "system": "Novedades de Pit My Doro"
     }
   }
 }

@@ -21,6 +21,8 @@ interface UserProfile {
   streak?: UserStreak;
   badges?: UserBadges;
   featuredBadge?: BadgeId | null;
+  followersCount?: number;
+  followingCount?: number;
   lastConnection?: Timestamp;
   uid?: string;
 }

@@ -12,7 +12,7 @@ import { Loader } from '@/components/Loader';
 export const PublicProfileView = () => {
   const params = useParams();
   const router = useRouter();
-  const ownProfile = useUserStore((state) => state.profile);
+  const ownUsername = useUserStore((state) => state.profile?.username);
 
   const username = decodeURIComponent(
     Array.isArray(params.username) ? params.username[0] : params.username || ''
@@ -22,7 +22,7 @@ export const PublicProfileView = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (ownProfile && ownProfile.username === username) {
+    if (ownUsername === username) {
       router.replace('/profile');
       return;
     }
@@ -44,9 +44,9 @@ export const PublicProfileView = () => {
     return () => {
       active = false;
     };
-  }, [username, ownProfile, router]);
+  }, [username, ownUsername, router]);
 
-  if (loading || (ownProfile && ownProfile.username === username)) return <Loader />;
+  if (loading || ownUsername === username) return <Loader />;
 
   if (!profile) return <ProfileNotFound username={username} />;
 
