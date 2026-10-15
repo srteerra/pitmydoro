@@ -15,6 +15,7 @@ interface PomodoroStore {
   breakBaseline: number | null;
   overlayEndsAt: number | null;
   overlayRemainingMs: number | null;
+  isSimpleDisplay: boolean;
 
   setCurrentPomodoro: (pomodoro: Pomodoro | null) => void;
   setCurrentPomodoroEntry: (entry: PomodoroEntryDraft | null) => void;
@@ -26,6 +27,7 @@ interface PomodoroStore {
   resetCarryMs: () => void;
   setBreakBaseline: (breakBaseline: number | null) => void;
   setOverlayTiming: (timing: { endsAt: number | null; remainingMs: number | null }) => void;
+  setIsSimpleDisplay: (isSimpleDisplay: boolean) => void;
   triggerReset: () => void;
   resetPomodoro: () => void;
 }
@@ -42,6 +44,7 @@ export const usePomodoroStore = create<PomodoroStore>((set) => ({
   breakBaseline: null,
   overlayEndsAt: null,
   overlayRemainingMs: null,
+  isSimpleDisplay: false,
 
   setCurrentPomodoro: (pomodoro) => set({ currentPomodoro: pomodoro }),
   setCurrentPomodoroEntry: (entry) => set({ currentPomodoroEntry: entry }),
@@ -54,6 +57,7 @@ export const usePomodoroStore = create<PomodoroStore>((set) => ({
   setBreakBaseline: (breakBaseline) => set({ breakBaseline }),
   setOverlayTiming: ({ endsAt, remainingMs }) =>
     set({ overlayEndsAt: endsAt, overlayRemainingMs: remainingMs }),
+  setIsSimpleDisplay: (isSimpleDisplay) => set({ isSimpleDisplay }),
   triggerReset: () => set((state) => ({ resetTrigger: state.resetTrigger + 1 })),
   resetPomodoro: () =>
     set((state) => ({
