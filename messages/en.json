@@ -1017,7 +1017,7 @@
       "constructors": "Constructors"
     },
     "constructors": {
-      "subtitle": "Constructors' Championship: every driver's focus time adds up for their favorite team.",
+      "subtitle": "Every user focus time adds up for their favorite team.",
       "team": "Team",
       "drivers": "{count, plural, one {# driver} other {# drivers}}",
       "empty": "No team has scored yet in this period. Pick your favorite team in your profile!"

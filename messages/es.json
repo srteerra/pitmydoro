@@ -1018,7 +1018,7 @@
       "constructors": "Constructores"
     },
     "constructors": {
-      "subtitle": "Campeonato de Constructores: el tiempo de enfoque de cada piloto suma para su equipo favorito.",
+      "subtitle": "El tiempo de enfoque de cada usuario suma para su equipo favorito.",
       "team": "Equipo",
       "drivers": "{count, plural, one {# piloto} other {# pilotos}}",
       "empty": "Ningún equipo ha sumado tiempo en este periodo. ¡Elige tu equipo favorito en tu perfil!"
