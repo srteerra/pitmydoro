@@ -122,7 +122,6 @@
     "bioTooLong": "Bio must be {max} characters or less",
     "bioNoLinks": "Links are not allowed in your bio",
     "bioNoProfanity": "Please remove inappropriate language",
-    "bioPlaceholder": "This user hasn't shared a bio yet.",
     "avatarUpload": "Upload photo",
     "avatarChange": "Change photo",
     "avatarRemove": "Remove photo",
@@ -262,6 +261,8 @@
     "boxDescriptionFocus": "Time to refocus",
     "pausedTitle": "Paused",
     "interruptAccept": "Are you sure you want to interrupt the session?",
+    "enterSimpleDisplay": "Simple display",
+    "exitSimpleDisplay": "Exit simple display",
     "simpleTimer": {
       "description": "Session of <session></session>, short break of <shortBreak></shortBreak> and long break of <longBreak></longBreak>.",
       "minutes": "{count, plural, one {min} other {mins}}"

@@ -6,6 +6,7 @@ import NextLink from 'next/link';
 import { LuBookText, LuTrophy } from 'react-icons/lu';
 import { ToggleThemeMode } from '@/components/Layout/Toggles/ThemeMode';
 import { TogglePomodoroMode } from '@/components/Layout/Toggles/PomodoroMode';
+import { ToggleSimpleDisplay } from '@/components/Layout/Toggles/SimpleDisplay';
 import GitHubStars from '@/components/GithubStars';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -75,6 +76,7 @@ export const MobileMenu = ({ onClose }: { onClose: () => void }) => {
         <GitHubStars />
 
         <HStack gap={2} justifyContent='center'>
+          {isPomodoroPage && <ToggleSimpleDisplay onEnter={onClose} />}
           {isPomodoroPage && <TogglePomodoroMode />}
           <ToggleThemeMode />
         </HStack>

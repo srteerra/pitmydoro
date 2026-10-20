@@ -227,16 +227,18 @@ export const Profile = ({ profile, userId, isOwn = false }: Props) => {
               />
             </Box>
 
-            <Text
-              data-pw-id='profile-bio'
-              fontSize={{ base: 'sm', md: 'md' }}
-              color={profile.bio ? 'fg' : 'fg.muted'}
-              maxW='640px'
-              whiteSpace='pre-line'
-              paddingBottom={2}
-            >
-              {profile.bio || t('bioPlaceholder')}
-            </Text>
+            {profile.bio && (
+              <Text
+                data-pw-id='profile-bio'
+                fontSize={{ base: 'sm', md: 'md' }}
+                color='fg'
+                maxW='640px'
+                whiteSpace='pre-line'
+                paddingBottom={2}
+              >
+                {profile.bio}
+              </Text>
+            )}
 
             {socialItems.length > 0 && (
               <Flex gap={2} wrap='wrap'>

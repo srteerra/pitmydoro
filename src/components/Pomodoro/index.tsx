@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Box, Center, Image, Loader, VStack } from '@chakra-ui/react';
+import { Box, Center, IconButton, Image, Loader, Text, VStack } from '@chakra-ui/react';
+import { LuMinimize2 } from 'react-icons/lu';
 import { TimerSelector } from '@/components/Pomodoro/TimerSelector';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { Counter } from '@/components/Pomodoro/Counter';
@@ -26,6 +27,11 @@ import { RainSoundControls } from '@/components/Rain/RainSoundControls';
 import { useRainSound } from '@/hooks/useRainSound';
 import { RAIN_LOOKS, RainIntensity } from '@/constants/Rain';
 import { CAR_ENTRY_ANIMATION } from '@/constants/Animations';
+import { useTaskStore } from '@/stores/Tasks.store';
+import { useSimpleDisplay } from '@/hooks/useSimpleDisplay';
+
+// Above the simple display layer (Chakra's `overlay` z-index is 1300).
+const SIMPLE_DISPLAY_RAIN_Z_INDEX = 1301;
 
 export const Pomodoro = () => {
   const sessionStatus = useSessionStore((state) => state.status);
@@ -38,6 +44,8 @@ export const Pomodoro = () => {
   const settingsT = useTranslations('settings');
   const { changeCompoundTime, confirmInterruptIfRunning } = usePomodoro();
   const { openSettings } = useSettingsDialog();
+  const { isSimpleDisplay, exitSimpleDisplay } = useSimpleDisplay();
+  const currentTaskTitle = useTaskStore((state) => state.currentTask?.title);
   const { theme } = useTheme();
 
   const handleStatusChange = async (value: SessionStatusEnum) => {
@@ -57,6 +65,8 @@ export const Pomodoro = () => {
           : null;
 
   useRainSound(rainIntensity);
+
+  useEffect(() => exitSimpleDisplay, [exitSimpleDisplay]);
 
   const [shownIntensity, setShownIntensity] = useState<RainIntensity | null>(null);
 
@@ -99,6 +109,7 @@ export const Pomodoro = () => {
       {rainLook && (
         <Rain
           fullscreen
+          zIndex={isSimpleDisplay ? SIMPLE_DISPLAY_RAIN_Z_INDEX : undefined}
           present={!!rainIntensity}
           vignette={rainLook.vignette && !isDarkTheme}
           color={rainColor}
@@ -131,7 +142,37 @@ export const Pomodoro = () => {
         position='relative'
         zIndex={1}
         padding={{ base: '30px 10px', md: '30px 40px' }}
+        {...(isSimpleDisplay && {
+          'data-pw-id': 'simple-display',
+          position: 'fixed',
+          inset: 0,
+          zIndex: 'overlay',
+          rounded: 'none',
+          boxShadow: 'none',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: {
+            base: currentScuderia?.colors?.background?.[sessionStatus] ?? 'background.light',
+            _dark: 'background.dark',
+          },
+        })}
       >
+        {isSimpleDisplay && (
+          <IconButton
+            data-pw-id='simple-display-exit'
+            onClick={exitSimpleDisplay}
+            variant='ghost'
+            size='lg'
+            rounded='full'
+            position='absolute'
+            top={4}
+            right={4}
+            aria-label={t('exitSimpleDisplay')}
+          >
+            <LuMinimize2 />
+          </IconButton>
+        )}
+
         {mode === PomodoroMode.F1 && (
           <Center marginBottom={'10px'} marginTop={{ base: '0', md: '50px' }} position='relative'>
             <Box
@@ -175,12 +216,14 @@ export const Pomodoro = () => {
               <Box
                 position='relative'
                 zIndex='2'
-                cursor='pointer'
-                onClick={() => openSettings(Tab.SCUDERIA)}
-                role='button'
-                aria-label={settingsT('scuderia')}
-                transition='transform 0.2s'
-                _hover={{ transform: 'scale(1.05)' }}
+                {...(!isSimpleDisplay && {
+                  cursor: 'pointer',
+                  onClick: () => openSettings(Tab.SCUDERIA),
+                  role: 'button',
+                  'aria-label': settingsT('scuderia'),
+                  transition: 'transform 0.2s',
+                  _hover: { transform: 'scale(1.05)' },
+                })}
               >
                 <Box
                   key={currentScuderia.id}
@@ -200,7 +243,7 @@ export const Pomodoro = () => {
           </Center>
         )}
 
-        <VStack display={'flex'} flexDirection={'column'}>
+        <VStack display={isSimpleDisplay ? 'none' : 'flex'} flexDirection={'column'}>
           {mode === PomodoroMode.F1 && (
             <TimerSelector value={selectedTire} onSelect={changeCompoundTime} />
           )}
@@ -224,7 +267,23 @@ export const Pomodoro = () => {
         </VStack>
 
         <Counter />
-        <Tasks />
+
+        {isSimpleDisplay && currentTaskTitle && (
+          <Text
+            data-pw-id='simple-display-task'
+            fontSize={{ base: '2xl', md: '4xl' }}
+            fontWeight='semibold'
+            textAlign='center'
+            maxWidth='90%'
+            flexShrink={0}
+            lineClamp={2}
+            color={{ base: 'gray.800', _dark: 'gray.200' }}
+          >
+            {currentTaskTitle}
+          </Text>
+        )}
+
+        {!isSimpleDisplay && <Tasks />}
       </Box>
     </Box>
   );

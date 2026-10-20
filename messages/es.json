@@ -123,7 +123,6 @@
     "bioTooLong": "La biografía debe tener {max} caracteres o menos",
     "bioNoLinks": "No se permiten enlaces en la biografía",
     "bioNoProfanity": "Por favor, elimina el lenguaje inapropiado",
-    "bioPlaceholder": "Este usuario aún no ha compartido una bio.",
     "avatarUpload": "Subir foto",
     "avatarChange": "Cambiar foto",
     "avatarRemove": "Quitar foto",
@@ -263,6 +262,8 @@
     "boxDescriptionFocus": "Hora de volver a enfocarse.",
     "pausedTitle": "En pausa",
     "interruptAccept": "¿Deseas interrumpir la sesión actual?",
+    "enterSimpleDisplay": "Vista simple",
+    "exitSimpleDisplay": "Salir de la vista simple",
     "simpleTimer": {
       "description": "Sesión de <session></session>, descanso corto de <shortBreak></shortBreak> y descanso largo de <longBreak></longBreak>.",
       "minutes": "{count, plural, one {min} other {mins}}"
