@@ -16,6 +16,13 @@ export interface LeaderboardEntry {
   workTime?: number;
 }
 
+export interface ConstructorEntry {
+  rank: number;
+  teamId: string;
+  pomodoroTime: number;
+  drivers: number;
+}
+
 export interface LeaderboardSnapshot {
   periodId: string;
   type: LeaderboardPeriodType;
@@ -23,6 +30,7 @@ export interface LeaderboardSnapshot {
   to: string;
   metric: 'workTime' | 'pomodoroTime';
   top: LeaderboardEntry[];
+  constructors?: ConstructorEntry[];
   participants: number;
   sealed: boolean;
   computedAt: Timestamp;

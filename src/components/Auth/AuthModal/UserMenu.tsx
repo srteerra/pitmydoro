@@ -10,6 +10,7 @@ import { useDrawer } from '@/contexts/DrawerContext';
 import { ReportsDialog } from '@/components/Tasks/ReportsDialog';
 import { StreakBadge } from '@/components/Streak/StreakBadge';
 import { StreakSummary } from '@/components/Streak/StreakSummary';
+import { NotificationBell } from '@/components/Notifications/NotificationBell';
 import { useRouter } from 'next/navigation';
 
 interface Props {
@@ -49,6 +50,7 @@ export const UserMenu = ({ user, onLogout }: Props) => {
   return (
     <HStack gap={4}>
       <StreakBadge />
+      <NotificationBell />
 
       <Menu.Root positioning={{ getAnchorRect }}>
         <Menu.Trigger data-pw-id='user-menu-trigger' rounded='full' focusRing='outside'>

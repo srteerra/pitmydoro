@@ -1,0 +1,5 @@
+export const MAX_FAVORITES = 20;
+export const NOTIFICATIONS_PAGE_SIZE = 30;
+export const UNREAD_BADGE_LIMIT = 9;
+export const MAX_DAILY_POMODORO_SECONDS = 57_600;
+export const DEFAULT_NOTIFICATION_LOCALE = 'en';

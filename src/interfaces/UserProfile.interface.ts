@@ -20,6 +20,8 @@ export interface UserProfile {
   streak?: UserStreak;
   badges?: UserBadges;
   featuredBadge?: BadgeId | null;
+  followersCount?: number;
+  followingCount?: number;
   createdAt: Timestamp;
   updatedAt: Timestamp;
   lastConnection?: Timestamp;

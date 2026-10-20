@@ -75,6 +75,17 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
 
+### Local Firebase emulators (no Firebase account needed)
+
+Requires Java 21+ and the Firebase CLI (`npm install -g firebase-tools`).
+
+```bash
+npm --prefix functions install
+bun run dev:emulator
+```
+
+It starts Firestore, Auth and Storage emulators with realistic sample data and runs the app against them. Sign in with `demo@pitmydoro.dev` / `pitmydoro`. See [CONTRIBUTING.md](CONTRIBUTING.md#running-with-firebase-emulators-recommended) for details.
+
 ---
 
 ## 🛠️ Tech Stack

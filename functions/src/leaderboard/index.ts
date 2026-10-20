@@ -1,6 +1,8 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { logger } from 'firebase-functions';
 import { aggregate, rank } from './aggregate';
+import { rankConstructors } from './constructors';
+import { loadProfiles } from './profiles';
 import {
   monthRange,
   PeriodRange,
@@ -23,12 +25,17 @@ const computeSnapshots = async (
   sealed: boolean
 ): Promise<LeaderboardSnapshot[]> => {
   const buckets = await aggregate(ranges);
+  const profiles = await loadProfiles(buckets.flatMap((bucket) => [...bucket.totals.keys()]));
 
-  return Promise.all(
-    buckets.map(async (bucket) => {
-      const { top, participants } = await rank(bucket.totals);
-      return buildSnapshot(bucket.range, top, participants, sealed);
-    })
+  return buckets.map((bucket) =>
+    buildSnapshot(
+      bucket.range,
+      {
+        ...rank(bucket.totals, profiles),
+        constructors: rankConstructors(bucket.totals, profiles),
+      },
+      sealed
+    )
   );
 };
 
@@ -45,6 +52,22 @@ const sealIfDue = async (range: PeriodRange, nowMs: number): Promise<void> => {
   });
 };
 
+export const runLeaderboardRefresh = async (now: number = Date.now()): Promise<void> => {
+  const [weekly, monthly] = await computeSnapshots([weekRange(now), monthRange(now)], false);
+
+  await publishSnapshot(weekly);
+  await publishSnapshot(monthly);
+  await publishCurrent(weekly, monthly);
+
+  logger.info('leaderboards refreshed', {
+    weekly: { periodId: weekly.periodId, participants: weekly.participants },
+    monthly: { periodId: monthly.periodId, participants: monthly.participants },
+  });
+
+  await sealIfDue(previousWeekRange(now), now);
+  await sealIfDue(previousMonthRange(now), now);
+};
+
 export const refreshLeaderboards = onSchedule(
   {
     schedule: '0 0 * * *',
@@ -54,20 +77,5 @@ export const refreshLeaderboards = onSchedule(
     memory: '512MiB',
     retryCount: 0,
   },
-  async () => {
-    const now = Date.now();
-    const [weekly, monthly] = await computeSnapshots([weekRange(now), monthRange(now)], false);
-
-    await publishSnapshot(weekly);
-    await publishSnapshot(monthly);
-    await publishCurrent(weekly, monthly);
-
-    logger.info('leaderboards refreshed', {
-      weekly: { periodId: weekly.periodId, participants: weekly.participants },
-      monthly: { periodId: monthly.periodId, participants: monthly.participants },
-    });
-
-    await sealIfDue(previousWeekRange(now), now);
-    await sealIfDue(previousMonthRange(now), now);
-  }
+  async () => runLeaderboardRefresh()
 );

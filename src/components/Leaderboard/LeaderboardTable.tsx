@@ -9,14 +9,9 @@ import { formatSeconds } from '@/utils/formatSeconds.utils';
 import { resolveFeaturedBadge } from '@/utils/badges.utils';
 import { BadgeFlat } from '@/components/Profile/Badges/BadgeFlat';
 import { FlagTooltip } from '@/components/ui/flag-tooltip';
+import { RankBadge } from '@/components/Leaderboard/RankBadge';
 
 const BADGE_SIZE = 16;
-
-const PODIUM: Record<number, string> = {
-  1: '#D4AF37',
-  2: '#A8A9AD',
-  3: '#B08D57',
-};
 
 const EntryBadge = ({ entry }: { entry: LeaderboardEntry }) => {
   const t = useTranslations('badges');
@@ -36,38 +31,41 @@ const EntryBadge = ({ entry }: { entry: LeaderboardEntry }) => {
   );
 };
 
-const RankBadge = ({ rank }: { rank: number }) => {
-  const accent = PODIUM[rank];
+interface Props {
+  entries: LeaderboardEntry[];
+  highlightUid?: string;
+  showGapToViewer?: boolean;
+  emptyLabel?: string;
+}
+
+const VIEWER_PALETTE = 'blue';
+
+const entryTime = (entry: LeaderboardEntry) => entry.pomodoroTime ?? entry.workTime ?? 0;
+
+const GapToViewer = ({ seconds }: { seconds: number }) => {
+  if (seconds === 0) return null;
 
   return (
-    <Flex
-      align='center'
-      justify='center'
-      minW='2.25rem'
-      h='2.25rem'
-      rounded='lg'
-      flexShrink={0}
-      bg={accent ? accent : 'bg.muted'}
-      color={accent ? 'black' : 'fg.muted'}
-      fontWeight='bold'
-      fontSize={accent ? 'md' : 'sm'}
-    >
-      {rank}
-    </Flex>
+    <Text fontSize='xs' color={seconds > 0 ? 'red.500' : 'green.500'} textAlign='end'>
+      {`${seconds > 0 ? '+' : '-'}${formatSeconds(Math.abs(seconds), 'hoursMinutes')}`}
+    </Text>
   );
 };
 
-interface Props {
-  entries: LeaderboardEntry[];
-}
-
-export const LeaderboardTable = ({ entries }: Props) => {
+export const LeaderboardTable = ({
+  entries,
+  highlightUid,
+  showGapToViewer = false,
+  emptyLabel,
+}: Props) => {
   const t = useTranslations('leaderboard');
+  const viewerEntry = highlightUid ? entries.find((entry) => entry.uid === highlightUid) : null;
+  const gapBase = showGapToViewer ? viewerEntry : null;
 
   if (entries.length === 0) {
     return (
       <Flex data-pw-id='leaderboard-empty' justify='center' align='center' minH='10rem'>
-        <Text color='fg.muted'>{t('empty')}</Text>
+        <Text color='fg.muted'>{emptyLabel ?? t('empty')}</Text>
       </Flex>
     );
   }
@@ -84,13 +82,15 @@ export const LeaderboardTable = ({ entries }: Props) => {
         <Link key={entry.uid} href={`/profile/${entry.username}`} aria-label={entry.displayName}>
           <HStack
             data-pw-id={`leaderboard-row-${entry.rank}`}
+            data-viewer={entry.uid === highlightUid || undefined}
             gap={3}
             px={4}
             py={3}
             rounded='xl'
-            bg='bg.muted'
+            colorPalette={entry.uid === highlightUid ? VIEWER_PALETTE : undefined}
+            bg={entry.uid === highlightUid ? 'colorPalette.subtle' : 'bg.muted'}
             transition='background 0.15s ease'
-            _hover={{ bg: 'bg.emphasized' }}
+            _hover={{ bg: entry.uid === highlightUid ? 'colorPalette.muted' : 'bg.emphasized' }}
           >
             <RankBadge rank={entry.rank} />
 
@@ -116,9 +116,14 @@ export const LeaderboardTable = ({ entries }: Props) => {
               </Text>
             </Box>
 
-            <Text fontWeight='bold' fontVariantNumeric='tabular-nums' flexShrink={0}>
-              {formatSeconds(entry.pomodoroTime ?? entry.workTime ?? 0, 'hoursMinutes')}
-            </Text>
+            <Box flexShrink={0} textAlign='end'>
+              <Text fontWeight='bold' fontVariantNumeric='tabular-nums'>
+                {formatSeconds(entryTime(entry), 'hoursMinutes')}
+              </Text>
+              {gapBase && entry.uid !== highlightUid && (
+                <GapToViewer seconds={entryTime(entry) - entryTime(gapBase)} />
+              )}
+            </Box>
           </HStack>
         </Link>
       ))}
